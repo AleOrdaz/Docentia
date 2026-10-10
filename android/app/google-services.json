@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "169524507726",
+    "project_id": "docentia-809b0",
+    "storage_bucket": "docentia-809b0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:169524507726:android:d2c4a7244962d5b9633f1f",
+        "android_client_info": {
+          "package_name": "com.docentia.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "169524507726-fks54s4u7rb1hkb5cc98f62m23b91pmo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA43fYqANn8MladEy-KrGEEJOxWNGeiiYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "169524507726-fks54s4u7rb1hkb5cc98f62m23b91pmo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
