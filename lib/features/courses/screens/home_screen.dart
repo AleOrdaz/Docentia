@@ -43,8 +43,14 @@ class HomeScreen extends ConsumerWidget {
     final teacherPhotoUrl = teacher?.photoUrl ??
         'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav';
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.colorScheme.primary;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      extendBody: true,
+      backgroundColor:
+      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
       // 1.1 AppBar / Encabezado
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -52,12 +58,12 @@ class HomeScreen extends ConsumerWidget {
         titleSpacing: 16,
         title: Row(
           children: [
-            // Logo de la aplicación (birrete estilizado en color azul marino)
+            // Logo de la aplicación (birrete estilizado)
             Container(
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: const Color(0xFF00236F),
+                color: primaryColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(
@@ -67,13 +73,13 @@ class HomeScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: 10),
-            const Text(
+            Text(
               'Docentia',
               style: TextStyle(
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF00174D),
+                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                 letterSpacing: -0.5,
               ),
             ),
@@ -154,36 +160,46 @@ class HomeScreen extends ConsumerWidget {
                         children: [
                           Text(
                             teacherFirstName,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF00174D),
+                              color: isDark
+                                  ? const Color(0xFFF8FAFC)
+                                  : const Color(0xFF00174D),
                               letterSpacing: -0.5,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
+                          Text(
                             'Aquí tienes el resumen de tus cursos.',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF5F6368),
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF5F6368),
                             ),
                           ),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.school_outlined,
                                 size: 15,
-                                color: Color(0xFF5F6368),
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF5F6368),
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                '${activeCourses.length} ${activeCourses.length == 1 ? 'curso activo' : 'cursos activos'}  ·  $totalStudentsCount ${totalStudentsCount == 1 ? 'alumno' : 'alumnos'}',
-                                style: const TextStyle(
+                                '${activeCourses.length} ${activeCourses.length == 1 ?
+                                'curso activo' : 'cursos activos'}  ·  $totalStudentsCount ${totalStudentsCount == 1 ?
+                                'alumno' : 'alumnos'}',
+                                style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
-                                  color: Color(0xFF5F6368),
+                                  color: isDark
+                                      ? const Color(0xFF94A3B8)
+                                      : const Color(0xFF5F6368),
                                 ),
                               ),
                             ],
@@ -193,7 +209,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 12),
 
                 // 3. Resumen general (3 tarjetas horizontales compactas)
                 Row(
@@ -201,6 +217,7 @@ class HomeScreen extends ConsumerWidget {
                     // Tarjeta 1: Cursos activos
                     Expanded(
                       child: _buildSummaryCard(
+                        context: context,
                         icon: Icons.school_rounded,
                         iconBgColor: const Color(0xFFE3EDFF),
                         iconColor: const Color(0xFF00236F),
@@ -208,11 +225,12 @@ class HomeScreen extends ConsumerWidget {
                         label: 'Cursos activos',
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 6),
 
                     // Tarjeta 2: Alumnos
                     Expanded(
                       child: _buildSummaryCard(
+                        context: context,
                         icon: Icons.group_rounded,
                         iconBgColor: const Color(0xFFD8F3DC),
                         iconColor: const Color(0xFF00796B),
@@ -220,11 +238,12 @@ class HomeScreen extends ConsumerWidget {
                         label: 'Alumnos',
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 6),
 
                     // Tarjeta 3: Ingresos del mes
                     Expanded(
                       child: _buildSummaryCard(
+                        context: context,
                         icon: Icons.bar_chart_rounded,
                         iconBgColor: const Color(0xFFFFF4DE),
                         iconColor: const Color(0xFFD97706),
@@ -235,7 +254,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 12),
 
                 // 4. Sección "Cursos de hoy" + Botón "+ Nuevo curso"
                 Row(
@@ -243,12 +262,14 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        const Text(
+                        Text(
                           'Cursos de hoy',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF00174D),
+                            color: isDark
+                                ? const Color(0xFFF8FAFC)
+                                : const Color(0xFF00174D),
                             letterSpacing: -0.4,
                           ),
                         ),
@@ -509,6 +530,7 @@ class HomeScreen extends ConsumerWidget {
 
   // Tarjeta de resumen (Cursos activos, Alumnos, Ingresos)
   Widget _buildSummaryCard({
+    required BuildContext context,
     required IconData icon,
     required Color iconBgColor,
     required Color iconColor,
@@ -516,20 +538,26 @@ class HomeScreen extends ConsumerWidget {
     required String label,
     VoidCallback? onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF151D2E) : Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFEEF2F9)),
-          boxShadow: const [
+          border: Border.all(
+            color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(0, 35, 111, 0.03),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : const Color.fromRGBO(0, 35, 111, 0.03),
               blurRadius: 10,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -540,7 +568,7 @@ class HomeScreen extends ConsumerWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: iconBgColor,
+                color: isDark ? iconColor.withValues(alpha: 0.25) : iconBgColor,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -549,25 +577,24 @@ class HomeScreen extends ConsumerWidget {
                 color: iconColor,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 22,
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF00174D),
+                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                 letterSpacing: -0.4,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 2),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF757682),
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF757682),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -589,6 +616,9 @@ class HomeScreen extends ConsumerWidget {
 
     final iconData = getCourseIcon(course.iconKey);
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return InkWell(
       onTap: () async {
         ref.read(selectedCourseIdProvider.notifier).state = course.id;
@@ -602,14 +632,18 @@ class HomeScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF151D2E) : Colors.white,
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFEEF2F9)),
-          boxShadow: const [
+          border: Border.all(
+            color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(0, 35, 111, 0.04),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : const Color.fromRGBO(0, 35, 111, 0.04),
               blurRadius: 12,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
@@ -620,18 +654,20 @@ class HomeScreen extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Icono del curso en squircle celeste
+                // Icono del curso en squircle
                 Container(
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE3EDFF),
+                    color: isDark
+                        ? const Color(0xFF1E2E4E)
+                        : const Color(0xFFE3EDFF),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     iconData,
                     size: 28,
-                    color: const Color(0xFF00236F),
+                    color: primaryColor,
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -641,22 +677,26 @@ class HomeScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'CURSO',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 1.2,
-                          color: Color(0xFF757682),
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF757682),
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         course.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF00174D),
+                          color: isDark
+                              ? const Color(0xFFF8FAFC)
+                              : const Color(0xFF00174D),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -664,19 +704,23 @@ class HomeScreen extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.calendar_today_outlined,
                             size: 13,
-                            color: Color(0xFF757682),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF757682),
                           ),
                           const SizedBox(width: 5),
                           Flexible(
                             child: Text(
                               course.formattedSchedule,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color: Color(0xFF5F6368),
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF5F6368),
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -691,9 +735,11 @@ class HomeScreen extends ConsumerWidget {
                 Column(
                   children: [
                     PopupMenuButton<String>(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.more_horiz,
-                        color: Color(0xFF9EA3AE),
+                        color: isDark
+                            ? const Color(0xFF64748B)
+                            : const Color(0xFF9EA3AE),
                         size: 20,
                       ),
                       padding: EdgeInsets.zero,
@@ -720,9 +766,11 @@ class HomeScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    const Icon(
+                    Icon(
                       Icons.chevron_right,
-                      color: Color(0xFF00174D),
+                      color: isDark
+                          ? const Color(0xFF94A3B8)
+                          : const Color(0xFF00174D),
                       size: 20,
                     ),
                   ],
@@ -737,10 +785,12 @@ class HomeScreen extends ConsumerWidget {
               children: [
                 Text(
                   '$studentsCount de ${course.capacity} alumnos inscritos',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF43474E),
+                    color: isDark
+                        ? const Color(0xFFCBD5E1)
+                        : const Color(0xFF43474E),
                   ),
                 ),
                 Text(
@@ -761,7 +811,9 @@ class HomeScreen extends ConsumerWidget {
                     ? (studentsCount / course.capacity).clamp(0.0, 1.0)
                     : 0.0,
                 minHeight: 6,
-                backgroundColor: const Color(0xFFEEF2F6),
+                backgroundColor: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFEEF2F6),
                 valueColor:
                 const AlwaysStoppedAnimation<Color>(Color(0xFF00897B)),
               ),
@@ -778,8 +830,10 @@ class HomeScreen extends ConsumerWidget {
                     Container(
                       width: 28,
                       height: 28,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFFF4DE),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF452205)
+                            : const Color(0xFFFFF4DE),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -794,17 +848,21 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         Text(
                           '${formatCurrency(course.cost)} / mes',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF00174D),
+                            color: isDark
+                                ? const Color(0xFFF8FAFC)
+                                : const Color(0xFF00174D),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Cuota del curso',
                           style: TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF757682),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF757682),
                           ),
                         ),
                       ],
@@ -817,24 +875,30 @@ class HomeScreen extends ConsumerWidget {
                   padding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3EDFD),
+                    color: isDark
+                        ? const Color(0xFF3B1D5A)
+                        : const Color(0xFFF3EDFD),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_month_outlined,
                         size: 13,
-                        color: Color(0xFF6B21A8),
+                        color: isDark
+                            ? const Color(0xFFD8B4FE)
+                            : const Color(0xFF6B21A8),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         'Vence: ${course.paymentSchedule.displayName}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF6B21A8),
+                          color: isDark
+                              ? const Color(0xFFD8B4FE)
+                              : const Color(0xFF6B21A8),
                         ),
                       ),
                     ],

@@ -211,13 +211,96 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     }
   }
 
+  void _confirmDeleteCourse() {
+    final course = widget.courseToEdit;
+    if (course == null) return;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        return AlertDialog(
+          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF3B171A) : const Color(0xFFFFEBEE),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.warning_amber_rounded,
+                    color: Color(0xFFD32F2F), size: 24),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  '¿Eliminar este curso?',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            'Estás a punto de eliminar el curso "${course.name}". Esta acción dará de baja el curso y no podrá deshacerse.',
+            style: TextStyle(
+              fontSize: 13,
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF43474E),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(
+                'Cancelar',
+                style: TextStyle(
+                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                ),
+              ),
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFD32F2F),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                Navigator.of(context).pop();
+                await ref.read(coursesProvider.notifier).deleteCourse(course.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Curso "${course.name}" eliminado correctamente.'),
+                      backgroundColor: const Color(0xFFD32F2F),
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.delete_forever, size: 18),
+              label: const Text('Sí, eliminar curso'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.colorScheme.primary;
     final isEditing = widget.courseToEdit != null;
 
     return Dialog(
-      backgroundColor: AppColors.surfaceContainerLowest,
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 520, maxHeight: 700),
@@ -566,35 +649,68 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                   ),
                   const SizedBox(height: 22),
 
-                  // Botones
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Cancelar'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryColor,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                      if (isEditing)
+                        TextButton.icon(
+                          onPressed: _isSaving ? null : _confirmDeleteCourse,
+                          icon: const Icon(Icons.delete_outline,
+                              color: Color(0xFFD32F2F), size: 18),
+                          label: const Text(
+                            'Eliminar Curso',
+                            style: TextStyle(
+                              color: Color(0xFFD32F2F),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                            foregroundColor: const Color(0xFFD32F2F),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
                           ),
                         ),
-                        onPressed: _isSaving ? null : _submit,
-                        child: _isSaving
-                            ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
+                    ],
+                  ),
+
+                  // Botones
+                  Row(
+                    mainAxisAlignment: isEditing
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Cancelar'),
                           ),
-                        )
-                            : Text(isEditing ? 'Guardar Cambios' : 'Crear Curso'),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: _isSaving ? null : _submit,
+                            child: _isSaving
+                                ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                                : Text(isEditing ? 'Guardar Cambios' : 'Crear Curso'),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -670,26 +786,47 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     TextInputType? keyboardType,
     String? Function(String?)? validator,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelSmall),
+        Text(
+          label,
+          style: AppTextStyles.labelSmall.copyWith(
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF43474E),
+          ),
+        ),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           validator: validator,
-          style: AppTextStyles.bodyMedium,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.outline),
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
+              color: isDark ? const Color(0xFF64748B) : AppColors.outline,
+            ),
             filled: true,
-            fillColor: AppColors.surfaceContainerLow,
+            fillColor: isDark
+                ? const Color(0xFF0F172A)
+                : AppColors.surfaceContainerLow,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              ),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              ),
+            ),
+            contentPadding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
         ),
       ],

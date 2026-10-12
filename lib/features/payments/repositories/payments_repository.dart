@@ -9,6 +9,7 @@ class DuplicateFeeException implements Exception {
 }
 
 abstract class PaymentsRepository {
+  Future<List<Payment>> getAllPayments();
   Future<List<Payment>> getPaymentsByCourse(String courseId);
   Future<List<Payment>> getPaymentsByStudent(String studentId, String courseId);
   Future<bool> hasFeeForPeriod({
@@ -29,6 +30,12 @@ class LocalPaymentsRepository implements PaymentsRepository {
     if (_cached != null) return _cached!;
     _cached = await StorageService.getPayments();
     return _cached!;
+  }
+
+  @override
+  Future<List<Payment>> getAllPayments() async {
+    final list = await _all();
+    return List.unmodifiable(list);
   }
 
   @override

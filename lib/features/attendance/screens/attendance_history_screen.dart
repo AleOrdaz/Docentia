@@ -17,6 +17,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final course = ref.watch(selectedCourseProvider);
     final sessionsAsync = ref.watch(courseSessionsProvider(courseId));
@@ -24,19 +25,30 @@ class AttendanceHistoryScreen extends ConsumerWidget {
     final courseName = course?.name ?? 'Curso';
 
     return Scaffold(
+      backgroundColor:
+      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D)),
           onPressed: () => context.pop(),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Registro de Asistencia', style: AppTextStyles.titleMedium),
+            Text(
+              'Registro de Asistencia',
+              style: AppTextStyles.titleMedium.copyWith(
+                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             Text(
               courseName,
               style: AppTextStyles.labelSmall.copyWith(
-                color: AppColors.onSurfaceVariant,
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
               ),
             ),
           ],
@@ -108,19 +120,24 @@ class AttendanceHistoryScreen extends ConsumerWidget {
       ClassAttendanceSession session,
       Color primaryColor,
       ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final presentStudents = session.presentStudents;
     final absentStudents = session.absentStudents;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
+        color: isDark ? const Color(0xFF151D2E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.surfaceContainer),
-        boxShadow: const [
+        border: Border.all(
+          color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+        ),
+        boxShadow: [
           BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.03),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.3)
+                : const Color.fromRGBO(0, 0, 0, 0.03),
             blurRadius: 6,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -134,7 +151,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
             session.formattedDate,
             style: AppTextStyles.titleSmall.copyWith(
               fontWeight: FontWeight.bold,
-              color: AppColors.onSurface,
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
             ),
           ),
           subtitle: Column(
@@ -270,7 +287,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                           child: Text(
                             s.studentName,
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.onSurface,
+                              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                             ),
                           ),
                         ),
@@ -339,7 +356,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                           child: Text(
                             s.studentName,
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.onSurface,
+                              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                             ),
                           ),
                         ),

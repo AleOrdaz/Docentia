@@ -31,10 +31,14 @@ class CoursesListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final coursesAsync = ref.watch(coursesProvider);
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.colorScheme.primary;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FE),
+      extendBody: true,
+      backgroundColor:
+      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -42,7 +46,7 @@ class CoursesListScreen extends ConsumerWidget {
           'Mis Cursos',
           style: AppTextStyles.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF00174D),
+            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
           ),
         ),
         actions: [
@@ -51,7 +55,7 @@ class CoursesListScreen extends ConsumerWidget {
             child: FilledButton.icon(
               onPressed: () => _openCreateCourseDialog(context),
               style: FilledButton.styleFrom(
-                backgroundColor: const Color(0xFF00236F),
+                backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 shape: const StadiumBorder(),
@@ -139,6 +143,7 @@ class CoursesListScreen extends ConsumerWidget {
 
   Widget _buildCourseCard(
       BuildContext context, WidgetRef ref, Course course, Color primaryColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final studentsAsync = ref.watch(studentsForCourseProvider(course.id));
     final studentsCount = studentsAsync.value?.length ?? 0;
     final fillPct = course.capacity > 0
@@ -156,14 +161,18 @@ class CoursesListScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? const Color(0xFF151D2E) : Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFEEF2F9)),
-          boxShadow: const [
+          border: Border.all(
+            color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(0, 35, 111, 0.04),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : const Color.fromRGBO(0, 35, 111, 0.04),
               blurRadius: 10,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -174,18 +183,20 @@ class CoursesListScreen extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Icono del curso en squircle celeste
+                // Icono del curso en squircle
                 Container(
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE3EDFF),
+                    color: isDark
+                        ? const Color(0xFF1E2E4E)
+                        : const Color(0xFFE3EDFF),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     iconData,
                     size: 28,
-                    color: const Color(0xFF00236F),
+                    color: primaryColor,
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -200,16 +211,20 @@ class CoursesListScreen extends ConsumerWidget {
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 1.2,
-                          color: const Color(0xFF757682),
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : const Color(0xFF757682),
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         course.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 17,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF00174D),
+                          color: isDark
+                              ? const Color(0xFFF8FAFC)
+                              : const Color(0xFF00174D),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -217,15 +232,20 @@ class CoursesListScreen extends ConsumerWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(Icons.calendar_today_outlined,
-                              size: 13, color: Color(0xFF757682)),
+                          Icon(Icons.calendar_today_outlined,
+                              size: 13,
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF757682)),
                           const SizedBox(width: 5),
                           Flexible(
                             child: Text(
                               course.formattedSchedule,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFF5F6368),
+                                color: isDark
+                                    ? const Color(0xFF94A3B8)
+                                    : const Color(0xFF5F6368),
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -239,8 +259,11 @@ class CoursesListScreen extends ConsumerWidget {
                 Column(
                   children: [
                     PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_horiz,
-                          color: Color(0xFF9EA3AE), size: 20),
+                      icon: Icon(Icons.more_horiz,
+                          color: isDark
+                              ? const Color(0xFF64748B)
+                              : const Color(0xFF9EA3AE),
+                          size: 20),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       shape: RoundedRectangleBorder(
@@ -264,8 +287,11 @@ class CoursesListScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    const Icon(Icons.chevron_right,
-                        color: Color(0xFF00174D), size: 20),
+                    Icon(Icons.chevron_right,
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF00174D),
+                        size: 20),
                   ],
                 ),
               ],
@@ -278,10 +304,12 @@ class CoursesListScreen extends ConsumerWidget {
               children: [
                 Text(
                   '$studentsCount de ${course.capacity} alumnos inscritos',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF43474E),
+                    color: isDark
+                        ? const Color(0xFFCBD5E1)
+                        : const Color(0xFF43474E),
                   ),
                 ),
                 Text(
@@ -302,7 +330,9 @@ class CoursesListScreen extends ConsumerWidget {
                     ? (studentsCount / course.capacity).clamp(0.0, 1.0)
                     : 0.0,
                 minHeight: 6,
-                backgroundColor: const Color(0xFFEEF2F6),
+                backgroundColor: isDark
+                    ? const Color(0xFF1E293B)
+                    : const Color(0xFFEEF2F6),
                 valueColor:
                 const AlwaysStoppedAnimation<Color>(Color(0xFF00897B)),
               ),
@@ -319,8 +349,10 @@ class CoursesListScreen extends ConsumerWidget {
                     Container(
                       width: 28,
                       height: 28,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFFFF4DE),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? const Color(0xFF452205)
+                            : const Color(0xFFFFF4DE),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
@@ -335,17 +367,21 @@ class CoursesListScreen extends ConsumerWidget {
                       children: [
                         Text(
                           '${formatCurrency(course.cost)} / mes',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF00174D),
+                            color: isDark
+                                ? const Color(0xFFF8FAFC)
+                                : const Color(0xFF00174D),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Cuota del curso',
                           style: TextStyle(
                             fontSize: 10,
-                            color: Color(0xFF757682),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF757682),
                           ),
                         ),
                       ],
@@ -357,24 +393,30 @@ class CoursesListScreen extends ConsumerWidget {
                   padding:
                   const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3EDFD),
+                    color: isDark
+                        ? const Color(0xFF3B1D5A)
+                        : const Color(0xFFF3EDFD),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_month_outlined,
                         size: 13,
-                        color: Color(0xFF6B21A8),
+                        color: isDark
+                            ? const Color(0xFFD8B4FE)
+                            : const Color(0xFF6B21A8),
                       ),
                       const SizedBox(width: 4),
                       Text(
                         'Vence: ${course.paymentSchedule.displayName}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF6B21A8),
+                          color: isDark
+                              ? const Color(0xFFD8B4FE)
+                              : const Color(0xFF6B21A8),
                         ),
                       ),
                     ],

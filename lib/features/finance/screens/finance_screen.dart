@@ -80,12 +80,20 @@ class FinanceScreen extends ConsumerWidget {
     final summary = ref.watch(financeSummaryProvider);
     final period = ref.watch(selectedPeriodProvider);
     final expenses = ref.watch(expensesProvider);
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.colorScheme.primary;
 
     return Scaffold(
+      extendBody: true,
+      backgroundColor:
+      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back,
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D)),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -94,7 +102,13 @@ class FinanceScreen extends ConsumerWidget {
             }
           },
         ),
-        title: Text('Estadísticas Financieras', style: AppTextStyles.titleMedium),
+        title: Text(
+          'Estadísticas Financieras',
+          style: AppTextStyles.titleMedium.copyWith(
+            fontWeight: FontWeight.bold,
+            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+          ),
+        ),
       ),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 3),
       body: SingleChildScrollView(
@@ -156,6 +170,7 @@ class FinanceScreen extends ConsumerWidget {
                     amount: summary.totalIncome,
                     color: AppColors.secondary,
                     icon: Icons.trending_up,
+                    isDark: isDark,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -165,6 +180,7 @@ class FinanceScreen extends ConsumerWidget {
                     amount: summary.totalExpenses,
                     color: AppColors.error,
                     icon: Icons.trending_down,
+                    isDark: isDark,
                   ),
                 ),
               ],
@@ -176,9 +192,11 @@ class FinanceScreen extends ConsumerWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: isDark ? const Color(0xFF151D2E) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(
+                  color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+                ),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -186,7 +204,12 @@ class FinanceScreen extends ConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Ganancia Neta (Ingresos - Gastos)', style: AppTextStyles.labelMedium),
+                      Text(
+                        'Ganancia Neta (Ingresos - Gastos)',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        ),
+                      ),
                       const SizedBox(height: 4),
                       Text(
                         formatCurrency(summary.netProfit),
@@ -200,7 +223,7 @@ class FinanceScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
+                      color: isDark ? primaryColor.withValues(alpha: 0.2) : AppColors.surfaceContainerLow,
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
@@ -220,14 +243,22 @@ class FinanceScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: isDark ? const Color(0xFF151D2E) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(
+                  color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Distribución Financiera', style: AppTextStyles.titleSmall),
+                  Text(
+                    'Distribución Financiera',
+                    style: AppTextStyles.titleSmall.copyWith(
+                      color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
@@ -255,14 +286,24 @@ class FinanceScreen extends ConsumerWidget {
                         children: [
                           Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.secondary, shape: BoxShape.circle)),
                           const SizedBox(width: 6),
-                          Text('Cobrado: ${formatCurrency(summary.totalIncome)}', style: AppTextStyles.bodySmall),
+                          Text(
+                            'Cobrado: ${formatCurrency(summary.totalIncome)}',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                            ),
+                          ),
                         ],
                       ),
                       Row(
                         children: [
                           Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle)),
                           const SizedBox(width: 6),
-                          Text('Gastos: ${formatCurrency(summary.totalExpenses)}', style: AppTextStyles.bodySmall),
+                          Text(
+                            'Gastos: ${formatCurrency(summary.totalExpenses)}',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -276,11 +317,17 @@ class FinanceScreen extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Gastos del Docente', style: AppTextStyles.titleMedium),
+                Text(
+                  'Gastos del Docente',
+                  style: AppTextStyles.titleMedium.copyWith(
+                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 ElevatedButton.icon(
                   onPressed: () => _openAddExpenseDialog(context, ref),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.surfaceContainerHigh,
+                    backgroundColor: isDark ? const Color(0xFF1E2A42) : AppColors.surfaceContainerHigh,
                     foregroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   ),
@@ -298,13 +345,17 @@ class FinanceScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(24),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLowest,
+                  color: isDark ? const Color(0xFF151D2E) : Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.surfaceContainer),
+                  border: Border.all(
+                    color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+                  ),
                 ),
                 child: Text(
                   'No hay gastos registrados en este periodo.',
-                  style: AppTextStyles.bodyMedium,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  ),
                 ),
               )
             else
@@ -318,9 +369,11 @@ class FinanceScreen extends ConsumerWidget {
                   return Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLowest,
+                      color: isDark ? const Color(0xFF151D2E) : Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.surfaceContainer),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -328,8 +381,19 @@ class FinanceScreen extends ConsumerWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(exp.description, style: AppTextStyles.titleSmall),
-                            Text('${exp.category} • ${exp.date}', style: AppTextStyles.bodySmall),
+                            Text(
+                              exp.description,
+                              style: AppTextStyles.titleSmall.copyWith(
+                                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              '${exp.category} • ${exp.date}',
+                              style: AppTextStyles.bodySmall.copyWith(
+                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                              ),
+                            ),
                           ],
                         ),
                         Text(
@@ -356,13 +420,16 @@ class FinanceScreen extends ConsumerWidget {
     required double amount,
     required Color color,
     required IconData icon,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
+        color: isDark ? const Color(0xFF151D2E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.surfaceContainer),
+        border: Border.all(
+          color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -370,7 +437,12 @@ class FinanceScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: AppTextStyles.labelMedium),
+              Text(
+                title,
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                ),
+              ),
               Icon(icon, size: 18, color: color),
             ],
           ),

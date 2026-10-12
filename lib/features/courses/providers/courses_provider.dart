@@ -70,6 +70,12 @@ class CoursesNotifier extends StateNotifier<AsyncValue<List<Course>>> {
     final updated = await _repository.getCourses();
     state = AsyncValue.data(updated);
   }
+
+  Future<void> deleteCourse(String id) async {
+    await _repository.deleteCourse(id);
+    final updated = await _repository.getCourses();
+    state = AsyncValue.data(updated);
+  }
 }
 
 final coursesProvider =

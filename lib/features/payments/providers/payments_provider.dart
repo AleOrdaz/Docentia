@@ -139,3 +139,8 @@ FutureProvider.family<List<Payment>, ({String studentId, String courseId})>(
     return repo.getPaymentsByStudent(arg.studentId, arg.courseId);
   },
 );
+
+final allPaymentsProvider = FutureProvider<List<Payment>>((ref) async {
+  final repo = ref.watch(paymentsRepositoryProvider);
+  return repo.getAllPayments();
+});

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../auth/providers/auth_provider.dart';
 import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
@@ -129,6 +130,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final teacher = ref.watch(authProvider).teacher;
     final course = ref.watch(selectedCourseProvider);
     final studentsAsync = ref.watch(studentsForCourseProvider(widget.courseId));
     final attendanceParam = AttendanceDateParam(courseId: widget.courseId, date: _todayDateStr);
@@ -142,6 +144,9 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
 
     final now = DateTime.now();
     final isClassDay = course?.isClassDay(now) ?? true;
+
+    final teacherPhotoUrl = teacher?.photoUrl ??
+        'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav';
 
     return Scaffold(
       appBar: AppBar(
@@ -191,11 +196,9 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   shape: BoxShape.circle,
                   color: primaryColor.withValues(alpha: 0.2),
                 ),
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   radius: 16,
-                  backgroundImage: NetworkImage(
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav',
-                  ),
+                  backgroundImage: NetworkImage(teacherPhotoUrl),
                 ),
               ),
             ),

@@ -60,4 +60,35 @@ class AppColors {
 
   // Canales y WhatsApp
   static const Color whatsapp = Color(0xFF25D366);
+
+  // Adaptativos según el tema activo (Dark / Light)
+  static Color cardBg(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF151D2E) : const Color(0xFFFFFFFF);
+  }
+
+  static Color cardBorder(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9);
+  }
+
+  static Color surfaceLow(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF1E2A42) : const Color(0xFFEFF4FF);
+  }
+
+  static Color surfaceHigh(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF2A3958) : const Color(0xFFDCE9FF);
+  }
+
+  static Color textPrimary(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0B1C30);
+  }
+
+  static Color textSecondary(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF94A3B8) : const Color(0xFF444651);
+  }
 }

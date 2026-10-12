@@ -270,6 +270,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
+
             const SizedBox(height: 16),
 
             // SECCIÓN: Configuración del Tema (Sustituye a Resumen Académico)
@@ -341,6 +342,16 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Versión app: 1.0.3',
+                  style: AppTextStyles.labelSmall.copyWith(color: primaryColor),
+                )
+              ],
+            )
           ],
         ),
       ),

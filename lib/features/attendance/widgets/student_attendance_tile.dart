@@ -50,6 +50,7 @@ class StudentAttendanceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final displayName = student?.fullName ?? name ?? '';
     final displayAge = student?.age ?? age ?? 0;
     final displayImageUrl = student?.avatarUrl ?? imageUrl;
@@ -137,13 +138,18 @@ class StudentAttendanceTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppColors.surfaceContainerLowest,
+          color: isDark ? const Color(0xFF151D2E) : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
+          border: Border.all(
+            color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+          ),
+          boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.03),
+              color: isDark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : const Color.fromRGBO(0, 0, 0, 0.03),
               blurRadius: 6,
-              offset: Offset(0, 1),
+              offset: const Offset(0, 1),
             ),
           ],
         ),
@@ -296,7 +302,7 @@ class StudentAttendanceTile extends StatelessWidget {
                           color: isEditable
                               ? AppColors.onSurfaceVariant.withValues(alpha: 0.8)
                               : AppColors.outlineVariant,
-                          fontSize: 10,
+                          fontSize: 11,
                         ),
                       ),
                     ],
@@ -304,7 +310,7 @@ class StudentAttendanceTile extends StatelessWidget {
 
                 // Indicador visual de estado
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                   decoration: BoxDecoration(
                     color: isMarkedPresent
                         ? const Color(0xFFD8F3DC)
@@ -338,7 +344,7 @@ class StudentAttendanceTile extends StatelessWidget {
                         const Text(
                           'Presente',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF00796B),
                           ),
@@ -353,7 +359,7 @@ class StudentAttendanceTile extends StatelessWidget {
                         const Text(
                           'Falta',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFFBA1A1A),
                           ),
@@ -368,7 +374,7 @@ class StudentAttendanceTile extends StatelessWidget {
                         const Text(
                           'Justificado',
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF6750A4),
                           ),

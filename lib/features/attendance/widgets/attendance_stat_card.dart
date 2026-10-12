@@ -24,20 +24,27 @@ class AttendanceStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final availableSeats = capacity - enrolled > 0 ? capacity - enrolled : 0;
     final pct = enrolled > 0 ? ((present / enrolled) * 100).round() : 0;
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final primaryColor = theme.colorScheme.primary;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
+        color: isDark ? const Color(0xFF151D2E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
+        border: Border.all(
+          color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+        ),
+        boxShadow: [
           BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.04),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.3)
+                : const Color.fromRGBO(0, 0, 0, 0.04),
             blurRadius: 8,
-            offset: Offset(0, 1),
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -58,7 +65,11 @@ class AttendanceStatCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Text(
                     'Sesión $currentSession de $totalSessions',
-                    style: AppTextStyles.titleSmall.copyWith(fontSize: 13),
+                    style: AppTextStyles.titleSmall.copyWith(
+                      fontSize: 13,
+                      color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -85,7 +96,8 @@ class AttendanceStatCard extends StatelessWidget {
                   subtext: 'Activos',
                   icon: Icons.group,
                   iconColor: primaryColor,
-                  valueColor: AppColors.onSurface,
+                  valueColor: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                  isDark: isDark,
                 ),
               ),
               const SizedBox(width: 6),
@@ -98,6 +110,7 @@ class AttendanceStatCard extends StatelessWidget {
                   icon: Icons.check_circle,
                   iconColor: AppColors.secondary,
                   valueColor: AppColors.secondary,
+                  isDark: isDark,
                 ),
               ),
               const SizedBox(width: 6),
@@ -110,6 +123,7 @@ class AttendanceStatCard extends StatelessWidget {
                   icon: Icons.cancel,
                   iconColor: AppColors.error,
                   valueColor: AppColors.error,
+                  isDark: isDark,
                 ),
               ),
               const SizedBox(width: 6),
@@ -120,8 +134,9 @@ class AttendanceStatCard extends StatelessWidget {
                   value: availableSeats.toString(),
                   subtext: 'De $capacity',
                   icon: Icons.event_seat,
-                  iconColor: AppColors.onSurfaceVariant,
-                  valueColor: AppColors.onSurface,
+                  iconColor: isDark ? const Color(0xFF94A3B8) : AppColors.onSurfaceVariant,
+                  valueColor: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                  isDark: isDark,
                 ),
               ),
             ],
@@ -134,7 +149,7 @@ class AttendanceStatCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: capacity > 0 ? (enrolled / capacity).clamp(0.0, 1.0) : 0.0,
               minHeight: 4,
-              backgroundColor: AppColors.surfaceContainer,
+              backgroundColor: isDark ? const Color(0xFF1E2A42) : AppColors.surfaceContainer,
               valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
             ),
           ),
@@ -150,11 +165,12 @@ class AttendanceStatCard extends StatelessWidget {
     required IconData icon,
     required Color iconColor,
     required Color valueColor,
+    required bool isDark,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
+        color: isDark ? const Color(0xFF1E2A42) : AppColors.surfaceContainerLow,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -170,10 +186,10 @@ class AttendanceStatCard extends StatelessWidget {
               Flexible(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.onSurfaceVariant,
+                    color: isDark ? const Color(0xFF94A3B8) : AppColors.onSurfaceVariant,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -200,7 +216,7 @@ class AttendanceStatCard extends StatelessWidget {
                   ? AppColors.secondary
                   : valueColor == AppColors.error
                   ? AppColors.error
-                  : AppColors.onSurfaceVariant,
+                  : (isDark ? const Color(0xFF94A3B8) : AppColors.onSurfaceVariant),
               height: 1.1,
             ),
             overflow: TextOverflow.ellipsis,

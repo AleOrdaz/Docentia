@@ -8,7 +8,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w700,
     height: 44 / 36,
     letterSpacing: -0.72,
-    color: AppColors.onSurface,
   );
 
   static TextStyle headlineLarge = GoogleFonts.inter(
@@ -16,7 +15,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 36 / 28,
     letterSpacing: -0.42,
-    color: AppColors.onSurface,
   );
 
   static TextStyle headlineMedium = GoogleFonts.inter(
@@ -24,14 +22,12 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 32 / 24,
     letterSpacing: -0.24,
-    color: AppColors.onSurface,
   );
 
   static TextStyle titleLarge = GoogleFonts.inter(
     fontSize: 20,
     fontWeight: FontWeight.w600,
     height: 28 / 20,
-    color: AppColors.onSurface,
   );
 
   static TextStyle titleMedium = GoogleFonts.inter(
@@ -39,7 +35,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 24 / 16,
     letterSpacing: 0.08,
-    color: AppColors.onSurface,
   );
 
   static TextStyle titleSmall = GoogleFonts.inter(
@@ -47,7 +42,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 20 / 14,
     letterSpacing: 0.14,
-    color: AppColors.onSurface,
   );
 
   static TextStyle bodyLarge = GoogleFonts.inter(
@@ -55,7 +49,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     height: 24 / 16,
     letterSpacing: 0.16,
-    color: AppColors.onSurface,
   );
 
   static TextStyle bodyMedium = GoogleFonts.inter(
@@ -63,7 +56,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     height: 20 / 14,
     letterSpacing: 0.21,
-    color: AppColors.onSurface,
   );
 
   static TextStyle bodySmall = GoogleFonts.inter(
@@ -71,7 +63,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w400,
     height: 16 / 12,
     letterSpacing: 0.24,
-    color: AppColors.onSurfaceVariant,
+    color: const Color(0xFF64748B),
   );
 
   static TextStyle labelLarge = GoogleFonts.inter(
@@ -79,7 +71,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     height: 20 / 14,
     letterSpacing: 0.14,
-    color: AppColors.onSurface,
   );
 
   static TextStyle labelMedium = GoogleFonts.inter(
@@ -87,7 +78,7 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
     height: 16 / 12,
     letterSpacing: 0.3,
-    color: AppColors.onSurfaceVariant,
+    color: const Color(0xFF64748B),
   );
 
   static TextStyle labelSmall = GoogleFonts.inter(
@@ -95,6 +86,6 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     height: 14 / 11,
     letterSpacing: 0.44,
-    color: AppColors.onSurfaceVariant,
+    color: const Color(0xFF64748B),
   );
 }
