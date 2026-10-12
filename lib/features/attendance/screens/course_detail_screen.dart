@@ -290,78 +290,41 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Card de Sesión y Estadísticas
-                AttendanceStatCard(
-                  currentSession: course?.currentSession ?? 1,
-                  totalSessions: course?.totalSessions ?? 32,
-                  enrolled: students.length,
-                  present: presentCount,
-                  absent: absentCount,
-                  excused: excusedCount,
-                  capacity: course?.capacity ?? 30,
-                ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 12),
 
-                // Botón Guardar Asistencia (condicionado al día de clase)
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton.icon(
-                    onPressed: isClassDay ? _saveAttendance : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isClassDay ? primaryColor : AppColors.surfaceContainerHigh,
-                      foregroundColor: isClassDay ? AppColors.onPrimary : AppColors.outline,
-                      shape: const StadiumBorder(),
-                    ),
-                    icon: Icon(
-                      isClassDay ? Icons.check : Icons.event_busy,
-                      size: 20,
-                    ),
-                    label: Text(
-                      'Guardar asistencia de hoy',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: isClassDay ? AppColors.onPrimary : AppColors.outline,
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Indicación clara cuando hoy no es día de clase
+                // Indicación cuando hoy no es día de clase
                 if (!isClassDay)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerHigh,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.info_outline,
-                            size: 16,
-                            color: AppColors.onSurfaceVariant,
-                          ),
-                          const SizedBox(width: 6),
-                          Flexible(
-                            child: Text(
-                              'Hoy no hay clase. La asistencia solo está disponible los días de clase.',
-                              style: AppTextStyles.labelSmall.copyWith(
-                                color: AppColors.onSurfaceVariant,
-                              ),
-                              textAlign: TextAlign.center,
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceContainerHigh,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.info_outline,
+                          size: 18,
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            'Hoy no hay clase. La asistencia solo está disponible los días de clase.',
+                            style: AppTextStyles.labelSmall.copyWith(
+                              color: AppColors.onSurfaceVariant,
+                              fontWeight: FontWeight.w500,
                             ),
+                            textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
 
-                const SizedBox(height: 8),
+                if (!isClassDay) const SizedBox(height: 10),
 
                 // Botón Agregar Alumno
                 SizedBox(
@@ -474,27 +437,34 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                           .where((a) => a.studentId == student.id)
                           .firstOrNull;
 
-                      final status = record?.status ?? AttendanceStatus.present;
+                      final status = record?.status;
 
                       return StudentAttendanceTile(
                         student: student,
                         name: student.fullName,
                         age: student.age,
                         status: status,
+                        isPending: record == null,
                         note: record?.note,
                         isEditable: isClassDay,
                         onStatusChanged: isClassDay
-                            ? (newStatus) {
-                          ref
-                              .read(attendanceForDateProvider(attendanceParam).notifier)
-                              .setStudentStatus(student.id, newStatus);
+                            ? (newStatus) async {
+                          final notifier = ref
+                              .read(attendanceForDateProvider(attendanceParam).notifier);
+                          notifier.setStudentStatus(student.id, newStatus);
+                          await notifier.persistAttendance();
                         }
                             : null,
                         onNoteChanged: isClassDay
-                            ? (newNote) {
-                          ref
-                              .read(attendanceForDateProvider(attendanceParam).notifier)
-                              .setStudentStatus(student.id, status, note: newNote);
+                            ? (newNote) async {
+                          final notifier = ref
+                              .read(attendanceForDateProvider(attendanceParam).notifier);
+                          notifier.setStudentStatus(
+                            student.id,
+                            status ?? AttendanceStatus.absent,
+                            note: newNote,
+                          );
+                          await notifier.persistAttendance();
                         }
                             : null,
                         onTap: () {

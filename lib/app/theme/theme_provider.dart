@@ -31,3 +31,35 @@ final currentPrimaryColorProvider = Provider<Color>((ref) {
   final index = ref.watch(themeIndexProvider);
   return AppColors.selectableThemes[index].color;
 });
+
+class ThemeModeNotifier extends StateNotifier<ThemeMode> {
+  ThemeModeNotifier() : super(ThemeMode.system) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final saved = await StorageService.getThemeMode();
+    if (saved == 'light') {
+      state = ThemeMode.light;
+    } else if (saved == 'dark') {
+      state = ThemeMode.dark;
+    } else {
+      state = ThemeMode.system;
+    }
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    state = mode;
+    final modeStr = mode == ThemeMode.light
+        ? 'light'
+        : mode == ThemeMode.dark
+        ? 'dark'
+        : 'system';
+    await StorageService.saveThemeMode(modeStr);
+  }
+}
+
+final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+  return ThemeModeNotifier();
+});
+

@@ -31,25 +31,49 @@ class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
     state = AsyncValue.data(updated);
   }
 
-  Future<Payment> generateFeeForStudent({
+  Future<({bool success, String message, Payment? payment})> generateFeeForStudent({
     required String studentId,
     required double cost,
-    required PaymentSchedule schedule,
+    int? year,
+    int? month,
+    DueDateOption dueOption = DueDateOption.endOfMonth,
+    PaymentSchedule? schedule,
   }) async {
     final now = DateTime.now();
-    final year = now.year;
-    final month = now.month;
+    final targetYear = year ?? now.year;
+    final targetMonth = month ?? now.month;
 
-    // Nombre de periodo (ej. Octubre 2026)
-    const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
-    final periodName = '${monthNames[month - 1]} $year';
+    // 1. Consultar si ya existe para ese alumno, curso y periodo (año + mes)
+    final exists = await _repository.hasFeeForPeriod(
+      studentId: studentId,
+      courseId: _courseId,
+      year: targetYear,
+      month: targetMonth,
+    );
 
-    final dueDay = schedule == PaymentSchedule.firstHalf ? 15 : 30;
-    final dueDateStr = '$year-${month.toString().padLeft(2, '0')}-${dueDay.toString().padLeft(2, '0')}';
-    final dueDateTime = DateTime(year, month, dueDay);
+    if (exists) {
+      return (
+      success: false,
+      message: 'La cuota de este mes ya está registrada para este alumno y curso.',
+      payment: null,
+      );
+    }
+
+    // 2. Determinar opción de vencimiento si se pasó schedule antiguo
+    final effectiveDueOption = schedule != null
+        ? (schedule == PaymentSchedule.firstHalf
+        ? DueDateOption.startOfMonth
+        : DueDateOption.endOfMonth)
+        : dueOption;
+
+    // 3. Calcular fecha exacta de vencimiento según la opción seleccionada
+    final dueDateStr = Payment.calculateDueDate(targetYear, targetMonth, effectiveDueOption);
+    final parts = dueDateStr.split('-');
+    final dueDateTime = DateTime(
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+      int.parse(parts[2]),
+    );
 
     PaymentStatus status;
     if (now.isAfter(dueDateTime)) {
@@ -60,20 +84,43 @@ class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
       status = PaymentStatus.pending;
     }
 
+    final periodName = Payment.formatPeriodName(targetYear, targetMonth);
+
     final newPayment = Payment(
       id: 'pay-${DateTime.now().millisecondsSinceEpoch}',
       studentId: studentId,
       courseId: _courseId,
       period: periodName,
+      periodMonth: targetMonth,
+      periodYear: targetYear,
       amount: cost,
       dueDate: dueDateStr,
+      dueOption: effectiveDueOption,
       status: status,
     );
 
-    await _repository.addPayment(newPayment);
+    try {
+      await _repository.addPayment(newPayment);
+      final updated = await _repository.getPaymentsByCourse(_courseId);
+      state = AsyncValue.data(updated);
+      return (
+      success: true,
+      message: 'Cuota generada correctamente para $periodName.',
+      payment: newPayment,
+      );
+    } on DuplicateFeeException catch (e) {
+      return (
+      success: false,
+      message: e.message,
+      payment: null,
+      );
+    }
+  }
+
+  Future<void> updatePaymentDueDate(String paymentId, DueDateOption newOption) async {
+    await _repository.updatePaymentDueDate(paymentId, newOption);
     final updated = await _repository.getPaymentsByCourse(_courseId);
     state = AsyncValue.data(updated);
-    return newPayment;
   }
 }
 

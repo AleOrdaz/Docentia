@@ -71,292 +71,334 @@ class StudentAttendanceTile extends StatelessWidget {
     final bool isMarkedAbsent = effectiveStatus == AttendanceStatus.absent;
     final bool isMarkedExcused = effectiveStatus == AttendanceStatus.excused;
 
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.03),
-            blurRadius: 6,
-            offset: Offset(0, 1),
-          ),
-        ],
+    return Dismissible(
+      key: ValueKey('att_swipe_${student?.id ?? name}_${effectiveStatus?.name ?? "none"}'),
+      direction: isEditable ? DismissDirection.horizontal : DismissDirection.none,
+      background: Container(
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFD8F3DC),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.centerLeft,
+        child: const Row(
+          children: [
+            Icon(Icons.check_circle_rounded, color: Color(0xFF00796B), size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Presente',
+              style: TextStyle(
+                color: Color(0xFF00796B),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Column(
-        children: [
-          // Fila superior: Avatar, Info, Chevron
-          InkWell(
-            onTap: effectiveTap,
-            borderRadius: BorderRadius.circular(12),
-            child: Row(
-              children: [
-                // Avatar
-                if (displayImageUrl != null && displayImageUrl.isNotEmpty)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.network(
-                      displayImageUrl,
-                      width: 44,
-                      height: 44,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          _buildInitials(displayInitials, displayName),
-                    ),
-                  )
-                else
-                  _buildInitials(displayInitials, displayName),
-
-                const SizedBox(width: 12),
-
-                // Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        displayName,
-                        style: AppTextStyles.titleSmall,
-                        overflow: TextOverflow.ellipsis,
+      secondaryBackground: Container(
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFDE8E8),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.centerRight,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'Falta',
+              style: TextStyle(
+                color: Color(0xFFBA1A1A),
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.cancel_rounded, color: Color(0xFFBA1A1A), size: 24),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        if (!isEditable) return false;
+        if (direction == DismissDirection.startToEnd) {
+          // Deslizar hacia la derecha: Marcar presente
+          onStatusChanged?.call(AttendanceStatus.present);
+          onPresentPressed?.call();
+        } else if (direction == DismissDirection.endToStart) {
+          // Deslizar hacia la izquierda: Marcar falta
+          onStatusChanged?.call(AttendanceStatus.absent);
+          onAbsentPressed?.call();
+        }
+        return false; // Conservar el elemento en pantalla con su estado actualizado
+      },
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.03),
+              blurRadius: 6,
+              offset: Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            // Fila superior: Avatar, Info, Chevron
+            InkWell(
+              onTap: effectiveTap,
+              borderRadius: BorderRadius.circular(12),
+              child: Row(
+                children: [
+                  // Avatar
+                  if (displayImageUrl != null && displayImageUrl.isNotEmpty)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.network(
+                        displayImageUrl,
+                        width: 44,
+                        height: 44,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            _buildInitials(displayInitials, displayName),
                       ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          if (displayAge > 0) ...[
-                            Text('$displayAge años', style: AppTextStyles.bodySmall),
-                            const SizedBox(width: 6),
-                            Text('•', style: AppTextStyles.bodySmall),
-                            const SizedBox(width: 6),
-                          ],
-                          if (displayNote != null && displayNote.isNotEmpty)
-                            Flexible(
-                              child: Text(
-                                displayNote,
+                    )
+                  else
+                    _buildInitials(displayInitials, displayName),
+
+                  const SizedBox(width: 12),
+
+                  // Info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          displayName,
+                          style: AppTextStyles.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            if (displayAge > 0) ...[
+                              Text('$displayAge años', style: AppTextStyles.bodySmall),
+                              const SizedBox(width: 6),
+                              Text('•', style: AppTextStyles.bodySmall),
+                              const SizedBox(width: 6),
+                            ],
+                            if (displayNote != null && displayNote.isNotEmpty)
+                              Flexible(
+                                child: Text(
+                                  displayNote,
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.error,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            else if (isPending || effectiveStatus == null)
+                              Text(
+                                'Sin marcar',
+                                style: AppTextStyles.bodySmall,
+                              )
+                            else
+                              Text(
+                                '${attendancePct ?? 90}% asist.',
                                 style: AppTextStyles.bodySmall.copyWith(
-                                  color: AppColors.error,
+                                  color: AppColors.secondary,
                                   fontWeight: FontWeight.w600,
                                 ),
-                                overflow: TextOverflow.ellipsis,
                               ),
-                            )
-                          else if (isPending || effectiveStatus == null)
-                            Text(
-                              'Sin marcar',
-                              style: AppTextStyles.bodySmall,
-                            )
-                          else
-                            Text(
-                              '${attendancePct ?? 90}% asist.',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: AppColors.secondary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Chevron
-                IconButton(
-                  icon: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
-                  onPressed: effectiveTap,
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Fila inferior: Estado / Justificación + Toggle Segmentado
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (displayNote != null && displayNote.isNotEmpty)
-                InkWell(
-                  onTap: isEditable ? () => _openNoteDialog(context, displayName) : null,
-                  borderRadius: BorderRadius.circular(100),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: isMarkedExcused
-                          ? AppColors.onSurfaceVariant
-                          : AppColors.errorContainer,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.description,
-                          size: 14,
-                          color: isMarkedExcused
-                              ? AppColors.onSurfaceVariant
-                              : AppColors.onErrorContainer,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          isMarkedExcused ? 'Justificado' : 'Justificar',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: isMarkedExcused
-                                ? AppColors.onSurfaceVariant
-                                : AppColors.onErrorContainer,
-                          ),
+                          ],
                         ),
                       ],
                     ),
                   ),
-                )
-              else if (isPending || effectiveStatus == null)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: AppColors.outlineVariant,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      'Pendiente',
-                      style: AppTextStyles.labelSmall.copyWith(color: AppColors.onSurfaceVariant),
-                    ),
-                  ],
-                )
-              else
-                Text(
-                  'Asistencia hoy:',
-                  style: AppTextStyles.labelSmall.copyWith(color: AppColors.onSurfaceVariant),
-                ),
 
-              // Segmented Buttons [Presente | Falta]
-              Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(100),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Botón Presente
-                    InkWell(
-                      onTap: isEditable && (onStatusChanged != null || onPresentPressed != null)
-                          ? () {
-                        onStatusChanged?.call(AttendanceStatus.present);
-                        onPresentPressed?.call();
-                      }
-                          : null,
-                      borderRadius: BorderRadius.circular(100),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: isMarkedPresent
-                              ? AppColors.secondary
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(100),
-                          boxShadow: isMarkedPresent
-                              ? const [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.08),
-                              blurRadius: 3,
-                              offset: Offset(0, 1),
-                            )
-                          ]
-                              : null,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.check,
-                              size: 15,
-                              color: isMarkedPresent
-                                  ? AppColors.onSecondary
-                                  : AppColors.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Presente',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: isMarkedPresent
-                                    ? AppColors.onSecondary
-                                    : AppColors.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 2),
-
-                    // Botón Falta
-                    InkWell(
-                      onTap: isEditable && (onStatusChanged != null || onAbsentPressed != null)
-                          ? () {
-                        onStatusChanged?.call(AttendanceStatus.absent);
-                        onAbsentPressed?.call();
-                      }
-                          : null,
-                      borderRadius: BorderRadius.circular(100),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: isMarkedAbsent
-                              ? AppColors.error
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(100),
-                          boxShadow: isMarkedAbsent
-                              ? const [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.08),
-                              blurRadius: 3,
-                              offset: Offset(0, 1),
-                            )
-                          ]
-                              : null,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.close,
-                              size: 15,
-                              color: isMarkedAbsent
-                                  ? AppColors.onError
-                                  : AppColors.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Falta',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color: isMarkedAbsent
-                                    ? AppColors.onError
-                                    : AppColors.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  // Chevron
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+                    onPressed: effectiveTap,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // Fila inferior: Estado visual y acciones (sin botones individuales Presente/Falta)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (displayNote != null && displayNote.isNotEmpty)
+                  InkWell(
+                    onTap: isEditable ? () => _openNoteDialog(context, displayName) : null,
+                    borderRadius: BorderRadius.circular(100),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: isMarkedExcused
+                            ? AppColors.onSurfaceVariant
+                            : AppColors.errorContainer,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.description,
+                            size: 14,
+                            color: isMarkedExcused
+                                ? AppColors.onSurfaceVariant
+                                : AppColors.onErrorContainer,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            isMarkedExcused ? 'Justificado' : 'Ver nota',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: isMarkedExcused
+                                  ? AppColors.onSurfaceVariant
+                                  : AppColors.onErrorContainer,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.swipe_rounded,
+                        size: 15,
+                        color: isEditable
+                            ? AppColors.onSurfaceVariant.withValues(alpha: 0.7)
+                            : AppColors.outlineVariant,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        isEditable
+                            ? (effectiveStatus == null
+                            ? 'Desliza: ⟵ Falta | Presente ⟶'
+                            : 'Desliza en sentido contrario para corregir')
+                            : 'Solo días de clase',
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: isEditable
+                              ? AppColors.onSurfaceVariant.withValues(alpha: 0.8)
+                              : AppColors.outlineVariant,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                // Indicador visual de estado
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: isMarkedPresent
+                        ? const Color(0xFFD8F3DC)
+                        : isMarkedAbsent
+                        ? const Color(0xFFFDE8E8)
+                        : isMarkedExcused
+                        ? const Color(0xFFEDE7F6)
+                        : AppColors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      color: isMarkedPresent
+                          ? const Color(0xFFA7E9B8)
+                          : isMarkedAbsent
+                          ? const Color(0xFFFAC4C4)
+                          : isMarkedExcused
+                          ? const Color(0xFFD1C4E9)
+                          : const Color(0xFFE2E6EF),
+                      width: 0.8,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isMarkedPresent) ...[
+                        const Icon(
+                          Icons.check_circle_rounded,
+                          size: 15,
+                          color: Color(0xFF00796B),
+                        ),
+                        const SizedBox(width: 4),
+                        const Text(
+                          'Presente',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF00796B),
+                          ),
+                        ),
+                      ] else if (isMarkedAbsent) ...[
+                        const Icon(
+                          Icons.cancel_rounded,
+                          size: 15,
+                          color: Color(0xFFBA1A1A),
+                        ),
+                        const SizedBox(width: 4),
+                        const Text(
+                          'Falta',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFBA1A1A),
+                          ),
+                        ),
+                      ] else if (isMarkedExcused) ...[
+                        const Icon(
+                          Icons.assignment_turned_in_rounded,
+                          size: 15,
+                          color: Color(0xFF6750A4),
+                        ),
+                        const SizedBox(width: 4),
+                        const Text(
+                          'Justificado',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF6750A4),
+                          ),
+                        ),
+                      ] else ...[
+                        Container(
+                          width: 7,
+                          height: 7,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF9EA3AE),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        const Text(
+                          'Sin registrar',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF5F6368),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

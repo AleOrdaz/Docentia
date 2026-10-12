@@ -84,6 +84,353 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     );
   }
 
+  void _showGenerateFeeDialog({
+    required BuildContext context,
+    required String studentId,
+    required String courseId,
+    required double courseCost,
+    required dynamic courseSchedule,
+  }) {
+    final now = DateTime.now();
+    int selectedYear = now.year;
+    int selectedMonth = now.month;
+    DueDateOption selectedOption = DueDateOption.endOfMonth;
+
+    const monthNames = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (dialogCtx, setDialogState) {
+            final calculatedDueDate = Payment.calculateDueDate(selectedYear, selectedMonth, selectedOption);
+            final parts = calculatedDueDate.split('-');
+            final formattedDueDate = '${parts[2]}/${parts[1]}/${parts[0]}';
+
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Row(
+                children: [
+                  Icon(Icons.add_card_outlined, color: Theme.of(context).colorScheme.primary, size: 24),
+                  const SizedBox(width: 8),
+                  const Text('Nueva Cuota Mensual'),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Configura el periodo y la fecha de vencimiento. Solo se permite una cuota por mes:',
+                      style: AppTextStyles.bodySmall,
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Selector de Periodo: Mes y Año
+                    Text('Mes y Año:', style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceContainerLow,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<int>(
+                                value: selectedMonth,
+                                isExpanded: true,
+                                items: List.generate(12, (i) {
+                                  return DropdownMenuItem<int>(
+                                    value: i + 1,
+                                    child: Text(monthNames[i], style: AppTextStyles.bodyMedium),
+                                  );
+                                }),
+                                onChanged: (val) {
+                                  if (val != null) {
+                                    setDialogState(() => selectedMonth = val);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            decoration: BoxDecoration(
+                              color: AppColors.surfaceContainerLow,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<int>(
+                                value: selectedYear,
+                                isExpanded: true,
+                                items: [now.year, now.year + 1].map((yr) {
+                                  return DropdownMenuItem<int>(
+                                    value: yr,
+                                    child: Text('$yr', style: AppTextStyles.bodyMedium),
+                                  );
+                                }).toList(),
+                                onChanged: (val) {
+                                  if (val != null) {
+                                    setDialogState(() => selectedYear = val);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Selector de Vencimiento: Inicio de mes vs Fin de mes
+                    Text('Vencimiento:', style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          RadioListTile<DueDateOption>(
+                            value: DueDateOption.startOfMonth,
+                            groupValue: selectedOption,
+                            title: const Text('Inicio de mes', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                            subtitle: Text('Día 1 del mes correspondiente', style: AppTextStyles.bodySmall),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                            onChanged: (val) {
+                              if (val != null) setDialogState(() => selectedOption = val);
+                            },
+                          ),
+                          const Divider(height: 1),
+                          RadioListTile<DueDateOption>(
+                            value: DueDateOption.endOfMonth,
+                            groupValue: selectedOption,
+                            title: const Text('Fin de mes', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                            subtitle: Text('Último día válido (considera bisiestos)', style: AppTextStyles.bodySmall),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                            onChanged: (val) {
+                              if (val != null) setDialogState(() => selectedOption = val);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    // Resumen informativo
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerLowest,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.surfaceContainer),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Fecha calculada:', style: AppTextStyles.bodySmall),
+                              Text(formattedDueDate, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Monto a cobrar:', style: AppTextStyles.bodySmall),
+                              Text(
+                                formatCurrency(courseCost),
+                                style: AppTextStyles.titleSmall.copyWith(
+                                  color: AppColors.secondary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                  onPressed: () async {
+                    Navigator.of(ctx).pop();
+                    final result = await ref
+                        .read(paymentsForCourseProvider(courseId).notifier)
+                        .generateFeeForStudent(
+                      studentId: studentId,
+                      cost: courseCost,
+                      year: selectedYear,
+                      month: selectedMonth,
+                      dueOption: selectedOption,
+                    );
+
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(
+                              result.success ? Icons.check_circle : Icons.warning_amber_rounded,
+                              color: result.success ? AppColors.secondaryFixed : Colors.amber,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(result.message)),
+                          ],
+                        ),
+                        backgroundColor: AppColors.inverseSurface,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                      ),
+                    );
+                  },
+                  child: const Text('Crear Cuota'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showEditDueDateDialog({
+    required BuildContext context,
+    required Payment payment,
+    required String courseId,
+  }) {
+    DueDateOption selectedOption = payment.dueOption;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (dialogCtx, setDialogState) {
+            final calculatedDueDate = Payment.calculateDueDate(
+              payment.periodYear,
+              payment.periodMonth,
+              selectedOption,
+            );
+            final parts = calculatedDueDate.split('-');
+            final formattedDueDate = '${parts[2]}/${parts[1]}/${parts[0]}';
+
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: const Row(
+                children: [
+                  Icon(Icons.edit_calendar_outlined, size: 22),
+                  SizedBox(width: 8),
+                  Text('Modificar Vencimiento'),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Cambiar opción de vencimiento para la cuota de ${payment.period}:',
+                    style: AppTextStyles.bodySmall,
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        RadioListTile<DueDateOption>(
+                          value: DueDateOption.startOfMonth,
+                          groupValue: selectedOption,
+                          title: const Text('Inicio de mes (Día 1)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                          onChanged: (val) {
+                            if (val != null) setDialogState(() => selectedOption = val);
+                          },
+                        ),
+                        const Divider(height: 1),
+                        RadioListTile<DueDateOption>(
+                          value: DueDateOption.endOfMonth,
+                          groupValue: selectedOption,
+                          title: const Text('Fin de mes (Último día)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                          onChanged: (val) {
+                            if (val != null) setDialogState(() => selectedOption = val);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Fecha de vencimiento resultante: $formattedDueDate',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('Cancelar'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(ctx).pop();
+                    await ref
+                        .read(paymentsForCourseProvider(courseId).notifier)
+                        .updatePaymentDueDate(payment.id, selectedOption);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Vencimiento actualizado a $formattedDueDate'),
+                          backgroundColor: AppColors.inverseSurface,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Actualizar'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   void _showConfirmPaymentDialog({
     required BuildContext context,
     required Payment payment,
@@ -460,11 +807,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       ),
                       if (course != null)
                         InkWell(
-                          onTap: () async {
-                            await ref.read(paymentsForCourseProvider(courseId).notifier).generateFeeForStudent(
+                          onTap: () {
+                            _showGenerateFeeDialog(
+                              context: context,
                               studentId: student.id,
-                              cost: course.cost,
-                              schedule: course.paymentSchedule,
+                              courseId: courseId,
+                              courseCost: course.cost,
+                              courseSchedule: course.paymentSchedule,
                             );
                           },
                           child: Text(
@@ -495,15 +844,17 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                               const SizedBox(height: 8),
                               if (course != null)
                                 OutlinedButton.icon(
-                                  onPressed: () async {
-                                    await ref.read(paymentsForCourseProvider(courseId).notifier).generateFeeForStudent(
+                                  onPressed: () {
+                                    _showGenerateFeeDialog(
+                                      context: context,
                                       studentId: student.id,
-                                      cost: course.cost,
-                                      schedule: course.paymentSchedule,
+                                      courseId: courseId,
+                                      courseCost: course.cost,
+                                      courseSchedule: course.paymentSchedule,
                                     );
                                   },
                                   icon: const Icon(Icons.add, size: 16),
-                                  label: const Text('Generar mensualidad actual'),
+                                  label: const Text('Generar mensualidad'),
                                 ),
                             ],
                           ),
@@ -556,7 +907,45 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(p.period, style: AppTextStyles.titleSmall),
-                                        Text('Vence: ${p.dueDate}', style: AppTextStyles.bodySmall),
+                                        const SizedBox(height: 2),
+                                        Row(
+                                          children: [
+                                            Text('Vence: ${p.dueDate}', style: AppTextStyles.bodySmall),
+                                            if (!isPaid) ...[
+                                              const SizedBox(width: 6),
+                                              InkWell(
+                                                onTap: () {
+                                                  _showEditDueDateDialog(
+                                                    context: context,
+                                                    payment: p,
+                                                    courseId: courseId,
+                                                  );
+                                                },
+                                                borderRadius: BorderRadius.circular(4),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Icon(Icons.edit_calendar_outlined, size: 13, color: primaryColor),
+                                                      const SizedBox(width: 2),
+                                                      Text(
+                                                        p.dueOption == DueDateOption.startOfMonth
+                                                            ? 'Inicio'
+                                                            : 'Fin de mes',
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: primaryColor,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
+                                        ),
                                       ],
                                     ),
                                     Container(

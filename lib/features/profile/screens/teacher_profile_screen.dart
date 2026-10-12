@@ -195,15 +195,15 @@ class TeacherProfileScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 14),
 
-                  // Grid de los 8 colores
+                  // Grid de los 10 colores
                   GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
+                      crossAxisCount: 5,
                       mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: 1.1,
+                      crossAxisSpacing: 8,
+                      childAspectRatio: 1.0,
                     ),
                     itemCount: AppColors.selectableThemes.length,
                     itemBuilder: (ctx, index) {
@@ -228,8 +228,8 @@ class TeacherProfileScreen extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                width: 28,
-                                height: 28,
+                                width: 26,
+                                height: 26,
                                 decoration: BoxDecoration(
                                   color: item.color,
                                   shape: BoxShape.circle,
@@ -253,7 +253,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                                 child: Text(
                                   item.name.split(' ').first,
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 9.5,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                                     color: isSelected ? item.color : AppColors.onSurfaceVariant,
                                   ),
@@ -272,7 +272,7 @@ class TeacherProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // Resumen de la plataforma
+            // SECCIÓN: Configuración del Tema (Sustituye a Resumen Académico)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -283,30 +283,60 @@ class TeacherProfileScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Resumen Académico', style: AppTextStyles.titleSmall),
-                  const SizedBox(height: 12),
                   Row(
                     children: [
-                      Expanded(
-                        child: _buildStatTile('Cursos Activos', courses.length.toString(), primaryColor),
-                      ),
+                      Icon(Icons.dark_mode_outlined, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
-                      Expanded(
-                        child: _buildStatTile('Alumnos Totales', '0', primaryColor),
-                      ),
+                      Text('Tema de la Aplicación', style: AppTextStyles.titleSmall),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildStatTile('Estado Base', 'Inicial', primaryColor),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _buildStatTile('Plataforma', 'Flutter Native', primaryColor),
-                      ),
-                    ],
+                  const SizedBox(height: 4),
+                  Text(
+                    'Selecciona el modo de visualización. El cambio se aplica inmediatamente a toda la aplicación.',
+                    style: AppTextStyles.bodySmall,
+                  ),
+                  const SizedBox(height: 14),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final currentMode = ref.watch(themeModeProvider);
+
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: _buildThemeModeOption(
+                              label: 'Claro',
+                              icon: Icons.light_mode_outlined,
+                              mode: ThemeMode.light,
+                              currentMode: currentMode,
+                              primaryColor: primaryColor,
+                              onTap: () => ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.light),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildThemeModeOption(
+                              label: 'Oscuro',
+                              icon: Icons.dark_mode_outlined,
+                              mode: ThemeMode.dark,
+                              currentMode: currentMode,
+                              primaryColor: primaryColor,
+                              onTap: () => ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.dark),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: _buildThemeModeOption(
+                              label: 'Sistema',
+                              icon: Icons.brightness_auto_outlined,
+                              mode: ThemeMode.system,
+                              currentMode: currentMode,
+                              primaryColor: primaryColor,
+                              onTap: () => ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.system),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),
@@ -317,26 +347,47 @@ class TeacherProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatTile(String label, String value, Color primaryColor) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: AppTextStyles.labelSmall),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: AppTextStyles.titleMedium.copyWith(
-              color: primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
+  Widget _buildThemeModeOption({
+    required String label,
+    required IconData icon,
+    required ThemeMode mode,
+    required ThemeMode currentMode,
+    required Color primaryColor,
+    required VoidCallback onTap,
+  }) {
+    final isSelected = mode == currentMode;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? primaryColor.withValues(alpha: 0.1) : AppColors.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? primaryColor : Colors.transparent,
+            width: 1.8,
           ),
-        ],
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 24,
+              color: isSelected ? primaryColor : AppColors.onSurfaceVariant,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected ? primaryColor : AppColors.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

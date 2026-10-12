@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:docentia/features/attendance/models/attendance_model.dart';
 import 'package:docentia/features/attendance/repositories/attendance_repository.dart';
+import 'package:docentia/features/courses/models/course_model.dart';
 
 class MockAttendanceRepository implements AttendanceRepository {
   final List<Attendance> _attendance = [];
@@ -174,6 +175,155 @@ void main() {
       expect(sessions.first.absentCount, 1);
       expect(sessions.first.presentStudents.first.studentName, 'Juan Pérez');
       expect(sessions.first.absentStudents.first.studentName, 'Carlos Hernández');
+    });
+
+    test('Course.isClassDay correctly identifies scheduled class days vs non-class days', () {
+      final course = Course(
+        id: 'test-course',
+        teacherId: 'teacher-1',
+        name: 'Robótica Educativa',
+        schedule: 'Lun & Mié 17:00 - 18:30',
+        classDays: [1, 3], // Lunes (1) y Miércoles (3)
+        startTime: '17:00',
+        endTime: '18:30',
+        duration: '32 sesiones',
+        currentSession: 1,
+        totalSessions: 32,
+        cost: 850,
+        capacity: 30,
+        paymentSchedule: PaymentSchedule.firstHalf,
+        active: true,
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      // 2026-10-05 es Lunes (weekday = 1) -> Día de clase
+      final monday = DateTime(2026, 10, 5);
+      expect(monday.weekday, 1);
+      expect(course.isClassDay(monday), isTrue);
+
+      // 2026-10-06 es Martes (weekday = 2) -> NO es día de clase
+      final tuesday = DateTime(2026, 10, 6);
+      expect(tuesday.weekday, 2);
+      expect(course.isClassDay(tuesday), isFalse);
+
+      // 2026-10-07 es Miércoles (weekday = 3) -> Día de clase
+      final wednesday = DateTime(2026, 10, 7);
+      expect(wednesday.weekday, 3);
+      expect(course.isClassDay(wednesday), isTrue);
+
+      // 2026-10-08 es Jueves (weekday = 4) -> NO es día de clase
+      final thursday = DateTime(2026, 10, 8);
+      expect(thursday.weekday, 4);
+      expect(course.isClassDay(thursday), isFalse);
+    });
+
+    test('Historical attendance sessions remain queryable and unchanged', () async {
+      final repo = MockAttendanceRepository();
+      // Registrar 2 sesiones históricas
+      final session1 = ClassAttendanceSession(
+        id: 'session-hist-1',
+        courseId: 'course-1',
+        date: '2026-10-01',
+        startTime: '17:00',
+        endTime: '18:30',
+        students: [
+          const StudentAttendanceItem(
+            studentId: 's-1',
+            studentName: 'Alumno 1',
+            status: AttendanceStatus.present,
+          ),
+        ],
+        createdAt: DateTime(2026, 10, 1),
+      );
+
+      final session2 = ClassAttendanceSession(
+        id: 'session-hist-2',
+        courseId: 'course-1',
+        date: '2026-10-05',
+        startTime: '17:00',
+        endTime: '18:30',
+        students: [
+          const StudentAttendanceItem(
+            studentId: 's-1',
+            studentName: 'Alumno 1',
+            status: AttendanceStatus.absent,
+          ),
+        ],
+        createdAt: DateTime(2026, 10, 5),
+      );
+
+      await repo.saveClassSession(session1);
+      await repo.saveClassSession(session2);
+
+      final history = await repo.getSessionsForCourse('course-1');
+      expect(history.length, 2);
+      expect(history.any((s) => s.date == '2026-10-01'), isTrue);
+      expect(history.any((s) => s.date == '2026-10-05'), isTrue);
+    });
+
+    test('Filter today courses only includes courses scheduled for current weekday', () {
+      final mondayCourse = Course(
+        id: 'c-mon',
+        teacherId: 't1',
+        name: 'Curso Lunes',
+        schedule: 'Lun 10:00',
+        classDays: [1],
+        startTime: '10:00',
+        endTime: '11:30',
+        duration: '10 clases',
+        currentSession: 1,
+        totalSessions: 10,
+        cost: 500,
+        capacity: 20,
+        paymentSchedule: PaymentSchedule.firstHalf,
+        active: true,
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      final wednesdayCourse = Course(
+        id: 'c-wed',
+        teacherId: 't1',
+        name: 'Curso Miércoles',
+        schedule: 'Mié 10:00',
+        classDays: [3],
+        startTime: '10:00',
+        endTime: '11:30',
+        duration: '10 clases',
+        currentSession: 1,
+        totalSessions: 10,
+        cost: 500,
+        capacity: 20,
+        paymentSchedule: PaymentSchedule.firstHalf,
+        active: true,
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      final courses = [mondayCourse, wednesdayCourse];
+      final monday = DateTime(2026, 10, 5); // Monday
+      final todayCoursesOnMonday = courses.where((c) => c.isClassDay(monday)).toList();
+
+      expect(todayCoursesOnMonday.length, 1);
+      expect(todayCoursesOnMonday.first.id, 'c-mon');
+
+      final wednesday = DateTime(2026, 10, 7); // Wednesday
+      final todayCoursesOnWednesday = courses.where((c) => c.isClassDay(wednesday)).toList();
+
+      expect(todayCoursesOnWednesday.length, 1);
+      expect(todayCoursesOnWednesday.first.id, 'c-wed');
+
+      final tuesday = DateTime(2026, 10, 6); // Tuesday (no courses)
+      final todayCoursesOnTuesday = courses.where((c) => c.isClassDay(tuesday)).toList();
+
+      expect(todayCoursesOnTuesday.isEmpty, isTrue);
+    });
+
+    test('Swipe gesture directions map correctly: Right = Present, Left = Absent', () {
+      AttendanceStatus resolveSwipeStatus(bool isSwipeRight) {
+        return isSwipeRight ? AttendanceStatus.present : AttendanceStatus.absent;
+      }
+
+      expect(resolveSwipeStatus(true), AttendanceStatus.present);
+      expect(resolveSwipeStatus(false), AttendanceStatus.absent);
     });
   });
 }

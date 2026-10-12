@@ -30,16 +30,6 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  String _getTimeGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour >= 5 && hour < 12) {
-      return 'Buenos días,';
-    } else if (hour >= 12 && hour < 19) {
-      return 'Buenas tardes,';
-    } else {
-      return 'Buenas noches,';
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -118,6 +108,8 @@ class HomeScreen extends ConsumerWidget {
       body: coursesAsync.when(
         data: (courses) {
           final activeCourses = courses.where((c) => c.active).toList();
+          final now = DateTime.now();
+          final todayCourses = activeCourses.where((c) => c.isClassDay(now)).toList();
           final totalStudentsCount = allStudentsAsync.value?.length ?? 0;
           final totalMonthlyIncome = financeSummary.totalIncome;
 
@@ -126,7 +118,7 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 2. Saludo al profesor y banner ilustrativo
+                // 2. Encabezado del profesor y banner ilustrativo (sin saludo dinámico de hora)
                 Stack(
                   children: [
                     // Fondo curvo decorativo con ilustración estilizada en el lado derecho
@@ -154,31 +146,12 @@ class HomeScreen extends ConsumerWidget {
                       ),
                     ),
 
-                    // Textos del saludo
+                    // Nombre del profesor y resumen general
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.wb_sunny_rounded,
-                                color: Color(0xFFF59E0B),
-                                size: 18,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                _getTimeGreeting(),
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xFF5F6368),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 2),
                           Text(
                             teacherFirstName,
                             style: const TextStyle(
@@ -188,7 +161,7 @@ class HomeScreen extends ConsumerWidget {
                               letterSpacing: -0.5,
                             ),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 4),
                           const Text(
                             'Aquí tienes el resumen de tus cursos.',
                             style: TextStyle(
@@ -262,20 +235,42 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
 
-                // 4. Sección "Mis cursos" + Botón "+ Nuevo curso"
+                // 4. Sección "Cursos de hoy" + Botón "+ Nuevo curso"
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Mis cursos',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF00174D),
-                        letterSpacing: -0.4,
-                      ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Cursos de hoy',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF00174D),
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                        if (todayCourses.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE3EDFF),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              '${todayCourses.length}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF00236F),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     FilledButton.icon(
                       onPressed: () => _openCreateCourseDialog(context),
@@ -300,7 +295,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 14),
 
-                // 5. Lista de tarjetas de cursos o Estado vacío
+                // 5. Lista de cursos de hoy o Estados agradables según contexto
                 if (activeCourses.isEmpty)
                   Container(
                     width: double.infinity,
@@ -366,16 +361,135 @@ class HomeScreen extends ConsumerWidget {
                       ],
                     ),
                   )
+                else if (todayCourses.isEmpty)
+                // Mensaje agradable cuando no hay clases programadas para hoy
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 32, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFFEEF2F9)),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 35, 111, 0.03),
+                          blurRadius: 10,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(14),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE8EFFF),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.event_available_outlined,
+                            size: 34,
+                            color: Color(0xFF00236F),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        const Text(
+                          'Hoy no tienes clases programadas',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF00174D),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Es tiempo de un respiro. Un buen momento para organizar tus próximos cursos o revisar tus avances del mes.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF5F6368),
+                            height: 1.35,
+                          ),
+                        ),
+                        const SizedBox(height: 18),
+                        Wrap(
+                          spacing: 10,
+                          runSpacing: 10,
+                          alignment: WrapAlignment.center,
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: () => context.push('/finance'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: const Color(0xFF00236F),
+                                side: const BorderSide(color: Color(0xFFCBD9F5)),
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 9),
+                              ),
+                              icon: const Icon(Icons.bar_chart_outlined, size: 16),
+                              label: const Text(
+                                'Revisar avances del mes',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            FilledButton.tonalIcon(
+                              onPressed: () => context.push('/courses'),
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(0xFFE3EDFF),
+                                foregroundColor: const Color(0xFF00236F),
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 9),
+                              ),
+                              icon: const Icon(Icons.school_outlined, size: 16),
+                              label: Text(
+                                'Ver todos los cursos (${activeCourses.length})',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
                 else
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: activeCourses.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 14),
-                    itemBuilder: (ctx, index) {
-                      final course = activeCourses[index];
-                      return _buildCourseCard(context, ref, course);
-                    },
+                  Column(
+                    children: [
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: todayCourses.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 14),
+                        itemBuilder: (ctx, index) {
+                          final course = todayCourses[index];
+                          return _buildCourseCard(context, ref, course);
+                        },
+                      ),
+                      if (activeCourses.length > todayCourses.length) ...[
+                        const SizedBox(height: 14),
+                        Center(
+                          child: TextButton.icon(
+                            onPressed: () => context.push('/courses'),
+                            icon: const Icon(Icons.visibility_outlined, size: 16, color: Color(0xFF00236F)),
+                            label: Text(
+                              'Ver todos los cursos (${activeCourses.length})',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF00236F),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 const SizedBox(height: 28),
               ],
@@ -435,11 +549,11 @@ class HomeScreen extends ConsumerWidget {
                 color: iconColor,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 12),
             Text(
               value,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.w800,
                 color: Color(0xFF00174D),
                 letterSpacing: -0.4,
@@ -447,6 +561,7 @@ class HomeScreen extends ConsumerWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
+            const SizedBox(height: 2),
             Text(
               label,
               style: const TextStyle(

@@ -11,11 +11,14 @@ class DocentiaApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     final primaryColor = ref.watch(currentPrimaryColorProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
       title: 'Docentia',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.getTheme(primaryColor),
+      darkTheme: AppTheme.getDarkTheme(primaryColor),
+      themeMode: themeMode,
       routerConfig: router,
     );
   }

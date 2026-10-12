@@ -5,6 +5,7 @@ import '../../features/students/models/student_model.dart';
 import '../../features/attendance/models/attendance_model.dart';
 import '../../features/payments/models/payment_model.dart';
 import '../../features/finance/models/expense_model.dart';
+import '../../features/attendance/models/calendar_event_model.dart';
 
 class StorageService {
   static const String _keyCourses = 'docentia_courses';
@@ -14,6 +15,8 @@ class StorageService {
   static const String _keyPayments = 'docentia_payments';
   static const String _keyExpenses = 'docentia_expenses';
   static const String _keyThemeColorIndex = 'docentia_theme_color_index';
+  static const String _keyThemeMode = 'docentia_theme_mode';
+  static const String _keyCalendarEvents = 'docentia_calendar_events';
 
   static SharedPreferences? _prefs;
 
@@ -174,6 +177,46 @@ class StorageService {
       final prefs = await _instance;
       final raw = jsonEncode(expenses.map((e) => e.toMap()).toList());
       await prefs.setString(_keyExpenses, raw);
+    } catch (_) {}
+  }
+
+  // --- Theme Mode ('light', 'dark', 'system') ---
+  static Future<String> getThemeMode() async {
+    try {
+      final prefs = await _instance;
+      return prefs.getString(_keyThemeMode) ?? 'system';
+    } catch (_) {
+      return 'system';
+    }
+  }
+
+  static Future<void> saveThemeMode(String mode) async {
+    try {
+      final prefs = await _instance;
+      await prefs.setString(_keyThemeMode, mode);
+    } catch (_) {}
+  }
+
+  // --- Calendar Events ---
+  static Future<List<CalendarEvent>> getCalendarEvents() async {
+    try {
+      final prefs = await _instance;
+      final raw = prefs.getString(_keyCalendarEvents);
+      if (raw == null || raw.isEmpty) return [];
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list
+          .map((item) => CalendarEvent.fromMap(item as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<void> saveCalendarEvents(List<CalendarEvent> events) async {
+    try {
+      final prefs = await _instance;
+      final raw = jsonEncode(events.map((e) => e.toMap()).toList());
+      await prefs.setString(_keyCalendarEvents, raw);
     } catch (_) {}
   }
 }

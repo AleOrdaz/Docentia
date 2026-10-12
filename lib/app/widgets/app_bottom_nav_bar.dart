@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_colors.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -12,93 +11,94 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = theme.colorScheme.primary;
 
     final navItems = [
       (
-      icon: Icons.home_rounded,
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
       label: 'Inicio',
       route: '/home',
       ),
       (
-      icon: Icons.menu_book_rounded,
+      icon: Icons.menu_book_outlined,
+      activeIcon: Icons.menu_book_rounded,
       label: 'Cursos',
       route: '/courses',
       ),
       (
       icon: Icons.calendar_month_outlined,
+      activeIcon: Icons.calendar_month_rounded,
       label: 'Calendario',
       route: '/calendar',
       ),
       (
-      icon: Icons.bar_chart_rounded,
+      icon: Icons.bar_chart_outlined,
+      activeIcon: Icons.bar_chart_rounded,
       label: 'Finanzas',
       route: '/finance',
       ),
     ];
 
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color.fromRGBO(0, 0, 0, 0.05),
-            blurRadius: 16,
-            offset: Offset(0, -4),
+        color: isDark ? const Color(0xFF131D33) : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark
+                ? const Color(0xFF1E293B)
+                : const Color(0xFFE5E7EB),
+            width: 0.8,
           ),
-        ],
+        ),
       ),
       padding: EdgeInsets.only(
-        top: 8,
-        bottom: MediaQuery.of(context).padding.bottom > 0
-            ? MediaQuery.of(context).padding.bottom
-            : 8,
+        top: 6,
+        bottom: bottomPadding > 0 ? bottomPadding : 8,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: List.generate(navItems.length, (index) {
           final item = navItems[index];
           final isActive = currentIndex == index;
-          final color = isActive ? primaryColor : const Color(0xFF8F9099);
+          final iconColor = isActive
+              ? primaryColor
+              : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B));
 
-          return InkWell(
-            onTap: () {
-              if (currentIndex != index) {
-                context.go(item.route);
-              }
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    item.icon,
-                    size: 24,
-                    color: color,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    item.label,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                      color: color,
+          return Expanded(
+            child: InkWell(
+              onTap: () {
+                if (currentIndex != index) {
+                  context.go(item.route);
+                }
+              },
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              child: SizedBox(
+                height: 48,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      isActive ? item.activeIcon : item.icon,
+                      size: 26,
+                      color: iconColor,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Indicador visual de punto azul
-                  Container(
-                    width: 4,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isActive ? primaryColor : Colors.transparent,
+                    const SizedBox(height: 3),
+                    Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isActive ? primaryColor : Colors.transparent,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

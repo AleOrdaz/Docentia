@@ -10,7 +10,7 @@ class AppColors {
   static const Color primaryFixed = Color(0xFFDCE1FF);
   static const Color onPrimaryFixed = Color(0xFF00164E);
 
-  // 8 Colores seleccionables para personalización del profesor
+  // 10 Colores seleccionables para personalización del profesor
   static const List<({String name, Color color})> selectableThemes = [
     (name: 'Azul Stitch (Predeterminado)', color: Color(0xFF00236F)),
     (name: 'Índigo Real', color: Color(0xFF1E40AF)),
@@ -20,6 +20,8 @@ class AppColors {
     (name: 'Cobalto Marino', color: Color(0xFF0284C7)),
     (name: 'Pizarra Carbón', color: Color(0xFF1E293B)),
     (name: 'Terracota Cálido', color: Color(0xFF7C2D12)),
+    (name: 'Rosa Frambuesa', color: Color(0xFFD81B60)),
+    (name: 'Gris Neutro', color: Color(0xFF4B5563)),
   ];
 
   // Secundarios (Asistencia / Presente)

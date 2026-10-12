@@ -85,4 +85,92 @@ class AppTheme {
       ),
     );
   }
+
+  static ThemeData getDarkTheme([Color primaryColor = AppColors.primary]) {
+    const darkSurface = Color(0xFF1E293B);
+    const darkBg = Color(0xFF0B132B);
+    const onDark = Color(0xFFF8FAFC);
+    const onDarkVariant = Color(0xFF94A3B8);
+
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: darkBg,
+      colorScheme: ColorScheme(
+        brightness: Brightness.dark,
+        primary: primaryColor,
+        onPrimary: Colors.white,
+        primaryContainer: primaryColor.withValues(alpha: 0.25),
+        onPrimaryContainer: Colors.white,
+        secondary: const Color(0xFF14B8A6),
+        onSecondary: Colors.white,
+        secondaryContainer: const Color(0xFF0D9488).withValues(alpha: 0.3),
+        onSecondaryContainer: const Color(0xFF5EEAD4),
+        error: const Color(0xFFEF4444),
+        onError: Colors.white,
+        errorContainer: const Color(0xFF7F1D1D),
+        onErrorContainer: const Color(0xFFFCA5A5),
+        surface: darkSurface,
+        onSurface: onDark,
+        onSurfaceVariant: onDarkVariant,
+        outline: const Color(0xFF64748B),
+        outlineVariant: const Color(0xFF334155),
+      ),
+      textTheme: TextTheme(
+        displayLarge: AppTextStyles.displayLarge.copyWith(color: onDark),
+        headlineLarge: AppTextStyles.headlineLarge.copyWith(color: onDark),
+        headlineMedium: AppTextStyles.headlineMedium.copyWith(color: onDark),
+        titleLarge: AppTextStyles.titleLarge.copyWith(color: onDark),
+        titleMedium: AppTextStyles.titleMedium.copyWith(color: onDark),
+        titleSmall: AppTextStyles.titleSmall.copyWith(color: onDark),
+        bodyLarge: AppTextStyles.bodyLarge.copyWith(color: onDark),
+        bodyMedium: AppTextStyles.bodyMedium.copyWith(color: onDark),
+        bodySmall: AppTextStyles.bodySmall.copyWith(color: onDarkVariant),
+        labelLarge: AppTextStyles.labelLarge.copyWith(color: onDark),
+        labelMedium: AppTextStyles.labelMedium.copyWith(color: onDark),
+        labelSmall: AppTextStyles.labelSmall.copyWith(color: onDarkVariant),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: darkBg,
+        elevation: 0,
+        centerTitle: false,
+        titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: onDark),
+        iconTheme: IconThemeData(color: onDark),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          shape: const StadiumBorder(),
+          textStyle: AppTextStyles.labelLarge.copyWith(color: Colors.white),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: primaryColor,
+          foregroundColor: Colors.white,
+          shape: const StadiumBorder(),
+          textStyle: AppTextStyles.labelLarge,
+        ),
+      ),
+      chipTheme: const ChipThemeData(
+        shape: StadiumBorder(),
+        side: BorderSide.none,
+        backgroundColor: Color(0xFF334155),
+        labelStyle: TextStyle(color: onDark, fontSize: 11),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: darkSurface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: darkSurface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+      ),
+    );
+  }
 }
+
