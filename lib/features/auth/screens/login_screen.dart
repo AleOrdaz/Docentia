@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
 class LoginScreen extends ConsumerWidget {
@@ -10,6 +11,7 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -27,7 +29,7 @@ class LoginScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Text(
-                    'Docentia v1.0.0',
+                    l10n.appVersion,
                     style: AppTextStyles.labelSmall.copyWith(fontSize: 10),
                   ),
                 ),
@@ -59,10 +61,10 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  Text('Docentia', style: AppTextStyles.headlineLarge.copyWith(fontWeight: FontWeight.bold)),
+                  Text(l10n.appName, style: AppTextStyles.headlineLarge.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
                   Text(
-                    'Plataforma de gestión académica y control de asistencia para docentes.',
+                    l10n.loginShortSubtitle,
                     textAlign: TextAlign.center,
                     style: AppTextStyles.bodyMedium.copyWith(color: AppColors.onSurfaceVariant),
                   ),
@@ -95,7 +97,7 @@ class LoginScreen extends ConsumerWidget {
                             child: const Text('G', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
                           ),
                           const SizedBox(width: 12),
-                          const Text('Continuar con Google', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.onSurface)),
+                          Text(l10n.continueWithGoogleShort, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.onSurface)),
                         ],
                       ),
                     ),
@@ -116,12 +118,12 @@ class LoginScreen extends ConsumerWidget {
                         foregroundColor: Colors.white,
                         shape: const StadiumBorder(),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('', style: TextStyle(fontSize: 20)),
-                          SizedBox(width: 8),
-                          Text('Continuar con Apple', style: TextStyle(fontWeight: FontWeight.w600)),
+                          const Text('', style: TextStyle(fontSize: 20)),
+                          const SizedBox(width: 8),
+                          Text(l10n.continueWithApple, style: const TextStyle(fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ),
@@ -132,14 +134,14 @@ class LoginScreen extends ConsumerWidget {
               // Términos y privacidad
               Column(
                 children: [
-                  Text('Al continuar, aceptas nuestros', style: AppTextStyles.labelSmall),
+                  Text(l10n.termsPrefix, style: AppTextStyles.labelSmall),
                   const SizedBox(height: 2),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Términos y Condiciones', style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      Text(l10n.termsLink, style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
                       Text(' • ', style: AppTextStyles.labelSmall),
-                      Text('Política de Privacidad', style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      Text(l10n.privacyLink, style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ],

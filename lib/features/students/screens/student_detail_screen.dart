@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../core/services/whatsapp_service.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../attendance/providers/attendance_provider.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../../payments/models/payment_model.dart';
@@ -25,37 +26,38 @@ class StudentDetailScreen extends ConsumerStatefulWidget {
 
 class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
   void _openWhatsApp(String phone, String studentName, String tutorName) async {
+    final l10n = AppLocalizations.of(context)!;
     if (phone.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El alumno no tiene registrado teléfono de tutor')),
+        SnackBar(content: Text(l10n.noTutorPhone)),
       );
       return;
     }
 
-    final message =
-        'Hola $tutorName, le escribo desde Docentia para informarle sobre el progreso de su tutorado/a $studentName.';
-    final success = await WhatsAppService.openWhatsApp(phone: phone, message: message);
+    final message = l10n.whatsappProgressMessage(tutorName, studentName);
 
+    final success = await WhatsAppService.openWhatsApp(phone: phone, message: message);
     if (!success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo abrir WhatsApp en este dispositivo')),
+        SnackBar(content: Text(l10n.whatsappOpenError)),
       );
     }
   }
 
   void _confirmDeactivate(BuildContext context, String studentName) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('¿Dar de baja al alumno?'),
+        title: Text(l10n.deactivateStudentTitle),
         content: Text(
-          'El alumno $studentName dejará de figurar en la lista activa del curso, pero sus asistencias y pagos se conservarán intactos.',
+          l10n.deactivateStudentBody(studentName),
           style: AppTextStyles.bodyMedium,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
@@ -71,13 +73,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
               if (context.mounted) {
                 context.pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Alumno dado de baja. Historial conservado.'),
+                  SnackBar(
+                    content: Text(l10n.studentDeactivated),
                   ),
                 );
               }
             },
-            child: const Text('Confirmar Baja'),
+            child: Text(l10n.confirmDeactivate),
           ),
         ],
       ),
@@ -91,15 +93,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     required double courseCost,
     required dynamic courseSchedule,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     int selectedYear = now.year;
     int selectedMonth = now.month;
     DueDateOption selectedOption = DueDateOption.endOfMonth;
 
-    const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
+    final locale = Localizations.localeOf(context).toString();
 
     showDialog(
       context: context,
@@ -116,7 +116,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                 children: [
                   Icon(Icons.add_card_outlined, color: Theme.of(context).colorScheme.primary, size: 24),
                   const SizedBox(width: 8),
-                  const Text('Nueva Cuota Mensual'),
+                  Text(l10n.newMonthlyFee),
                 ],
               ),
               content: SingleChildScrollView(
@@ -125,13 +125,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Configura el periodo y la fecha de vencimiento. Solo se permite una cuota por mes:',
+                      l10n.feeConfigHelp,
                       style: AppTextStyles.bodySmall,
                     ),
                     const SizedBox(height: 16),
 
                     // Selector de Periodo: Mes y Año
-                    Text('Mes y Año:', style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                    Text(l10n.monthAndYear, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
                     Row(
                       children: [
@@ -150,7 +150,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                 items: List.generate(12, (i) {
                                   return DropdownMenuItem<int>(
                                     value: i + 1,
-                                    child: Text(monthNames[i], style: AppTextStyles.bodyMedium),
+                                    child: Text(
+                                      Payment.formatPeriodName(selectedYear, i + 1, locale).split(' ').first,
+                                      style: AppTextStyles.bodyMedium,
+                                    ),
                                   );
                                 }),
                                 onChanged: (val) {
@@ -196,7 +199,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                     const SizedBox(height: 16),
 
                     // Selector de Vencimiento: Inicio de mes vs Fin de mes
-                    Text('Vencimiento:', style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                    Text(l10n.dueDateField, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
 
                     Container(
@@ -209,8 +212,8 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           RadioListTile<DueDateOption>(
                             value: DueDateOption.startOfMonth,
                             groupValue: selectedOption,
-                            title: const Text('Inicio de mes', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                            subtitle: Text('Día 1 del mes correspondiente', style: AppTextStyles.bodySmall),
+                            title: Text(l10n.monthStart, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                            subtitle: Text(l10n.monthStartDay1, style: AppTextStyles.bodySmall),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                             onChanged: (val) {
                               if (val != null) setDialogState(() => selectedOption = val);
@@ -220,8 +223,8 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           RadioListTile<DueDateOption>(
                             value: DueDateOption.endOfMonth,
                             groupValue: selectedOption,
-                            title: const Text('Fin de mes', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                            subtitle: Text('Último día válido (considera bisiestos)', style: AppTextStyles.bodySmall),
+                            title: Text(l10n.monthEnd, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                            subtitle: Text(l10n.monthEndLastDay, style: AppTextStyles.bodySmall),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                             onChanged: (val) {
                               if (val != null) setDialogState(() => selectedOption = val);
@@ -246,7 +249,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Fecha calculada:', style: AppTextStyles.bodySmall),
+                              Text(l10n.calculatedDate, style: AppTextStyles.bodySmall),
                               Text(formattedDueDate, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
                             ],
                           ),
@@ -254,7 +257,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Monto a cobrar:', style: AppTextStyles.bodySmall),
+                              Text(l10n.amountToCharge, style: AppTextStyles.bodySmall),
                               Text(
                                 formatCurrency(courseCost),
                                 style: AppTextStyles.titleSmall.copyWith(
@@ -273,7 +276,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('Cancelar'),
+                  child: Text(l10n.cancel),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -294,6 +297,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
                     if (!context.mounted) return;
 
+                    final periodName = Payment.formatPeriodName(selectedYear, selectedMonth, locale);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Row(
@@ -304,7 +308,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                               size: 20,
                             ),
                             const SizedBox(width: 8),
-                            Expanded(child: Text(result.message)),
+                            Expanded(
+                              child: Text(
+                                result.success
+                                    ? l10n.feeCreated(periodName)
+                                    : l10n.feeAlreadyExists,
+                              ),
+                            ),
                           ],
                         ),
                         backgroundColor: AppColors.inverseSurface,
@@ -313,7 +323,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       ),
                     );
                   },
-                  child: const Text('Crear Cuota'),
+                  child: Text(l10n.createFee),
                 ),
               ],
             );
@@ -328,6 +338,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     required Payment payment,
     required String courseId,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final periodName = Payment.formatPeriodName(payment.periodYear, payment.periodMonth, locale);
     DueDateOption selectedOption = payment.dueOption;
 
     showDialog(
@@ -345,11 +358,11 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
             return AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: const Row(
+              title: Row(
                 children: [
-                  Icon(Icons.edit_calendar_outlined, size: 22),
-                  SizedBox(width: 8),
-                  Text('Modificar Vencimiento'),
+                  const Icon(Icons.edit_calendar_outlined, size: 22),
+                  const SizedBox(width: 8),
+                  Text(l10n.modifyDueDate),
                 ],
               ),
               content: Column(
@@ -357,7 +370,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Cambiar opción de vencimiento para la cuota de ${payment.period}:',
+                    l10n.changeDueOption(periodName),
                     style: AppTextStyles.bodySmall,
                   ),
                   const SizedBox(height: 12),
@@ -371,7 +384,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         RadioListTile<DueDateOption>(
                           value: DueDateOption.startOfMonth,
                           groupValue: selectedOption,
-                          title: const Text('Inicio de mes (Día 1)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                          title: Text(l10n.monthStartDay1Short, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                           onChanged: (val) {
                             if (val != null) setDialogState(() => selectedOption = val);
                           },
@@ -380,7 +393,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         RadioListTile<DueDateOption>(
                           value: DueDateOption.endOfMonth,
                           groupValue: selectedOption,
-                          title: const Text('Fin de mes (Último día)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                          title: Text(l10n.monthEndLastDayShort, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                           onChanged: (val) {
                             if (val != null) setDialogState(() => selectedOption = val);
                           },
@@ -390,7 +403,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Fecha de vencimiento resultante: $formattedDueDate',
+                    l10n.resultingDueDate(formattedDueDate),
                     style: AppTextStyles.bodySmall.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
@@ -401,7 +414,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('Cancelar'),
+                  child: Text(l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -413,7 +426,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Vencimiento actualizado a $formattedDueDate'),
+                          content: Text(l10n.dueDateUpdated(formattedDueDate)),
                           backgroundColor: AppColors.inverseSurface,
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
@@ -421,7 +434,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       );
                     }
                   },
-                  child: const Text('Actualizar'),
+                  child: Text(l10n.update),
                 ),
               ],
             );
@@ -440,7 +453,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
   }) {
     final now = DateTime.now();
     final todayFormatted = '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
-    final primaryColor = Theme.of(context).colorScheme.primary;
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
+    final periodName = Payment.formatPeriodName(payment.periodYear, payment.periodMonth, locale);
 
     showDialog(
       context: context,
@@ -450,14 +465,14 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
           children: [
             Icon(Icons.check_circle_outline, color: AppColors.secondary, size: 24),
             const SizedBox(width: 8),
-            const Text('Confirmar Pago'),
+            Text(l10n.confirmPayment),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Revisa los datos del pago que vas a registrar:', style: AppTextStyles.bodySmall),
+            Text(l10n.reviewPaymentData, style: AppTextStyles.bodySmall),
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.all(12),
@@ -467,18 +482,18 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
               ),
               child: Column(
                 children: [
-                  _buildPaymentSummaryRow('Alumno:', studentName),
+                  _buildPaymentSummaryRow(l10n.studentColon, studentName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow('Curso:', courseName),
+                  _buildPaymentSummaryRow(l10n.courseColon, courseName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow('Mensualidad:', payment.period),
+                  _buildPaymentSummaryRow(l10n.monthlyFeeColon, periodName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow('Fecha de pago:', todayFormatted),
+                  _buildPaymentSummaryRow(l10n.paymentDateColon, todayFormatted),
                   const Divider(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Monto a pagar:', style: AppTextStyles.titleSmall),
+                      Text(l10n.amountToPay, style: AppTextStyles.titleSmall),
                       Text(
                         formatCurrency(payment.amount),
                         style: AppTextStyles.titleLarge.copyWith(
@@ -496,7 +511,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -516,7 +531,11 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       children: [
                         const Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
                         const SizedBox(width: 8),
-                        Text('Pago de ${formatCurrency(payment.amount)} confirmado para $studentName'),
+                        Expanded(
+                          child: Text(
+                            l10n.paymentConfirmed(formatCurrency(payment.amount), studentName),
+                          ),
+                        ),
                       ],
                     ),
                     backgroundColor: AppColors.inverseSurface,
@@ -526,11 +545,24 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
               }
             },
             icon: const Icon(Icons.check, size: 18),
-            label: const Text('Confirmar Pago'),
+            label: Text(l10n.confirmPayment),
           ),
         ],
       ),
     );
+  }
+
+  String _paymentStatusLabel(AppLocalizations l10n, PaymentStatus status) {
+    switch (status) {
+      case PaymentStatus.paid:
+        return l10n.paidStatus;
+      case PaymentStatus.pending:
+        return l10n.pendingStatus;
+      case PaymentStatus.upcoming:
+        return l10n.upcomingStatus;
+      case PaymentStatus.overdue:
+        return l10n.overdueStatus;
+    }
   }
 
   Widget _buildPaymentSummaryRow(String label, String value) {
@@ -552,6 +584,8 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     final course = ref.watch(selectedCourseProvider);
     final courseId = course?.id ?? 'course-1';
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -563,8 +597,8 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
     if (student == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Ficha del Alumno')),
-        body: const Center(child: Text('Alumno no encontrado')),
+        appBar: AppBar(title: Text(l10n.studentDetailTitle)),
+        body: Center(child: Text(l10n.studentNotFound)),
       );
     }
 
@@ -582,7 +616,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        title: Text('Ficha del Alumno', style: AppTextStyles.titleMedium),
+        title: Text(l10n.studentDetailTitle, style: AppTextStyles.titleMedium),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -625,12 +659,12 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         const SizedBox(height: 2),
                         Row(
                           children: [
-                            Text('${student.age} años', style: AppTextStyles.bodySmall),
+                            Text(l10n.yearsOld(student.age), style: AppTextStyles.bodySmall),
                             const SizedBox(width: 6),
                             Text('•', style: AppTextStyles.bodySmall),
                             const SizedBox(width: 6),
                             Text(
-                              course?.name ?? 'Curso',
+                              course?.name ?? l10n.courseFallback,
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: primaryColor,
                                 fontWeight: FontWeight.bold,
@@ -648,7 +682,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: Text(
-                            student.active ? 'Alumno Regular' : 'Dado de Baja',
+                            student.active ? l10n.regularStudent : l10n.deactivatedStudent,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -680,7 +714,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     icon: const Icon(Icons.chat, size: 18),
-                    label: const Text('WhatsApp Tutor', style: TextStyle(fontWeight: FontWeight.bold)),
+                    label: Text(l10n.whatsappTutor, style: const TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -713,10 +747,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         children: [
                           Icon(Icons.how_to_reg, color: primaryColor, size: 20),
                           const SizedBox(width: 8),
-                          Text('Asistencia del Alumno', style: AppTextStyles.titleSmall),
+                          Text(l10n.studentAttendance, style: AppTextStyles.titleSmall),
                         ],
                       ),
-                      Text('Registro en tiempo real', style: AppTextStyles.labelSmall),
+                      Text(l10n.realtimeRecord, style: AppTextStyles.labelSmall),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -726,13 +760,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       children: [
                         Row(
                           children: [
-                            Expanded(child: _buildStatBox('Clases', stats.totalClasses.toString())),
+                            Expanded(child: _buildStatBox(l10n.classesLabel, stats.totalClasses.toString())),
                             const SizedBox(width: 8),
-                            Expanded(child: _buildStatBox('Asistencias', stats.presents.toString(), color: AppColors.secondary)),
+                            Expanded(child: _buildStatBox(l10n.attendancesLabel, stats.presents.toString(), color: AppColors.secondary)),
                             const SizedBox(width: 8),
-                            Expanded(child: _buildStatBox('Faltas', stats.absences.toString(), color: AppColors.error)),
+                            Expanded(child: _buildStatBox(l10n.absencesLabel, stats.absences.toString(), color: AppColors.error)),
                             const SizedBox(width: 8),
-                            Expanded(child: _buildStatBox('Porcentaje', '${stats.percentage}%', color: primaryColor)),
+                            Expanded(child: _buildStatBox(l10n.percentageLabel, '${stats.percentage}%', color: primaryColor)),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -748,7 +782,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       ],
                     ),
                     loading: () => const LinearProgressIndicator(),
-                    error: (_, __) => const Text('Error calculando métricas'),
+                    error: (_, __) => Text(l10n.metricsError),
                   ),
                 ],
               ),
@@ -770,15 +804,15 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                     children: [
                       Icon(Icons.family_restroom, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
-                      Text('Datos del Tutor / Apoderado', style: AppTextStyles.titleSmall),
+                      Text(l10n.tutorDataTitle, style: AppTextStyles.titleSmall),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _buildTutorField('Nombre', student.tutorName),
-                  _buildTutorField('Teléfono Móvil', student.tutorPhone),
-                  _buildTutorField('Correo Electrónico', student.tutorEmail),
+                  _buildTutorField(l10n.nameLabel, student.tutorName),
+                  _buildTutorField(l10n.mobilePhone, student.tutorPhone),
+                  _buildTutorField(l10n.emailLabel, student.tutorEmail),
                   if (student.secondaryPhone != null && student.secondaryPhone!.isNotEmpty)
-                    _buildTutorField('Teléfono Secundario', student.secondaryPhone!),
+                    _buildTutorField(l10n.secondaryPhone, student.secondaryPhone!),
                 ],
               ),
             ),
@@ -802,7 +836,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         children: [
                           Icon(Icons.payments_outlined, color: primaryColor, size: 20),
                           const SizedBox(width: 8),
-                          Text('Cuotas y Mensualidades', style: AppTextStyles.titleSmall),
+                          Text(l10n.monthlyFeesTitle, style: AppTextStyles.titleSmall),
                         ],
                       ),
                       if (course != null)
@@ -838,7 +872,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           child: Column(
                             children: [
                               Text(
-                                'Aún no hay cuotas emitidas para este alumno.',
+                                l10n.noFeesYet,
                                 style: AppTextStyles.bodySmall,
                               ),
                               const SizedBox(height: 8),
@@ -854,7 +888,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                     );
                                   },
                                   icon: const Icon(Icons.add, size: 16),
-                                  label: const Text('Generar mensualidad'),
+                                  label: Text(l10n.generateMonthly),
                                 ),
                             ],
                           ),
@@ -906,11 +940,14 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(p.period, style: AppTextStyles.titleSmall),
+                                        Text(
+                                          Payment.formatPeriodName(p.periodYear, p.periodMonth, locale),
+                                          style: AppTextStyles.titleSmall,
+                                        ),
                                         const SizedBox(height: 2),
                                         Row(
                                           children: [
-                                            Text('Vence: ${p.dueDate}', style: AppTextStyles.bodySmall),
+                                            Text(l10n.dueOn(p.dueDate), style: AppTextStyles.bodySmall),
                                             if (!isPaid) ...[
                                               const SizedBox(width: 6),
                                               InkWell(
@@ -931,8 +968,8 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                                       const SizedBox(width: 2),
                                                       Text(
                                                         p.dueOption == DueDateOption.startOfMonth
-                                                            ? 'Inicio'
-                                                            : 'Fin de mes',
+                                                            ? l10n.startShort
+                                                            : l10n.monthEnd,
                                                         style: TextStyle(
                                                           fontSize: 11,
                                                           color: primaryColor,
@@ -955,7 +992,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                         borderRadius: BorderRadius.circular(100),
                                       ),
                                       child: Text(
-                                        p.status.displayName,
+                                        _paymentStatusLabel(l10n, p.status),
                                         style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.bold,
@@ -983,7 +1020,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                             context: context,
                                             payment: p,
                                             studentName: student.fullName,
-                                            courseName: course?.name ?? 'Curso',
+                                            courseName: course?.name ?? l10n.courseFallback,
                                             courseId: courseId,
                                           );
                                         },
@@ -994,7 +1031,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                           textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                         ),
                                         icon: const Icon(Icons.check, size: 16),
-                                        label: const Text('Confirmar pago'),
+                                        label: Text(l10n.confirmPaymentShort),
                                       )
                                     else
                                       Row(
@@ -1002,7 +1039,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                           const Icon(Icons.check_circle, color: AppColors.secondary, size: 16),
                                           const SizedBox(width: 4),
                                           Text(
-                                            'Pagado',
+                                            l10n.paidStatus,
                                             style: AppTextStyles.labelSmall.copyWith(
                                               color: AppColors.secondary,
                                               fontWeight: FontWeight.bold,
@@ -1019,7 +1056,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       );
                     },
                     loading: () => const LinearProgressIndicator(),
-                    error: (_, __) => const Text('Error al cargar pagos'),
+                    error: (_, __) => Text(l10n.paymentsLoadError),
                   ),
                 ],
               ),

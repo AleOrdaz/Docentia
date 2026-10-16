@@ -787,7 +787,7 @@ class HomeScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '$studentsCount ${l10n?.ofTotal ?? "de"} ${course.capacity} ${l10n?.studentPlural ?? "alumnos"} ${l10n?.enrolled?.toLowerCase() ?? "inscritos"}',
+                  '$studentsCount ${l10n?.ofTotal(course.capacity) ?? "de ${course.capacity}"} ${l10n?.studentPlural ?? "alumnos"} ${l10n?.enrolledWord ?? "inscritos"}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,

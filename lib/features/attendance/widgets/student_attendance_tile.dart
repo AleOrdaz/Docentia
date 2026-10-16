@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../students/models/student_model.dart';
 import '../models/attendance_model.dart';
 
@@ -50,6 +51,7 @@ class StudentAttendanceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final displayName = student?.fullName ?? name ?? '';
     final displayAge = student?.age ?? age ?? 0;
@@ -83,13 +85,13 @@ class StudentAttendanceTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         alignment: Alignment.centerLeft,
-        child: const Row(
+        child: Row(
           children: [
-            Icon(Icons.check_circle_rounded, color: Color(0xFF00796B), size: 24),
-            SizedBox(width: 8),
+            const Icon(Icons.check_circle_rounded, color: Color(0xFF00796B), size: 24),
+            const SizedBox(width: 8),
             Text(
-              'Presente',
-              style: TextStyle(
+              l10n.presentStatus,
+              style: const TextStyle(
                 color: Color(0xFF00796B),
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
@@ -106,19 +108,19 @@ class StudentAttendanceTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         alignment: Alignment.centerRight,
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              'Falta',
-              style: TextStyle(
+              l10n.absentStatus,
+              style: const TextStyle(
                 color: Color(0xFFBA1A1A),
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
               ),
             ),
-            SizedBox(width: 8),
-            Icon(Icons.cancel_rounded, color: Color(0xFFBA1A1A), size: 24),
+            const SizedBox(width: 8),
+            const Icon(Icons.cancel_rounded, color: Color(0xFFBA1A1A), size: 24),
           ],
         ),
       ),
@@ -193,7 +195,7 @@ class StudentAttendanceTile extends StatelessWidget {
                         Row(
                           children: [
                             if (displayAge > 0) ...[
-                              Text('$displayAge años', style: AppTextStyles.bodySmall),
+                              Text(l10n.yearsOld(displayAge), style: AppTextStyles.bodySmall),
                               const SizedBox(width: 6),
                               Text('•', style: AppTextStyles.bodySmall),
                               const SizedBox(width: 6),
@@ -211,12 +213,12 @@ class StudentAttendanceTile extends StatelessWidget {
                               )
                             else if (isPending || effectiveStatus == null)
                               Text(
-                                'Sin marcar',
+                                l10n.unmarkedStatus,
                                 style: AppTextStyles.bodySmall,
                               )
                             else
                               Text(
-                                '${attendancePct ?? 90}% asist.',
+                                l10n.attendancePctShort(attendancePct ?? 90),
                                 style: AppTextStyles.bodySmall.copyWith(
                                   color: AppColors.secondary,
                                   fontWeight: FontWeight.w600,
@@ -267,7 +269,7 @@ class StudentAttendanceTile extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            isMarkedExcused ? 'Justificado' : 'Ver nota',
+                            isMarkedExcused ? l10n.excusedStatus : l10n.viewNote,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -295,9 +297,9 @@ class StudentAttendanceTile extends StatelessWidget {
                       Text(
                         isEditable
                             ? (effectiveStatus == null
-                            ? 'Desliza: ⟵ Falta | Presente ⟶'
-                            : 'Desliza en sentido contrario para corregir')
-                            : 'Solo días de clase',
+                            ? l10n.swipeMarkHint
+                            : l10n.swipeCorrectHint)
+                            : l10n.classDaysOnly,
                         style: AppTextStyles.labelSmall.copyWith(
                           color: isEditable
                               ? AppColors.onSurfaceVariant.withValues(alpha: 0.8)
@@ -341,8 +343,8 @@ class StudentAttendanceTile extends StatelessWidget {
                           color: Color(0xFF00796B),
                         ),
                         const SizedBox(width: 4),
-                        const Text(
-                          'Presente',
+                        Text(
+                          l10n.presentStatus,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -356,8 +358,8 @@ class StudentAttendanceTile extends StatelessWidget {
                           color: Color(0xFFBA1A1A),
                         ),
                         const SizedBox(width: 4),
-                        const Text(
-                          'Falta',
+                        Text(
+                          l10n.absentStatus,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -371,8 +373,8 @@ class StudentAttendanceTile extends StatelessWidget {
                           color: Color(0xFF6750A4),
                         ),
                         const SizedBox(width: 4),
-                        const Text(
-                          'Justificado',
+                        Text(
+                          l10n.excusedStatus,
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -389,8 +391,8 @@ class StudentAttendanceTile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 5),
-                        const Text(
-                          'Sin registrar',
+                        Text(
+                          l10n.notRecorded,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -410,13 +412,14 @@ class StudentAttendanceTile extends StatelessWidget {
   }
 
   void _openNoteDialog(BuildContext context, String studentName) {
+    final l10n = AppLocalizations.of(context)!;
     final textController = TextEditingController(
       text: note ?? medicalNote ?? student?.medicalNote ?? '',
     );
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Nota / Justificante', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(l10n.noteTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,10 +431,10 @@ class StudentAttendanceTile extends StatelessWidget {
             const SizedBox(height: 12),
             TextField(
               controller: textController,
-              decoration: const InputDecoration(
-                labelText: 'Motivo de falta / observación',
-                hintText: 'Ej. Cita médica, permiso familiar...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.noteReasonLabel,
+                hintText: l10n.noteHint,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
@@ -440,7 +443,7 @@ class StudentAttendanceTile extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cerrar'),
+            child: Text(l10n.close),
           ),
           if (onNoteChanged != null)
             FilledButton(
@@ -448,7 +451,7 @@ class StudentAttendanceTile extends StatelessWidget {
                 onNoteChanged!(textController.text.trim());
                 Navigator.pop(ctx);
               },
-              child: const Text('Guardar'),
+              child: Text(l10n.save),
             ),
         ],
       ),

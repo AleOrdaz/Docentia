@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum PaymentStatus {
   paid,
   pending,
@@ -80,14 +82,14 @@ class Payment {
     }
   }
 
-  /// Genera el nombre del periodo en español (ej. "Octubre 2026")
-  static String formatPeriodName(int year, int month) {
-    const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-    ];
+  /// Nombre del periodo según el idioma activo (ej. "Octubre 2026" / "October 2026").
+  static String formatPeriodName(int year, int month, [String? locale]) {
     final safeMonth = month.clamp(1, 12);
-    return '${monthNames[safeMonth - 1]} $year';
+    final raw = DateFormat.MMMM(locale).format(DateTime(year, safeMonth, 1));
+    final label = raw.isEmpty
+        ? '$safeMonth'
+        : '${raw[0].toUpperCase()}${raw.substring(1)}';
+    return '$label $year';
   }
 
   Payment copyWith({

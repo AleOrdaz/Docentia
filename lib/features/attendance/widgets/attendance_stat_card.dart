@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 
 class AttendanceStatCard extends StatelessWidget {
   final int currentSession;
@@ -29,6 +30,7 @@ class AttendanceStatCard extends StatelessWidget {
     final availableSeats = capacity - enrolled > 0 ? capacity - enrolled : 0;
     final pct = enrolled > 0 ? ((present / enrolled) * 100).round() : 0;
     final primaryColor = theme.colorScheme.primary;
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -64,7 +66,7 @@ class AttendanceStatCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Sesión $currentSession de $totalSessions',
+                    l10n.sessionOf(currentSession, totalSessions),
                     style: AppTextStyles.titleSmall.copyWith(
                       fontSize: 13,
                       color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
@@ -74,7 +76,7 @@ class AttendanceStatCard extends StatelessWidget {
                 ],
               ),
               Text(
-                'Hoy, Asistencia',
+                l10n.todayAttendance,
                 style: AppTextStyles.labelMedium.copyWith(
                   color: AppColors.secondary,
                   fontWeight: FontWeight.w600,
@@ -91,9 +93,9 @@ class AttendanceStatCard extends StatelessWidget {
               // 1. Inscritos
               Expanded(
                 child: _buildCompactMetric(
-                  label: 'Inscritos',
+                  label: l10n.enrolledLabel,
                   value: enrolled.toString(),
-                  subtext: 'Activos',
+                  subtext: l10n.activeLabel,
                   icon: Icons.group,
                   iconColor: primaryColor,
                   valueColor: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
@@ -104,7 +106,7 @@ class AttendanceStatCard extends StatelessWidget {
               // 2. Presentes
               Expanded(
                 child: _buildCompactMetric(
-                  label: 'Presentes',
+                  label: l10n.presentsLabel,
                   value: present.toString(),
                   subtext: '$pct%',
                   icon: Icons.check_circle,
@@ -117,9 +119,9 @@ class AttendanceStatCard extends StatelessWidget {
               // 3. Faltas
               Expanded(
                 child: _buildCompactMetric(
-                  label: 'Faltas',
+                  label: l10n.absencesLabel,
                   value: absent.toString(),
-                  subtext: excused > 0 ? '$excused just.' : '0 just.',
+                  subtext: l10n.excusedCompact(excused),
                   icon: Icons.cancel,
                   iconColor: AppColors.error,
                   valueColor: AppColors.error,
@@ -130,9 +132,9 @@ class AttendanceStatCard extends StatelessWidget {
               // 4. Cupos
               Expanded(
                 child: _buildCompactMetric(
-                  label: 'Cupos',
+                  label: l10n.spotsLabel,
                   value: availableSeats.toString(),
-                  subtext: 'De $capacity',
+                  subtext: l10n.ofCapacity(capacity),
                   icon: Icons.event_seat,
                   iconColor: isDark ? const Color(0xFF94A3B8) : AppColors.onSurfaceVariant,
                   valueColor: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),

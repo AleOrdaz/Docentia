@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../providers/students_provider.dart';
 
 class AddStudentModal extends ConsumerStatefulWidget {
@@ -47,6 +48,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
 
     setState(() => _isSubmitting = true);
 
+    final l10n = AppLocalizations.of(context)!;
     try {
       await ref
           .read(studentsForCourseProvider(widget.courseId).notifier)
@@ -56,11 +58,11 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
         age: int.tryParse(_ageController.text) ?? 16,
         tutorName: _tutorNameController.text.trim().isNotEmpty
             ? _tutorNameController.text.trim()
-            : 'Tutor',
+            : l10n.tutorFallback,
         tutorPhone: _tutorPhoneController.text.trim(),
         tutorEmail: _tutorEmailController.text.trim().isNotEmpty
             ? _tutorEmailController.text.trim()
-            : 'tutor@ejemplo.com',
+            : l10n.emailHint,
         secondaryPhone: _secondaryPhoneController.text.trim(),
       );
 
@@ -71,11 +73,11 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
         Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Row(
+            content: Row(
               children: [
-                Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
-                SizedBox(width: 8),
-                Text('Alumno registrado con éxito'),
+                const Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
+                const SizedBox(width: 8),
+                Text(l10n.studentRegisteredSuccess),
               ],
             ),
             backgroundColor: AppColors.inverseSurface,
@@ -91,6 +93,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.surfaceContainerLowest,
@@ -130,7 +133,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                     children: [
                       const Icon(Icons.person_add, color: AppColors.primary, size: 24),
                       const SizedBox(width: 8),
-                      Text('Agregar Alumno', style: AppTextStyles.titleLarge),
+                      Text(l10n.addStudentTitle, style: AppTextStyles.titleLarge),
                     ],
                   ),
                   IconButton(
@@ -141,7 +144,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
 
               Text(
-                'Ingresa los datos para matricular e inscribir en ${widget.courseName}.',
+                l10n.addStudentDesc(widget.courseName),
                 style: AppTextStyles.bodySmall,
               ),
               const SizedBox(height: 16),
@@ -151,21 +154,21 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                 children: [
                   Expanded(
                     child: _buildTextField(
-                      label: 'Nombres *',
+                      label: l10n.firstNamesLabel,
                       controller: _nameController,
-                      hint: 'Ej. Camila',
+                      hint: l10n.firstNameHint,
                       validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                      (v == null || v.trim().isEmpty) ? l10n.required : null,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: _buildTextField(
-                      label: 'Apellidos *',
+                      label: l10n.lastNamesLabel,
                       controller: _lastNameController,
-                      hint: 'Ej. Morales Díaz',
+                      hint: l10n.lastNameHint,
                       validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                      (v == null || v.trim().isEmpty) ? l10n.required : null,
                     ),
                   ),
                 ],
@@ -174,7 +177,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
 
               // Edad
               _buildTextField(
-                label: 'Edad',
+                label: l10n.ageLabel,
                 controller: _ageController,
                 hint: '16',
                 keyboardType: TextInputType.number,
@@ -183,29 +186,29 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
 
               // Nombre del Tutor
               _buildTextField(
-                label: 'Nombre del Tutor / Apoderado',
+                label: l10n.tutorNameLabel,
                 controller: _tutorNameController,
-                hint: 'Ej. Patricia Díaz',
+                hint: l10n.tutorNameHint,
               ),
               const SizedBox(height: 12),
 
               // Teléfono WhatsApp
               _buildTextField(
-                label: 'Teléfono Móvil (WhatsApp) *',
+                label: l10n.tutorPhoneRequiredLabel,
                 controller: _tutorPhoneController,
                 hint: '+54 9 11 4522 8901',
                 keyboardType: TextInputType.phone,
                 prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
                 validator: (v) =>
-                (v == null || v.trim().isEmpty) ? 'Teléfono requerido para WhatsApp' : null,
+                (v == null || v.trim().isEmpty) ? l10n.phoneRequiredWhatsapp : null,
               ),
               const SizedBox(height: 12),
 
               // Correo Electrónico
               _buildTextField(
-                label: 'Correo Electrónico',
+                label: l10n.emailLabel,
                 controller: _tutorEmailController,
-                hint: 'tutor@ejemplo.com',
+                hint: l10n.emailHint,
                 keyboardType: TextInputType.emailAddress,
               ),
               const SizedBox(height: 20),
@@ -222,7 +225,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     ),
-                    child: const Text('Cancelar', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton.icon(
@@ -240,7 +243,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                     )
                         : const Icon(Icons.check, size: 18),
-                    label: const Text('Registrar', style: TextStyle(fontWeight: FontWeight.w600)),
+                    label: Text(l10n.register, style: const TextStyle(fontWeight: FontWeight.w600)),
                   ),
                 ],
               ),
