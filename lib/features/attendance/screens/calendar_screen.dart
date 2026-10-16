@@ -1137,7 +1137,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 )
               else
-                ...dayEvents.map((evt) => _buildEventCard(evt, isDark, primaryColor)),
+                ...dayEvents.map((evt) => _buildEventCard(evt, isDark, primaryColor, l10n)),
               const SizedBox(height: 18),
             ],
 
@@ -1269,7 +1269,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   Widget _buildEventCard(
-      CalendarEvent event, bool isDark, Color primaryColor) {
+      CalendarEvent event, bool isDark, Color primaryColor, dynamic l10n) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -1301,13 +1301,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               IconButton(
                 icon: const Icon(Icons.delete_outline,
                     color: Color(0xFFD32F2F), size: 18),
-                tooltip: l10n.deleteEvent,
+                tooltip: l10n.deleteEvent.toString(),
                 onPressed: () {
-                  ref
-                      .read(calendarEventsProvider.notifier)
+                  ref.read(calendarEventsProvider.notifier)
                       .deleteEvent(event.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.eventDeleted)),
+                    SnackBar(content: Text(l10n.eventDeleted.toString())),
                   );
                 },
               ),
@@ -1356,7 +1355,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               FilledButton.tonalIcon(
                 onPressed: () => _openShareEventDialog(context, event),
                 icon: const Icon(Icons.mail_outline, size: 16),
-                label: Text(l10n.notifyParents,
+                label: Text(l10n.notifyParents.toString(),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFFE0F2FE),

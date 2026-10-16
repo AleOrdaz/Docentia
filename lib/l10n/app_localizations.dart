@@ -94,8 +94,8 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('es'),
-    Locale('en')
+    Locale('en'),
+    Locale('es')
   ];
 
   /// No description provided for @appName.
@@ -617,7 +617,7 @@ abstract class AppLocalizations {
   /// No description provided for @monthlyCostLabel.
   ///
   /// In es, this message translates to:
-  /// **'Costo Mensual ($) *'**
+  /// **'Costo Mensual (\$) *'**
   String get monthlyCostLabel;
 
   /// No description provided for @paymentScheduleLabel.
@@ -1061,13 +1061,13 @@ abstract class AppLocalizations {
   /// No description provided for @courseUpdatedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Curso "{name}" actualizado con éxito'**
+  /// **'Curso \"{name}\" actualizado con éxito'**
   String courseUpdatedSuccess(String name);
 
   /// No description provided for @courseCreatedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Curso "{name}" creado con éxito'**
+  /// **'Curso \"{name}\" creado con éxito'**
   String courseCreatedSuccess(String name);
 
   /// No description provided for @deleteCourseConfirmTitle.
@@ -1079,7 +1079,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteCourseConfirmBody.
   ///
   /// In es, this message translates to:
-  /// **'Estás a punto de eliminar el curso "{name}". Esta acción dará de baja el curso y no podrá deshacerse.'**
+  /// **'Estás a punto de eliminar el curso \"{name}\". Esta acción dará de baja el curso y no podrá deshacerse.'**
   String deleteCourseConfirmBody(String name);
 
   /// No description provided for @yesDeleteCourse.
@@ -1091,7 +1091,7 @@ abstract class AppLocalizations {
   /// No description provided for @courseDeletedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Curso "{name}" eliminado correctamente.'**
+  /// **'Curso \"{name}\" eliminado correctamente.'**
   String courseDeletedSuccess(String name);
 
   /// No description provided for @courseNameHint.
@@ -1775,7 +1775,7 @@ abstract class AppLocalizations {
   /// No description provided for @amountDollarLabel.
   ///
   /// In es, this message translates to:
-  /// **'Monto ($)'**
+  /// **'Monto (\$)'**
   String get amountDollarLabel;
 
   /// No description provided for @categoryMaterials.
@@ -1937,7 +1937,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventSaved.
   ///
   /// In es, this message translates to:
-  /// **'Evento "{title}" registrado en el calendario'**
+  /// **'Evento \"{title}\" registrado en el calendario'**
   String eventSaved(String title);
 
   /// No description provided for @saveEvent.
@@ -2009,7 +2009,7 @@ abstract class AppLocalizations {
   /// No description provided for @noSchoolEventsDesc.
   ///
   /// In es, this message translates to:
-  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón "+ Nuevo Evento".'**
+  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".'**
   String get noSchoolEventsDesc;
 
   /// No description provided for @createEvent.
@@ -2130,7 +2130,8 @@ abstract class AppLocalizations {
   ///
   /// In es, this message translates to:
   /// **'Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma Académica'**
-  String schoolNoticeBody(String title, String date, String schedule, String location, String description, String teacher);
+  String schoolNoticeBody(String title, String date, String schedule,
+      String location, String description, String teacher);
 
   /// No description provided for @principalTeacher.
   ///

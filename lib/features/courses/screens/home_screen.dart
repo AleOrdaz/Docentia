@@ -611,7 +611,7 @@ class HomeScreen extends ConsumerWidget {
 
   // Tarjeta de curso idéntica a la referencia visual
   Widget _buildCourseCard(
-      BuildContext context, WidgetRef ref, Course course, dynamic l10n) {
+      BuildContext context, WidgetRef ref, Course course, AppLocalizations? l10n) {
     final studentsAsync = ref.watch(studentsForCourseProvider(course.id));
     final studentsCount = studentsAsync.value?.length ?? 0;
     final fillPct = course.capacity > 0
@@ -681,7 +681,7 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10n.navCourses.toString().toUpperCase() ?? 'CURSO',
+                        l10n?.navCourses.toUpperCase() ?? 'CURSO',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -762,7 +762,7 @@ class HomeScreen extends ConsumerWidget {
                             children: [
                               const Icon(Icons.edit_outlined, size: 18),
                               const SizedBox(width: 8),
-                              Text(l10n?.editCourseTitle.toString() ?? 'Editar curso'),
+                              Text(l10n?.editCourseTitle ?? 'Editar curso'),
                             ],
                           ),
                         ),
@@ -850,7 +850,7 @@ class HomeScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${formatCurrency(course.cost)} / ${l10n?.feeMonth?.toLowerCase() ?? "mes"}',
+                          '${formatCurrency(course.cost)} / ${l10n?.perMonth ?? "mes"}',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -860,7 +860,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          l10n?.monthlyCostLabel?.toString().replaceAll('*', '').trim() ?? 'Cuota del curso',
+                          l10n?.courseFee ?? 'Cuota del curso',
                           style: TextStyle(
                             fontSize: 10,
                             color: isDark
@@ -893,11 +893,11 @@ class HomeScreen extends ConsumerWidget {
                             ? const Color(0xFFD8B4FE)
                             : const Color(0xFF6B21A8),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 2),
                       Text(
-                        '${l10n?.paymentsFilter ?? "Vence"}: ${course.paymentSchedule.getLocalizedName(context)}',
+                        '${l10n?.duePrefix ?? "Vence"}: ${course.paymentSchedule.getLocalizedName(context)}',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 10.5,
                           fontWeight: FontWeight.w600,
                           color: isDark
                               ? const Color(0xFFD8B4FE)
