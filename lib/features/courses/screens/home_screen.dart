@@ -40,8 +40,7 @@ class HomeScreen extends ConsumerWidget {
     final financeSummary = ref.watch(financeSummaryProvider);
     final allStudentsAsync = ref.watch(allActiveStudentsProvider);
 
-    final teacherFirstName =
-        teacher?.name.trim().split(' ').first ?? 'Antonio';
+    final teacherFirstName = _greetingFirstName(teacher?.name);
     final teacherPhotoUrl = teacher?.photoUrl ??
         'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav';
 
@@ -1011,4 +1010,10 @@ class HomeScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+String _greetingFirstName(String? raw) {
+  final value = raw?.trim() ?? '';
+  if (value.isEmpty || value.contains('@')) return 'Docente';
+  return value.split(RegExp(r'\s+')).first;
 }
