@@ -18,6 +18,7 @@ class StorageService {
   static const String _keyThemeMode = 'docentia_theme_mode';
   static const String _keyCalendarEvents = 'docentia_calendar_events';
   static const String _keyLanguage = 'docentia_language';
+  static const String _keyTeacherNames = 'docentia_teacher_names';
 
   static SharedPreferences? _prefs;
 
@@ -212,6 +213,40 @@ class StorageService {
     try {
       final prefs = await _instance;
       await prefs.setString(_keyThemeMode, mode);
+    } catch (_) {}
+  }
+
+  // --- Teacher display name (per Firebase uid) ---
+  static Future<String?> getTeacherName(String uid) async {
+    try {
+      final prefs = await _instance;
+      final raw = prefs.getString(_keyTeacherNames);
+      if (raw == null || raw.isEmpty) return null;
+      final map = jsonDecode(raw);
+      if (map is! Map) return null;
+      final name = map[uid];
+      if (name is! String || name.trim().isEmpty) return null;
+      return name.trim();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<void> saveTeacherName(String uid, String name) async {
+    try {
+      final trimmed = name.trim();
+      if (uid.isEmpty || trimmed.isEmpty) return;
+      final prefs = await _instance;
+      final raw = prefs.getString(_keyTeacherNames);
+      final Map<String, dynamic> map = {};
+      if (raw != null && raw.isNotEmpty) {
+        final decoded = jsonDecode(raw);
+        if (decoded is Map) {
+          map.addAll(decoded.map((key, value) => MapEntry(key.toString(), value)));
+        }
+      }
+      map[uid] = trimmed;
+      await prefs.setString(_keyTeacherNames, jsonEncode(map));
     } catch (_) {}
   }
 
