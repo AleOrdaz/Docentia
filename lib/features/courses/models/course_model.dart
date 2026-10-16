@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 enum PaymentSchedule {
   firstHalf,
   endOfMonth,
@@ -10,6 +12,16 @@ extension PaymentScheduleExtension on PaymentSchedule {
         return 'Primera quincena';
       case PaymentSchedule.endOfMonth:
         return 'Fin de mes';
+    }
+  }
+
+  String getLocalizedName(BuildContext context) {
+    final isEn = Localizations.localeOf(context).languageCode == 'en';
+    switch (this) {
+      case PaymentSchedule.firstHalf:
+        return isEn ? 'First half (1-15)' : 'Primera quincena (1-15)';
+      case PaymentSchedule.endOfMonth:
+        return isEn ? 'End of month (25-30)' : 'Fin de mes (25-30)';
     }
   }
 }
@@ -76,12 +88,31 @@ class Course {
     return '$prefix & ${shortNames[sorted.last] ?? ''}';
   }
 
+  String getLocalizedFormattedDays(BuildContext context) {
+    final isEn = Localizations.localeOf(context).languageCode == 'en';
+    final shortNames = isEn
+        ? {1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat', 7: 'Sun'}
+        : {1: 'Lun', 2: 'Mar', 3: 'Mié', 4: 'Jue', 5: 'Vie', 6: 'Sáb', 7: 'Dom'};
+    final sorted = List<int>.from(classDays)..sort();
+    if (sorted.isEmpty) return isEn ? 'No days assigned' : 'Sin días asignados';
+    if (sorted.length == 1) return shortNames[sorted.first] ?? (isEn ? 'Day' : 'Día');
+    final prefix = sorted.sublist(0, sorted.length - 1).map((d) => shortNames[d] ?? '').join(', ');
+    return '$prefix & ${shortNames[sorted.last] ?? ''}';
+  }
+
   /// Horario formateado estructurado: Días + Horas
   String get formattedSchedule {
     final timeStr = startTime.isNotEmpty && endTime.isNotEmpty
         ? '$startTime - $endTime'
         : (startTime.isNotEmpty ? startTime : schedule);
     return '$formattedDays $timeStr'.trim();
+  }
+
+  String getLocalizedSchedule(BuildContext context) {
+    final timeStr = startTime.isNotEmpty && endTime.isNotEmpty
+        ? '$startTime - $endTime'
+        : (startTime.isNotEmpty ? startTime : schedule);
+    return '${getLocalizedFormattedDays(context)} $timeStr'.trim();
   }
 
   static String getDayName(int weekday) {

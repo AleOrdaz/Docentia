@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../finance/providers/finance_provider.dart';
 import '../../students/providers/students_provider.dart';
@@ -33,6 +34,7 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final teacher = ref.watch(authProvider).teacher;
     final coursesAsync = ref.watch(coursesProvider);
     final financeSummary = ref.watch(financeSummaryProvider);
@@ -171,7 +173,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Aquí tienes el resumen de tus cursos.',
+                            l10n?.summarySubtitle ?? 'Aquí tienes el resumen de tus cursos.',
                             style: TextStyle(
                               fontSize: 13,
                               color: isDark
@@ -191,9 +193,11 @@ class HomeScreen extends ConsumerWidget {
                               ),
                               const SizedBox(width: 5),
                               Text(
-                                '${activeCourses.length} ${activeCourses.length == 1 ?
-                                'curso activo' : 'cursos activos'}  ·  $totalStudentsCount ${totalStudentsCount == 1 ?
-                                'alumno' : 'alumnos'}',
+                                '${activeCourses.length} ${activeCourses.length == 1
+                                    ? (l10n?.activeCourseSingular ?? 'curso activo')
+                                    : (l10n?.activeCoursePlural ?? 'cursos activos')}  ·  $totalStudentsCount ${totalStudentsCount == 1
+                                    ? (l10n?.studentSingular ?? 'alumno')
+                                    : (l10n?.studentPlural ?? 'alumnos')}',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -209,7 +213,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 18),
 
                 // 3. Resumen general (3 tarjetas horizontales compactas)
                 Row(
@@ -222,10 +226,10 @@ class HomeScreen extends ConsumerWidget {
                         iconBgColor: const Color(0xFFE3EDFF),
                         iconColor: const Color(0xFF00236F),
                         value: '${activeCourses.length}',
-                        label: 'Cursos activos',
+                        label: l10n?.summaryCardActiveCourses ?? 'Cursos activos',
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 10),
 
                     // Tarjeta 2: Alumnos
                     Expanded(
@@ -235,10 +239,10 @@ class HomeScreen extends ConsumerWidget {
                         iconBgColor: const Color(0xFFD8F3DC),
                         iconColor: const Color(0xFF00796B),
                         value: '$totalStudentsCount',
-                        label: 'Alumnos',
+                        label: l10n?.summaryCardStudents ?? 'Alumnos',
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 10),
 
                     // Tarjeta 3: Ingresos del mes
                     Expanded(
@@ -248,13 +252,13 @@ class HomeScreen extends ConsumerWidget {
                         iconBgColor: const Color(0xFFFFF4DE),
                         iconColor: const Color(0xFFD97706),
                         value: formatCurrency(totalMonthlyIncome),
-                        label: 'Ingresos del mes',
-                        onTap: () => context.push('/finance'),
+                        label: l10n?.summaryCardIncome ?? 'Ingresos del mes',
+                        onTap: () {},
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 18),
 
                 // 4. Sección "Cursos de hoy" + Botón "+ Nuevo curso"
                 Row(
@@ -263,7 +267,7 @@ class HomeScreen extends ConsumerWidget {
                     Row(
                       children: [
                         Text(
-                          'Cursos de hoy',
+                          l10n?.todaysCoursesTitle ?? 'Cursos de hoy',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
@@ -304,9 +308,9 @@ class HomeScreen extends ConsumerWidget {
                         elevation: 0,
                       ),
                       icon: const Icon(Icons.add, size: 18),
-                      label: const Text(
-                        'Nuevo curso',
-                        style: TextStyle(
+                      label: Text(
+                        l10n?.newCourseBtn ?? 'Nuevo curso',
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
@@ -349,19 +353,19 @@ class HomeScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        const Text(
-                          'Aún no tienes cursos',
-                          style: TextStyle(
+                        Text(
+                          l10n?.noCoursesYet ?? 'Aún no tienes cursos',
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF00174D),
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          'Crea tu primer curso para comenzar a inscribir alumnos y llevar el control.',
+                        Text(
+                          l10n?.noCoursesYetDesc ?? 'Crea tu primer curso para comenzar a inscribir alumnos y llevar el control.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF5F6368),
                           ),
@@ -377,7 +381,7 @@ class HomeScreen extends ConsumerWidget {
                                 horizontal: 20, vertical: 10),
                           ),
                           icon: const Icon(Icons.add, size: 16),
-                          label: const Text('Crear curso'),
+                          label: Text(l10n?.create ?? 'Crear curso'),
                         ),
                       ],
                     ),
@@ -415,19 +419,19 @@ class HomeScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 14),
-                        const Text(
-                          'Hoy no tienes clases programadas',
-                          style: TextStyle(
+                        Text(
+                          l10n?.noCoursesTodayTitle ?? 'Hoy no tienes clases programadas',
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF00174D),
                           ),
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          'Es tiempo de un respiro. Un buen momento para organizar tus próximos cursos o revisar tus avances del mes.',
+                        Text(
+                          l10n?.noCoursesTodayDesc ?? 'Es tiempo de un respiro. Un buen momento para organizar tus próximos cursos o revisar tus avances del mes.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 13,
                             color: Color(0xFF5F6368),
                             height: 1.35,
@@ -449,9 +453,9 @@ class HomeScreen extends ConsumerWidget {
                                     horizontal: 16, vertical: 9),
                               ),
                               icon: const Icon(Icons.bar_chart_outlined, size: 16),
-                              label: const Text(
-                                'Revisar avances del mes',
-                                style: TextStyle(
+                              label: Text(
+                                l10n?.navFinance ?? 'Revisar avances del mes',
+                                style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -468,7 +472,7 @@ class HomeScreen extends ConsumerWidget {
                               ),
                               icon: const Icon(Icons.school_outlined, size: 16),
                               label: Text(
-                                'Ver todos los cursos (${activeCourses.length})',
+                                '${l10n?.viewAllCourses ?? "Ver todos los cursos"} (${activeCourses.length})',
                                 style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -490,7 +494,7 @@ class HomeScreen extends ConsumerWidget {
                         separatorBuilder: (_, __) => const SizedBox(height: 14),
                         itemBuilder: (ctx, index) {
                           final course = todayCourses[index];
-                          return _buildCourseCard(context, ref, course);
+                          return _buildCourseCard(context, ref, course, l10n);
                         },
                       ),
                       if (activeCourses.length > todayCourses.length) ...[
@@ -500,7 +504,7 @@ class HomeScreen extends ConsumerWidget {
                             onPressed: () => context.push('/courses'),
                             icon: const Icon(Icons.visibility_outlined, size: 16, color: Color(0xFF00236F)),
                             label: Text(
-                              'Ver todos los cursos (${activeCourses.length})',
+                              '${l10n?.viewAllCourses ?? "Ver todos los cursos"} (${activeCourses.length})',
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -544,7 +548,7 @@ class HomeScreen extends ConsumerWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isDark ? const Color(0xFF151D2E) : Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -607,12 +611,11 @@ class HomeScreen extends ConsumerWidget {
 
   // Tarjeta de curso idéntica a la referencia visual
   Widget _buildCourseCard(
-      BuildContext context, WidgetRef ref, Course course) {
+      BuildContext context, WidgetRef ref, Course course, dynamic l10n) {
     final studentsAsync = ref.watch(studentsForCourseProvider(course.id));
     final studentsCount = studentsAsync.value?.length ?? 0;
     final fillPct = course.capacity > 0
-        ? ((studentsCount / course.capacity) * 100).round()
-        : 0;
+        ? ((studentsCount / course.capacity) * 100).round() : 0;
 
     final iconData = getCourseIcon(course.iconKey);
 
@@ -678,7 +681,7 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'CURSO',
+                        l10n.navCourses.toString().toUpperCase() ?? 'CURSO',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -714,7 +717,7 @@ class HomeScreen extends ConsumerWidget {
                           const SizedBox(width: 5),
                           Flexible(
                             child: Text(
-                              course.formattedSchedule,
+                              course.getLocalizedSchedule(context),
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
@@ -753,13 +756,13 @@ class HomeScreen extends ConsumerWidget {
                         }
                       },
                       itemBuilder: (ctx) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit_outlined, size: 18),
-                              SizedBox(width: 8),
-                              Text('Editar curso'),
+                              const Icon(Icons.edit_outlined, size: 18),
+                              const SizedBox(width: 8),
+                              Text(l10n?.editCourseTitle.toString() ?? 'Editar curso'),
                             ],
                           ),
                         ),
@@ -784,7 +787,7 @@ class HomeScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '$studentsCount de ${course.capacity} alumnos inscritos',
+                  '$studentsCount ${l10n?.ofTotal ?? "de"} ${course.capacity} ${l10n?.studentPlural ?? "alumnos"} ${l10n?.enrolled?.toLowerCase() ?? "inscritos"}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -847,7 +850,7 @@ class HomeScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${formatCurrency(course.cost)} / mes',
+                          '${formatCurrency(course.cost)} / ${l10n?.feeMonth?.toLowerCase() ?? "mes"}',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -857,7 +860,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          'Cuota del curso',
+                          l10n?.monthlyCostLabel?.toString().replaceAll('*', '').trim() ?? 'Cuota del curso',
                           style: TextStyle(
                             fontSize: 10,
                             color: isDark
@@ -892,7 +895,7 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Vence: ${course.paymentSchedule.displayName}',
+                        '${l10n?.paymentsFilter ?? "Vence"}: ${course.paymentSchedule.getLocalizedName(context)}',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,

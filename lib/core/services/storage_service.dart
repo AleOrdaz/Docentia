@@ -17,12 +17,30 @@ class StorageService {
   static const String _keyThemeColorIndex = 'docentia_theme_color_index';
   static const String _keyThemeMode = 'docentia_theme_mode';
   static const String _keyCalendarEvents = 'docentia_calendar_events';
+  static const String _keyLanguage = 'docentia_language';
 
   static SharedPreferences? _prefs;
 
   static Future<SharedPreferences> get _instance async {
     _prefs ??= await SharedPreferences.getInstance();
     return _prefs!;
+  }
+
+  // --- Language (Default: Spanish 'es') ---
+  static Future<String> getLanguageCode() async {
+    try {
+      final prefs = await _instance;
+      return prefs.getString(_keyLanguage) ?? 'es';
+    } catch (_) {
+      return 'es';
+    }
+  }
+
+  static Future<void> saveLanguageCode(String code) async {
+    try {
+      final prefs = await _instance;
+      await prefs.setString(_keyLanguage, code);
+    } catch (_) {}
   }
 
   // --- Theme Color ---
@@ -220,3 +238,4 @@ class StorageService {
     } catch (_) {}
   }
 }
+

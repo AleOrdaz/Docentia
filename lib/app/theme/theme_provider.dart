@@ -63,3 +63,33 @@ final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((r
   return ThemeModeNotifier();
 });
 
+/// Gestor de internacionalización de Docentia (Español 'es' como idioma predeterminado)
+class LocaleNotifier extends StateNotifier<Locale> {
+  LocaleNotifier() : super(const Locale('es')) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final savedCode = await StorageService.getLanguageCode();
+    if (savedCode == 'en') {
+      state = const Locale('en');
+    } else {
+      state = const Locale('es');
+    }
+  }
+
+  Future<void> setLocale(Locale newLocale) async {
+    if (state == newLocale) return;
+    state = newLocale;
+    await StorageService.saveLanguageCode(newLocale.languageCode);
+  }
+
+  Future<void> setLanguage(String langCode) async {
+    final newLocale = Locale(langCode == 'en' ? 'en' : 'es');
+    await setLocale(newLocale);
+  }
+}
+
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) {
+  return LocaleNotifier();
+});

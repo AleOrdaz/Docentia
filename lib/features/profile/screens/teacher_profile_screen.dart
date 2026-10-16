@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/theme/theme_provider.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../courses/providers/courses_provider.dart';
 
@@ -11,6 +12,7 @@ class TeacherProfileScreen extends ConsumerWidget {
   const TeacherProfileScreen({super.key});
 
   void _openEditDialog(BuildContext context, WidgetRef ref, String currentName, String currentPhone, String currentBio) {
+    final l10n = AppLocalizations.of(context);
     final nameCtrl = TextEditingController(text: currentName);
     final phoneCtrl = TextEditingController(text: currentPhone);
     final bioCtrl = TextEditingController(text: currentBio);
@@ -18,19 +20,45 @@ class TeacherProfileScreen extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Editar Perfil Docente'),
+        backgroundColor: AppColors.cardBg(ctx),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(l10n!.editProfileData, style: TextStyle(color: AppColors.textPrimary(ctx))),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: nameCtrl, decoration: const InputDecoration(labelText: 'Nombre')),
+            TextField(
+              controller: nameCtrl,
+              decoration: InputDecoration(
+                labelText: l10n.profileTitle,
+                labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
+              ),
+              style: TextStyle(color: AppColors.textPrimary(ctx)),
+            ),
             const SizedBox(height: 8),
-            TextField(controller: phoneCtrl, decoration: const InputDecoration(labelText: 'Teléfono')),
+            TextField(
+              controller: phoneCtrl,
+              decoration: InputDecoration(
+                labelText: 'WhatsApp / Teléfono',
+                labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
+              ),
+              style: TextStyle(color: AppColors.textPrimary(ctx)),
+            ),
             const SizedBox(height: 8),
-            TextField(controller: bioCtrl, decoration: const InputDecoration(labelText: 'Biografía')),
+            TextField(
+              controller: bioCtrl,
+              decoration: InputDecoration(
+                labelText: 'Biografía',
+                labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
+              ),
+              style: TextStyle(color: AppColors.textPrimary(ctx)),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancel, style: TextStyle(color: AppColors.textSecondary(ctx))),
+          ),
           ElevatedButton(
             onPressed: () {
               ref.read(authProvider.notifier).updateProfile(
@@ -40,7 +68,7 @@ class TeacherProfileScreen extends ConsumerWidget {
               );
               Navigator.of(ctx).pop();
             },
-            child: const Text('Guardar'),
+            child: Text(l10n.save),
           ),
         ],
       ),
@@ -49,33 +77,42 @@ class TeacherProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final authState = ref.watch(authProvider);
     final teacher = authState.teacher;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final currentThemeIndex = ref.watch(themeIndexProvider);
+    final currentLocale = ref.watch(localeProvider);
     final coursesAsync = ref.watch(coursesProvider);
     final courses = coursesAsync.value ?? [];
 
+    final cardBg = AppColors.cardBg(context);
+    final cardBorder = AppColors.cardBorder(context);
+    final surfaceLow = AppColors.surfaceLow(context);
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: textPrimary),
           onPressed: () => context.pop(),
         ),
-        title: Text('Perfil del Profesor', style: AppTextStyles.titleMedium),
+        title: Text(l10n!.profileTitle, style: AppTextStyles.titleMedium.copyWith(color: textPrimary)),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(
           children: [
-            // Tarjeta Principal
+            // Tarjeta Principal de Identidad
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
               ),
               child: Column(
                 children: [
@@ -109,11 +146,11 @@ class TeacherProfileScreen extends ConsumerWidget {
 
                   Text(
                     teacher?.name ?? 'Profesor',
-                    style: AppTextStyles.titleLarge,
+                    style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
                   ),
                   Text(
                     teacher?.email ?? 'profesor@docentia.edu',
-                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.onSurfaceVariant),
+                    style: AppTextStyles.bodyMedium.copyWith(color: textSecondary),
                   ),
                   const SizedBox(height: 8),
 
@@ -124,7 +161,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      'Cuenta vinculada con ${teacher?.provider == 'google' ? 'Google' : 'Apple'}',
+                      '${l10n.linkedWith} ${teacher?.provider == 'google' ? 'Google' : 'Apple'}',
                       style: AppTextStyles.labelSmall.copyWith(color: primaryColor),
                     ),
                   ),
@@ -134,7 +171,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                     Text(
                       teacher!.bio!,
                       textAlign: TextAlign.center,
-                      style: AppTextStyles.bodySmall,
+                      style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                     ),
                   ],
 
@@ -151,7 +188,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                           teacher?.bio ?? '',
                         ),
                         icon: const Icon(Icons.edit, size: 16),
-                        label: const Text('Editar Datos'),
+                        label: Text(l10n.editProfileData),
                       ),
                       const SizedBox(width: 8),
                       TextButton.icon(
@@ -161,7 +198,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                         },
                         style: TextButton.styleFrom(foregroundColor: AppColors.error),
                         icon: const Icon(Icons.logout, size: 16),
-                        label: const Text('Cerrar Sesión'),
+                        label: Text(l10n.signOut),
                       ),
                     ],
                   ),
@@ -170,13 +207,76 @@ class TeacherProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // SECCIÓN: Personalización del Tema (8 colores)
+            // SECCIÓN: Selector de Idioma (Español / English)
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.translate, color: primaryColor, size: 20),
+                      const SizedBox(width: 8),
+                      Text(l10n.languageTitle, style: AppTextStyles.titleSmall.copyWith(color: textPrimary)),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    l10n.languageDesc,
+                    style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                  ),
+                  const SizedBox(height: 14),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildLanguageOption(
+                          label: 'Español',
+                          flag: '🇲🇽',
+                          code: 'es',
+                          currentCode: currentLocale.languageCode,
+                          primaryColor: primaryColor,
+                          surfaceLow: surfaceLow,
+                          textPrimary: textPrimary,
+                          onTap: () {
+                            ref.read(localeProvider.notifier).setLanguage('es');
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _buildLanguageOption(
+                          label: 'English',
+                          flag: '🇺🇸',
+                          code: 'en',
+                          currentCode: currentLocale.languageCode,
+                          primaryColor: primaryColor,
+                          surfaceLow: surfaceLow,
+                          textPrimary: textPrimary,
+                          onTap: () {
+                            ref.read(localeProvider.notifier).setLanguage('en');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // SECCIÓN: Personalización del Tema (10 colores)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cardBorder),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,13 +285,13 @@ class TeacherProfileScreen extends ConsumerWidget {
                     children: [
                       Icon(Icons.palette_outlined, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
-                      Text('Personalización', style: AppTextStyles.titleSmall),
+                      Text(l10n.personalizationTitle, style: AppTextStyles.titleSmall.copyWith(color: textPrimary)),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Selecciona el color principal de la aplicación. Se mantendrán intactos los colores semánticos (asistencia, pagos y alertas).',
-                    style: AppTextStyles.bodySmall,
+                    l10n.personalizationDesc,
+                    style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                   ),
                   const SizedBox(height: 14),
 
@@ -217,7 +317,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(12),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceContainerLow,
+                            color: surfaceLow,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: isSelected ? item.color : Colors.transparent,
@@ -255,7 +355,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                                   style: TextStyle(
                                     fontSize: 9.5,
                                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? item.color : AppColors.onSurfaceVariant,
+                                    color: isSelected ? item.color : textSecondary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -270,16 +370,15 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
-
             const SizedBox(height: 16),
 
-            // SECCIÓN: Configuración del Tema (Sustituye a Resumen Académico)
+            // SECCIÓN: Modo Claro / Oscuro
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,15 +387,16 @@ class TeacherProfileScreen extends ConsumerWidget {
                     children: [
                       Icon(Icons.dark_mode_outlined, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
-                      Text('Tema de la Aplicación', style: AppTextStyles.titleSmall),
+                      Text(l10n.themeModeTitle, style: AppTextStyles.titleSmall.copyWith(color: textPrimary)),
                     ],
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Selecciona el modo de visualización. El cambio se aplica inmediatamente a toda la aplicación.',
-                    style: AppTextStyles.bodySmall,
+                    l10n.themeModeDesc,
+                    style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                   ),
                   const SizedBox(height: 14),
+
                   Consumer(
                     builder: (context, ref, _) {
                       final currentMode = ref.watch(themeModeProvider);
@@ -305,33 +405,39 @@ class TeacherProfileScreen extends ConsumerWidget {
                         children: [
                           Expanded(
                             child: _buildThemeModeOption(
-                              label: 'Claro',
+                              label: l10n.lightMode,
                               icon: Icons.light_mode_outlined,
                               mode: ThemeMode.light,
                               currentMode: currentMode,
                               primaryColor: primaryColor,
+                              surfaceLow: surfaceLow,
+                              textPrimary: textPrimary,
                               onTap: () => ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.light),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: _buildThemeModeOption(
-                              label: 'Oscuro',
+                              label: l10n.darkMode,
                               icon: Icons.dark_mode_outlined,
                               mode: ThemeMode.dark,
                               currentMode: currentMode,
                               primaryColor: primaryColor,
+                              surfaceLow: surfaceLow,
+                              textPrimary: textPrimary,
                               onTap: () => ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.dark),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: _buildThemeModeOption(
-                              label: 'Sistema',
+                              label: l10n.systemMode,
                               icon: Icons.brightness_auto_outlined,
                               mode: ThemeMode.system,
                               currentMode: currentMode,
                               primaryColor: primaryColor,
+                              surfaceLow: surfaceLow,
+                              textPrimary: textPrimary,
                               onTap: () => ref.read(themeModeProvider.notifier).setThemeMode(ThemeMode.system),
                             ),
                           ),
@@ -342,16 +448,50 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Versión app: 1.0.3',
-                  style: AppTextStyles.labelSmall.copyWith(color: primaryColor),
-                )
-              ],
-            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required String label,
+    required String flag,
+    required String code,
+    required String currentCode,
+    required Color primaryColor,
+    required Color surfaceLow,
+    required Color textPrimary,
+    required VoidCallback onTap,
+  }) {
+    final isSelected = code == currentCode;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? primaryColor.withValues(alpha: 0.12) : surfaceLow,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: isSelected ? primaryColor : Colors.transparent,
+            width: 1.8,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(flag, style: const TextStyle(fontSize: 18)),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                color: isSelected ? primaryColor : textPrimary,
+              ),
+            ),
           ],
         ),
       ),
@@ -364,6 +504,8 @@ class TeacherProfileScreen extends ConsumerWidget {
     required ThemeMode mode,
     required ThemeMode currentMode,
     required Color primaryColor,
+    required Color surfaceLow,
+    required Color textPrimary,
     required VoidCallback onTap,
   }) {
     final isSelected = mode == currentMode;
@@ -374,7 +516,7 @@ class TeacherProfileScreen extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: isSelected ? primaryColor.withValues(alpha: 0.1) : AppColors.surfaceContainerLow,
+          color: isSelected ? primaryColor.withValues(alpha: 0.1) : surfaceLow,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isSelected ? primaryColor : Colors.transparent,
@@ -386,7 +528,7 @@ class TeacherProfileScreen extends ConsumerWidget {
             Icon(
               icon,
               size: 24,
-              color: isSelected ? primaryColor : AppColors.onSurfaceVariant,
+              color: isSelected ? primaryColor : textPrimary,
             ),
             const SizedBox(height: 6),
             Text(
@@ -394,7 +536,7 @@ class TeacherProfileScreen extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? primaryColor : AppColors.onSurfaceVariant,
+                color: isSelected ? primaryColor : textPrimary,
               ),
             ),
           ],

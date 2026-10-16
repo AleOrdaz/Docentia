@@ -10,15 +10,6 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final auth = ref.watch(authProvider);
-
-    ref.listen(authProvider, (prev, next) {
-      if (next.error != null && next.error != prev?.error) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(next.error!)));
-      }
-    });
-
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -47,8 +38,8 @@ class LoginScreen extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: 72,
+                    height: 72,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -61,23 +52,31 @@ class LoginScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    child: Image.asset('assets/images/logo_info.jpeg')
+                    child: Image.network(
+                      'https://lh3.googleusercontent.com/aida/AEtjO1XZ7e43VHwBaPjFd1fOXBK0dlNY57Cc-YaMli2NYFc7OQVOWhzSaCAAOv33tNxuQb5vMAA_0qf6G4ycivHEpU8c-KfCGJwd53WxGOMUvTLC3ge96FKHXlIz1rgDw3wCd6TeR7Bm0CXHYF_v6T06P5kmr3Tnm0iTTdVDWW7WTTYpUpOZxNdbsNXVzsJ-ny7otBxpWByZcXqmvsMI8NEFvjZjAJRYTKdtgdPklwiWkfoPh0JSobhTqsPxmiM',
+                      errorBuilder: (_, __, ___) => const Icon(Icons.school, size: 36, color: AppColors.primary),
+                    ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+                  const SizedBox(height: 16),
+
+                  Text('Docentia', style: AppTextStyles.headlineLarge.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 6),
                   Text(
                     'Plataforma de gestión académica y control de asistencia para docentes.',
                     textAlign: TextAlign.center,
                     style: AppTextStyles.bodyMedium.copyWith(color: AppColors.onSurfaceVariant),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+                  const SizedBox(height: 32),
 
                   // Botón Google
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: auth.isLoading ? null
-                          : () => ref.read(authProvider.notifier).signInWithGoogle(),
+                      onPressed: () async {
+                        await ref.read(authProvider.notifier).signInWithGoogle();
+                        if (context.mounted) context.go('/home');
+                      },
                       style: OutlinedButton.styleFrom(
                         shape: const StadiumBorder(),
                         side: const BorderSide(color: AppColors.outlineVariant),
@@ -108,8 +107,10 @@ class LoginScreen extends ConsumerWidget {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: auth.isLoading ? null
-                          : () => ref.read(authProvider.notifier).signInWithApple(),
+                      onPressed: () async {
+                        await ref.read(authProvider.notifier).signInWithApple();
+                        if (context.mounted) context.go('/home');
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
