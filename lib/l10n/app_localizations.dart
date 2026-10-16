@@ -94,8 +94,8 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('es')
+    Locale('es'),
+    Locale('en')
   ];
 
   /// No description provided for @appName.
@@ -617,7 +617,7 @@ abstract class AppLocalizations {
   /// No description provided for @monthlyCostLabel.
   ///
   /// In es, this message translates to:
-  /// **'Costo Mensual (\$) *'**
+  /// **'Costo Mensual ($) *'**
   String get monthlyCostLabel;
 
   /// No description provided for @paymentScheduleLabel.
@@ -847,6 +847,1314 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'de {total}'**
   String ofTotal(int total);
+
+  /// No description provided for @accept.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get accept;
+
+  /// No description provided for @required.
+  ///
+  /// In es, this message translates to:
+  /// **'Requerido'**
+  String get required;
+
+  /// No description provided for @errorWithDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Error: {detail}'**
+  String errorWithDetail(String detail);
+
+  /// No description provided for @courseFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso'**
+  String get courseFallback;
+
+  /// No description provided for @studentFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno'**
+  String get studentFallback;
+
+  /// No description provided for @teacherFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Profesor'**
+  String get teacherFallback;
+
+  /// No description provided for @yearsOld.
+  ///
+  /// In es, this message translates to:
+  /// **'{age} años'**
+  String yearsOld(int age);
+
+  /// No description provided for @duePrefix.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence'**
+  String get duePrefix;
+
+  /// No description provided for @paidStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagado'**
+  String get paidStatus;
+
+  /// No description provided for @overdueStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Atrasado'**
+  String get overdueStatus;
+
+  /// No description provided for @pendingStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendiente'**
+  String get pendingStatus;
+
+  /// No description provided for @upcomingStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo a vencer'**
+  String get upcomingStatus;
+
+  /// No description provided for @presentStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Presente'**
+  String get presentStatus;
+
+  /// No description provided for @absentStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta'**
+  String get absentStatus;
+
+  /// No description provided for @excusedStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificado'**
+  String get excusedStatus;
+
+  /// No description provided for @excusedNoteFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificada'**
+  String get excusedNoteFallback;
+
+  /// No description provided for @unmarkedStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin marcar'**
+  String get unmarkedStatus;
+
+  /// No description provided for @notRecorded.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin registrar'**
+  String get notRecorded;
+
+  /// No description provided for @register.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar'**
+  String get register;
+
+  /// No description provided for @perMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'mes'**
+  String get perMonth;
+
+  /// No description provided for @enrolledWord.
+  ///
+  /// In es, this message translates to:
+  /// **'inscritos'**
+  String get enrolledWord;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In es, this message translates to:
+  /// **'Docentia v1.0.0'**
+  String get appVersion;
+
+  /// No description provided for @loginShortSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Plataforma de gestión académica y control de asistencia para docentes.'**
+  String get loginShortSubtitle;
+
+  /// No description provided for @continueWithGoogleShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Google'**
+  String get continueWithGoogleShort;
+
+  /// No description provided for @termsPrefix.
+  ///
+  /// In es, this message translates to:
+  /// **'Al continuar, aceptas nuestros'**
+  String get termsPrefix;
+
+  /// No description provided for @termsLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y Condiciones'**
+  String get termsLink;
+
+  /// No description provided for @privacyLink.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de Privacidad'**
+  String get privacyLink;
+
+  /// No description provided for @whatsappPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp / Teléfono'**
+  String get whatsappPhone;
+
+  /// No description provided for @biography.
+  ///
+  /// In es, this message translates to:
+  /// **'Biografía'**
+  String get biography;
+
+  /// No description provided for @myCourses.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis Cursos'**
+  String get myCourses;
+
+  /// No description provided for @courseFee.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota del curso'**
+  String get courseFee;
+
+  /// No description provided for @noCoursesManageDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu primer curso para comenzar a gestionar alumnos, asistencias y pagos.'**
+  String get noCoursesManageDesc;
+
+  /// No description provided for @selectStartTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar hora de inicio'**
+  String get selectStartTime;
+
+  /// No description provided for @selectEndTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar hora de finalización'**
+  String get selectEndTime;
+
+  /// No description provided for @selectAtLeastOneDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor, selecciona al menos un día de clase.'**
+  String get selectAtLeastOneDay;
+
+  /// No description provided for @courseUpdatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso "{name}" actualizado con éxito'**
+  String courseUpdatedSuccess(String name);
+
+  /// No description provided for @courseCreatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso "{name}" creado con éxito'**
+  String courseCreatedSuccess(String name);
+
+  /// No description provided for @deleteCourseConfirmTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar este curso?'**
+  String get deleteCourseConfirmTitle;
+
+  /// No description provided for @deleteCourseConfirmBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Estás a punto de eliminar el curso "{name}". Esta acción dará de baja el curso y no podrá deshacerse.'**
+  String deleteCourseConfirmBody(String name);
+
+  /// No description provided for @yesDeleteCourse.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, eliminar curso'**
+  String get yesDeleteCourse;
+
+  /// No description provided for @courseDeletedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso "{name}" eliminado correctamente.'**
+  String courseDeletedSuccess(String name);
+
+  /// No description provided for @courseNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Inglés Avanzado B2'**
+  String get courseNameHint;
+
+  /// No description provided for @courseNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre obligatorio'**
+  String get courseNameRequired;
+
+  /// No description provided for @cannotSaveAttendanceNotClassDay.
+  ///
+  /// In es, this message translates to:
+  /// **'No es posible registrar asistencia: Hoy no es día de clase para este curso.'**
+  String get cannotSaveAttendanceNotClassDay;
+
+  /// No description provided for @attendanceSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia guardada correctamente ({count} presentes)'**
+  String attendanceSaved(int count);
+
+  /// No description provided for @courseOptions.
+  ///
+  /// In es, this message translates to:
+  /// **'Opciones del curso'**
+  String get courseOptions;
+
+  /// No description provided for @notClassDayBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy no hay clase. La asistencia solo está disponible los días de clase.'**
+  String get notClassDayBanner;
+
+  /// No description provided for @addStudentShort.
+  ///
+  /// In es, this message translates to:
+  /// **'+ Agregar alumno'**
+  String get addStudentShort;
+
+  /// No description provided for @attendanceLog.
+  ///
+  /// In es, this message translates to:
+  /// **'Registro de asistencia'**
+  String get attendanceLog;
+
+  /// No description provided for @allStudentsMarkedToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los alumnos tienen asistencia asignada hoy'**
+  String get allStudentsMarkedToday;
+
+  /// No description provided for @noStudentsInCourse.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay alumnos inscritos en este curso'**
+  String get noStudentsInCourse;
+
+  /// No description provided for @sessionOf.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión {current} de {total}'**
+  String sessionOf(int current, int total);
+
+  /// No description provided for @todayAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy, Asistencia'**
+  String get todayAttendance;
+
+  /// No description provided for @enrolledLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Inscritos'**
+  String get enrolledLabel;
+
+  /// No description provided for @activeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Activos'**
+  String get activeLabel;
+
+  /// No description provided for @presentsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Presentes'**
+  String get presentsLabel;
+
+  /// No description provided for @absencesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltas'**
+  String get absencesLabel;
+
+  /// No description provided for @spotsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cupos'**
+  String get spotsLabel;
+
+  /// No description provided for @ofCapacity.
+  ///
+  /// In es, this message translates to:
+  /// **'De {capacity}'**
+  String ofCapacity(int capacity);
+
+  /// No description provided for @studentRegisteredSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno registrado con éxito'**
+  String get studentRegisteredSuccess;
+
+  /// No description provided for @addStudentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar Alumno'**
+  String get addStudentTitle;
+
+  /// No description provided for @addStudentDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa los datos para matricular e inscribir en {course}.'**
+  String addStudentDesc(String course);
+
+  /// No description provided for @firstNamesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombres *'**
+  String get firstNamesLabel;
+
+  /// No description provided for @firstNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Camila'**
+  String get firstNameHint;
+
+  /// No description provided for @lastNamesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Apellidos *'**
+  String get lastNamesLabel;
+
+  /// No description provided for @lastNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Morales Díaz'**
+  String get lastNameHint;
+
+  /// No description provided for @ageLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad'**
+  String get ageLabel;
+
+  /// No description provided for @tutorNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del Tutor / Apoderado'**
+  String get tutorNameLabel;
+
+  /// No description provided for @tutorNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Patricia Díaz'**
+  String get tutorNameHint;
+
+  /// No description provided for @tutorPhoneRequiredLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono Móvil (WhatsApp) *'**
+  String get tutorPhoneRequiredLabel;
+
+  /// No description provided for @phoneRequiredWhatsapp.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono requerido para WhatsApp'**
+  String get phoneRequiredWhatsapp;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo Electrónico'**
+  String get emailLabel;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In es, this message translates to:
+  /// **'tutor@ejemplo.com'**
+  String get emailHint;
+
+  /// No description provided for @tutorFallback.
+  ///
+  /// In es, this message translates to:
+  /// **'Tutor'**
+  String get tutorFallback;
+
+  /// No description provided for @noTutorPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'El alumno no tiene registrado teléfono de tutor'**
+  String get noTutorPhone;
+
+  /// No description provided for @whatsappProgressMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola {tutor}, le escribo desde Docentia para informarle sobre el progreso de su tutorado/a {student}.'**
+  String whatsappProgressMessage(String tutor, String student);
+
+  /// No description provided for @whatsappOpenError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir WhatsApp en este dispositivo'**
+  String get whatsappOpenError;
+
+  /// No description provided for @deactivateStudentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Dar de baja al alumno?'**
+  String get deactivateStudentTitle;
+
+  /// No description provided for @deactivateStudentBody.
+  ///
+  /// In es, this message translates to:
+  /// **'El alumno {name} dejará de figurar en la lista activa del curso, pero sus asistencias y pagos se conservarán intactos.'**
+  String deactivateStudentBody(String name);
+
+  /// No description provided for @studentDeactivated.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno dado de baja. Historial conservado.'**
+  String get studentDeactivated;
+
+  /// No description provided for @confirmDeactivate.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Baja'**
+  String get confirmDeactivate;
+
+  /// No description provided for @newMonthlyFee.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Cuota Mensual'**
+  String get newMonthlyFee;
+
+  /// No description provided for @feeConfigHelp.
+  ///
+  /// In es, this message translates to:
+  /// **'Configura el periodo y la fecha de vencimiento. Solo se permite una cuota por mes:'**
+  String get feeConfigHelp;
+
+  /// No description provided for @monthAndYear.
+  ///
+  /// In es, this message translates to:
+  /// **'Mes y Año:'**
+  String get monthAndYear;
+
+  /// No description provided for @dueDateField.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencimiento:'**
+  String get dueDateField;
+
+  /// No description provided for @monthStart.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de mes'**
+  String get monthStart;
+
+  /// No description provided for @monthStartDay1.
+  ///
+  /// In es, this message translates to:
+  /// **'Día 1 del mes correspondiente'**
+  String get monthStartDay1;
+
+  /// No description provided for @monthEnd.
+  ///
+  /// In es, this message translates to:
+  /// **'Fin de mes'**
+  String get monthEnd;
+
+  /// No description provided for @monthEndLastDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Último día válido (considera bisiestos)'**
+  String get monthEndLastDay;
+
+  /// No description provided for @calculatedDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha calculada:'**
+  String get calculatedDate;
+
+  /// No description provided for @amountToCharge.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto a cobrar:'**
+  String get amountToCharge;
+
+  /// No description provided for @createFee.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear Cuota'**
+  String get createFee;
+
+  /// No description provided for @feeCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota generada correctamente para {period}.'**
+  String feeCreated(String period);
+
+  /// No description provided for @feeAlreadyExists.
+  ///
+  /// In es, this message translates to:
+  /// **'La cuota de este mes ya está registrada para este alumno y curso.'**
+  String get feeAlreadyExists;
+
+  /// No description provided for @modifyDueDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Modificar Vencimiento'**
+  String get modifyDueDate;
+
+  /// No description provided for @changeDueOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar opción de vencimiento para la cuota de {period}:'**
+  String changeDueOption(String period);
+
+  /// No description provided for @monthStartDay1Short.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de mes (Día 1)'**
+  String get monthStartDay1Short;
+
+  /// No description provided for @monthEndLastDayShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Fin de mes (Último día)'**
+  String get monthEndLastDayShort;
+
+  /// No description provided for @resultingDueDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de vencimiento resultante: {date}'**
+  String resultingDueDate(String date);
+
+  /// No description provided for @dueDateUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencimiento actualizado a {date}'**
+  String dueDateUpdated(String date);
+
+  /// No description provided for @update.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get update;
+
+  /// No description provided for @confirmPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar Pago'**
+  String get confirmPayment;
+
+  /// No description provided for @reviewPaymentData.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa los datos del pago que vas a registrar:'**
+  String get reviewPaymentData;
+
+  /// No description provided for @studentColon.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno:'**
+  String get studentColon;
+
+  /// No description provided for @courseColon.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso:'**
+  String get courseColon;
+
+  /// No description provided for @monthlyFeeColon.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensualidad:'**
+  String get monthlyFeeColon;
+
+  /// No description provided for @paymentDateColon.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de pago:'**
+  String get paymentDateColon;
+
+  /// No description provided for @amountToPay.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto a pagar:'**
+  String get amountToPay;
+
+  /// No description provided for @paymentConfirmed.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago de {amount} confirmado para {student}'**
+  String paymentConfirmed(String amount, String student);
+
+  /// No description provided for @studentNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno no encontrado'**
+  String get studentNotFound;
+
+  /// No description provided for @regularStudent.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno Regular'**
+  String get regularStudent;
+
+  /// No description provided for @deactivatedStudent.
+  ///
+  /// In es, this message translates to:
+  /// **'Dado de Baja'**
+  String get deactivatedStudent;
+
+  /// No description provided for @whatsappTutor.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp Tutor'**
+  String get whatsappTutor;
+
+  /// No description provided for @studentAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia del Alumno'**
+  String get studentAttendance;
+
+  /// No description provided for @realtimeRecord.
+  ///
+  /// In es, this message translates to:
+  /// **'Registro en tiempo real'**
+  String get realtimeRecord;
+
+  /// No description provided for @classesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Clases'**
+  String get classesLabel;
+
+  /// No description provided for @attendancesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencias'**
+  String get attendancesLabel;
+
+  /// No description provided for @percentageLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Porcentaje'**
+  String get percentageLabel;
+
+  /// No description provided for @metricsError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error calculando métricas'**
+  String get metricsError;
+
+  /// No description provided for @tutorDataTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos del Tutor / Apoderado'**
+  String get tutorDataTitle;
+
+  /// No description provided for @nameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get nameLabel;
+
+  /// No description provided for @mobilePhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono Móvil'**
+  String get mobilePhone;
+
+  /// No description provided for @secondaryPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono Secundario'**
+  String get secondaryPhone;
+
+  /// No description provided for @noFeesYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay cuotas emitidas para este alumno.'**
+  String get noFeesYet;
+
+  /// No description provided for @generateMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar mensualidad'**
+  String get generateMonthly;
+
+  /// No description provided for @dueOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence: {date}'**
+  String dueOn(String date);
+
+  /// No description provided for @startShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get startShort;
+
+  /// No description provided for @confirmPaymentShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar pago'**
+  String get confirmPaymentShort;
+
+  /// No description provided for @paymentsLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar pagos'**
+  String get paymentsLoadError;
+
+  /// No description provided for @swipeMarkHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Desliza: ⟵ Falta | Presente ⟶'**
+  String get swipeMarkHint;
+
+  /// No description provided for @swipeCorrectHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Desliza en sentido contrario para corregir'**
+  String get swipeCorrectHint;
+
+  /// No description provided for @classDaysOnly.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo días de clase'**
+  String get classDaysOnly;
+
+  /// No description provided for @noteTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota / Justificante'**
+  String get noteTitle;
+
+  /// No description provided for @noteReasonLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo de falta / observación'**
+  String get noteReasonLabel;
+
+  /// No description provided for @noteHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Cita médica, permiso familiar...'**
+  String get noteHint;
+
+  /// No description provided for @viewNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver nota'**
+  String get viewNote;
+
+  /// No description provided for @attendanceHistoryTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Registro de Asistencia'**
+  String get attendanceHistoryTitle;
+
+  /// No description provided for @noSessionsYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin clases registradas aún'**
+  String get noSessionsYet;
+
+  /// No description provided for @noSessionsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando guardes la asistencia de una clase, su fecha, horario y detalle de alumnos presentes y faltas se conservarán aquí.'**
+  String get noSessionsDesc;
+
+  /// No description provided for @historyLoadError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al cargar historial: {detail}'**
+  String historyLoadError(String detail);
+
+  /// No description provided for @presentsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Presentes: {count}'**
+  String presentsCount(int count);
+
+  /// No description provided for @absencesCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltas: {count}'**
+  String absencesCount(int count);
+
+  /// No description provided for @presentsHeader.
+  ///
+  /// In es, this message translates to:
+  /// **'Presentes — {count}'**
+  String presentsHeader(int count);
+
+  /// No description provided for @noPresentsRecorded.
+  ///
+  /// In es, this message translates to:
+  /// **'Ningún alumno presente registrado'**
+  String get noPresentsRecorded;
+
+  /// No description provided for @absencesHeader.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltas — {count}'**
+  String absencesHeader(int count);
+
+  /// No description provided for @noAbsences.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin inasistencias en esta clase'**
+  String get noAbsences;
+
+  /// No description provided for @financeStatsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas Financieras'**
+  String get financeStatsTitle;
+
+  /// No description provided for @allYearTab.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo el Año'**
+  String get allYearTab;
+
+  /// No description provided for @netProfitFormula.
+  ///
+  /// In es, this message translates to:
+  /// **'Ganancia Neta (Ingresos - Gastos)'**
+  String get netProfitFormula;
+
+  /// No description provided for @marginLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Margen: {percent}%'**
+  String marginLabel(String percent);
+
+  /// No description provided for @collectedWithAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobrado: {amount}'**
+  String collectedWithAmount(String amount);
+
+  /// No description provided for @expensesWithAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos: {amount}'**
+  String expensesWithAmount(String amount);
+
+  /// No description provided for @teacherExpenses.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos del Docente'**
+  String get teacherExpenses;
+
+  /// No description provided for @expenseDescriptionLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción del gasto'**
+  String get expenseDescriptionLabel;
+
+  /// No description provided for @amountDollarLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto ($)'**
+  String get amountDollarLabel;
+
+  /// No description provided for @categoryMaterials.
+  ///
+  /// In es, this message translates to:
+  /// **'Materiales y Libros'**
+  String get categoryMaterials;
+
+  /// No description provided for @categorySoftware.
+  ///
+  /// In es, this message translates to:
+  /// **'Software y Licencias'**
+  String get categorySoftware;
+
+  /// No description provided for @categorySupplies.
+  ///
+  /// In es, this message translates to:
+  /// **'Insumos de Aula'**
+  String get categorySupplies;
+
+  /// No description provided for @categoryTransport.
+  ///
+  /// In es, this message translates to:
+  /// **'Transporte'**
+  String get categoryTransport;
+
+  /// No description provided for @categoryMisc.
+  ///
+  /// In es, this message translates to:
+  /// **'Varios'**
+  String get categoryMisc;
+
+  /// No description provided for @newSchoolEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo Evento Escolar'**
+  String get newSchoolEvent;
+
+  /// No description provided for @eventTitleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Título del Evento *'**
+  String get eventTitleLabel;
+
+  /// No description provided for @eventTitleHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Primer Examen Parcial / Entrega de Proyectos'**
+  String get eventTitleHint;
+
+  /// No description provided for @activityType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de Actividad'**
+  String get activityType;
+
+  /// No description provided for @eventTypeExam.
+  ///
+  /// In es, this message translates to:
+  /// **'Examen'**
+  String get eventTypeExam;
+
+  /// No description provided for @eventTypeProject.
+  ///
+  /// In es, this message translates to:
+  /// **'Proyecto'**
+  String get eventTypeProject;
+
+  /// No description provided for @eventTypeMeeting.
+  ///
+  /// In es, this message translates to:
+  /// **'Reunión Apoderados'**
+  String get eventTypeMeeting;
+
+  /// No description provided for @eventTypeHoliday.
+  ///
+  /// In es, this message translates to:
+  /// **'Día Festivo'**
+  String get eventTypeHoliday;
+
+  /// No description provided for @eventTypeSpecial.
+  ///
+  /// In es, this message translates to:
+  /// **'Especial'**
+  String get eventTypeSpecial;
+
+  /// No description provided for @associatedCourse.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso Asociado'**
+  String get associatedCourse;
+
+  /// No description provided for @allCoursesGeneral.
+  ///
+  /// In es, this message translates to:
+  /// **'General / Todos los Cursos'**
+  String get allCoursesGeneral;
+
+  /// No description provided for @dateLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get dateLabel;
+
+  /// No description provided for @timeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario'**
+  String get timeLabel;
+
+  /// No description provided for @locationLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubicación / Salón / Enlace (opcional)'**
+  String get locationLabel;
+
+  /// No description provided for @locationHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Aula 3B, Laboratorio o Google Meet'**
+  String get locationHint;
+
+  /// No description provided for @descriptionInstructionsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción / Instrucciones *'**
+  String get descriptionInstructionsLabel;
+
+  /// No description provided for @descriptionHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles de la actividad, temas a evaluar o materiales requeridos...'**
+  String get descriptionHint;
+
+  /// No description provided for @extraEmailsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correos adicionales de tutores (opcional)'**
+  String get extraEmailsLabel;
+
+  /// No description provided for @extraEmailsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'apoderado@ejemplo.com, direccion@colegio.edu'**
+  String get extraEmailsHint;
+
+  /// No description provided for @eventTitleRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'El título del evento es obligatorio.'**
+  String get eventTitleRequired;
+
+  /// No description provided for @eventDescriptionRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa una descripción para el evento.'**
+  String get eventDescriptionRequired;
+
+  /// No description provided for @eventSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento "{title}" registrado en el calendario'**
+  String eventSaved(String title);
+
+  /// No description provided for @saveEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar Evento'**
+  String get saveEvent;
+
+  /// No description provided for @sendEventToParents.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar Evento a Padres'**
+  String get sendEventToParents;
+
+  /// No description provided for @bccPrivacyNotice.
+  ///
+  /// In es, this message translates to:
+  /// **'Se preparará el correo para {count} tutores con copia oculta (BCC) protegiendo su privacidad.'**
+  String bccPrivacyNotice(int count);
+
+  /// No description provided for @subjectPrefix.
+  ///
+  /// In es, this message translates to:
+  /// **'Asunto:'**
+  String get subjectPrefix;
+
+  /// No description provided for @noticeCopied.
+  ///
+  /// In es, this message translates to:
+  /// **'Aviso copiado al portapapeles'**
+  String get noticeCopied;
+
+  /// No description provided for @copyText.
+  ///
+  /// In es, this message translates to:
+  /// **'Copiar Texto'**
+  String get copyText;
+
+  /// No description provided for @openMail.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Correo'**
+  String get openMail;
+
+  /// No description provided for @noMailClient.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontró cliente de correo instalado. Mensaje copiado.'**
+  String get noMailClient;
+
+  /// No description provided for @calendarClassesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Calendario de Clases y Eventos'**
+  String get calendarClassesTitle;
+
+  /// No description provided for @schoolEvents.
+  ///
+  /// In es, this message translates to:
+  /// **'Eventos Escolares'**
+  String get schoolEvents;
+
+  /// No description provided for @noSchoolEvents.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin eventos escolares registrados'**
+  String get noSchoolEvents;
+
+  /// No description provided for @noSchoolEventsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón "+ Nuevo Evento".'**
+  String get noSchoolEventsDesc;
+
+  /// No description provided for @createEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'+ Crear Evento'**
+  String get createEvent;
+
+  /// No description provided for @coursePaymentsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagos y Cuotas de Cursos'**
+  String get coursePaymentsTitle;
+
+  /// No description provided for @noDueDatesToday.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin vencimientos de cuotas hoy'**
+  String get noDueDatesToday;
+
+  /// No description provided for @noDueDatesDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay pagos con fecha límite programada para este día.'**
+  String get noDueDatesDesc;
+
+  /// No description provided for @scheduledClasses.
+  ///
+  /// In es, this message translates to:
+  /// **'Clases Programadas'**
+  String get scheduledClasses;
+
+  /// No description provided for @noClassesThisDay.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay clases programadas para este día'**
+  String get noClassesThisDay;
+
+  /// No description provided for @noClassesThisDayDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona otro día en el calendario semanal para consultar los horarios.'**
+  String get noClassesThisDayDesc;
+
+  /// No description provided for @deleteEvent.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar Evento'**
+  String get deleteEvent;
+
+  /// No description provided for @eventDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Evento escolar eliminado'**
+  String get eventDeleted;
+
+  /// No description provided for @notifyParents.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisar a Padres'**
+  String get notifyParents;
+
+  /// No description provided for @feeReminder.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorio de Cuota: {name}'**
+  String feeReminder(String name);
+
+  /// No description provided for @feeScheduleLine.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de cobro establecida: {schedule} · Cuota: {amount}'**
+  String feeScheduleLine(String schedule, String amount);
+
+  /// No description provided for @monthStartRange.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de mes (Día 1-10)'**
+  String get monthStartRange;
+
+  /// No description provided for @monthEndDay30.
+  ///
+  /// In es, this message translates to:
+  /// **'Fin de mes (Día 30)'**
+  String get monthEndDay30;
+
+  /// No description provided for @attendanceAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia'**
+  String get attendanceAction;
+
+  /// No description provided for @classesTabCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Clases ({count})'**
+  String classesTabCount(int count);
+
+  /// No description provided for @eventsTabCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Eventos ({count})'**
+  String eventsTabCount(int count);
+
+  /// No description provided for @paymentsTabCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagos ({count})'**
+  String paymentsTabCount(int count);
+
+  /// No description provided for @schoolNoticeSubject.
+  ///
+  /// In es, this message translates to:
+  /// **'[Docentia] Aviso Escolar: {title} ({date})'**
+  String schoolNoticeSubject(String title, String date);
+
+  /// No description provided for @schoolNoticeBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma Académica'**
+  String schoolNoticeBody(String title, String date, String schedule, String location, String description, String teacher);
+
+  /// No description provided for @principalTeacher.
+  ///
+  /// In es, this message translates to:
+  /// **'Profesor Titular'**
+  String get principalTeacher;
+
+  /// No description provided for @locationLine.
+  ///
+  /// In es, this message translates to:
+  /// **'\n• Ubicación: {place}'**
+  String locationLine(String place);
+
+  /// No description provided for @attendancePctShort.
+  ///
+  /// In es, this message translates to:
+  /// **'{percent}% asist.'**
+  String attendancePctShort(int percent);
+
+  /// No description provided for @excusedCompact.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} just.'**
+  String excusedCompact(int count);
 }
 
 class _AppLocalizationsDelegate

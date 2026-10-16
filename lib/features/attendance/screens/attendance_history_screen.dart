@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../models/attendance_model.dart';
 import '../providers/attendance_provider.dart';
@@ -21,8 +22,9 @@ class AttendanceHistoryScreen extends ConsumerWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final course = ref.watch(selectedCourseProvider);
     final sessionsAsync = ref.watch(courseSessionsProvider(courseId));
+    final l10n = AppLocalizations.of(context)!;
 
-    final courseName = course?.name ?? 'Curso';
+    final courseName = course?.name ?? l10n.courseFallback;
 
     return Scaffold(
       backgroundColor:
@@ -39,7 +41,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Registro de Asistencia',
+              l10n.attendanceHistoryTitle,
               style: AppTextStyles.titleMedium.copyWith(
                 color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                 fontWeight: FontWeight.bold,
@@ -77,7 +79,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Sin clases registradas aún',
+                      l10n.noSessionsYet,
                       style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -85,7 +87,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Cuando guardes la asistencia de una clase, su fecha, horario y detalle de alumnos presentes y faltas se conservarán aquí.',
+                      l10n.noSessionsDesc,
                       style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.onSurfaceVariant,
                       ),
@@ -109,7 +111,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(
-          child: Text('Error al cargar historial: $err'),
+          child: Text(l10n.historyLoadError('$err')),
         ),
       ),
     );
@@ -121,6 +123,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
       Color primaryColor,
       ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
     final presentStudents = session.presentStudents;
     final absentStudents = session.absentStudents;
 
@@ -191,7 +194,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Presentes: ${session.presentCount}',
+                          l10n.presentsCount(session.presentCount),
                           style: AppTextStyles.labelSmall.copyWith(
                             color: AppColors.secondary,
                             fontWeight: FontWeight.bold,
@@ -217,7 +220,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          'Faltas: ${session.absentCount}',
+                          l10n.absencesCount(session.absentCount),
                           style: AppTextStyles.labelSmall.copyWith(
                             color: AppColors.error,
                             fontWeight: FontWeight.bold,
@@ -243,7 +246,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Presentes — ${session.presentCount}',
+                  l10n.presentsHeader(session.presentCount),
                   style: AppTextStyles.labelMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.secondary,
@@ -256,7 +259,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 22, bottom: 8),
                 child: Text(
-                  'Ningún alumno presente registrado',
+                  l10n.noPresentsRecorded,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.outline,
                     fontStyle: FontStyle.italic,
@@ -309,7 +312,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Faltas — ${session.absentCount}',
+                  l10n.absencesHeader(session.absentCount),
                   style: AppTextStyles.labelMedium.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.error,
@@ -322,7 +325,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 22, bottom: 4),
                 child: Text(
-                  'Sin inasistencias en esta clase',
+                  l10n.noAbsences,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.outline,
                     fontStyle: FontStyle.italic,
@@ -371,7 +374,7 @@ class AttendanceHistoryScreen extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Text(
-                              s.note ?? 'Justificada',
+                              s.note ?? l10n.excusedNoteFallback,
                               style: AppTextStyles.labelSmall.copyWith(
                                 fontSize: 10,
                                 color: AppColors.onSurfaceVariant,

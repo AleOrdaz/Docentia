@@ -129,5 +129,359 @@
     "placeholders": {
       "total": { "type": "int" }
     }
+  },
+  "accept": "Aceptar",
+  "required": "Requerido",
+  "errorWithDetail": "Error: {detail}",
+  "@errorWithDetail": {
+    "placeholders": { "detail": { "type": "String" } }
+  },
+  "courseFallback": "Curso",
+  "studentFallback": "Alumno",
+  "teacherFallback": "Profesor",
+  "yearsOld": "{age} años",
+  "@yearsOld": {
+    "placeholders": { "age": { "type": "int" } }
+  },
+  "duePrefix": "Vence",
+  "paidStatus": "Pagado",
+  "overdueStatus": "Atrasado",
+  "pendingStatus": "Pendiente",
+  "upcomingStatus": "Próximo a vencer",
+  "presentStatus": "Presente",
+  "absentStatus": "Falta",
+  "excusedStatus": "Justificado",
+  "excusedNoteFallback": "Justificada",
+  "unmarkedStatus": "Sin marcar",
+  "notRecorded": "Sin registrar",
+  "register": "Registrar",
+  "perMonth": "mes",
+  "enrolledWord": "inscritos",
+  "appVersion": "Docentia v1.0.0",
+  "loginShortSubtitle": "Plataforma de gestión académica y control de asistencia para docentes.",
+  "continueWithGoogleShort": "Continuar con Google",
+  "termsPrefix": "Al continuar, aceptas nuestros",
+  "termsLink": "Términos y Condiciones",
+  "privacyLink": "Política de Privacidad",
+  "whatsappPhone": "WhatsApp / Teléfono",
+  "biography": "Biografía",
+  "myCourses": "Mis Cursos",
+  "courseFee": "Cuota del curso",
+  "noCoursesManageDesc": "Crea tu primer curso para comenzar a gestionar alumnos, asistencias y pagos.",
+  "selectStartTime": "Seleccionar hora de inicio",
+  "selectEndTime": "Seleccionar hora de finalización",
+  "selectAtLeastOneDay": "Por favor, selecciona al menos un día de clase.",
+  "courseUpdatedSuccess": "Curso \"{name}\" actualizado con éxito",
+  "@courseUpdatedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "courseCreatedSuccess": "Curso \"{name}\" creado con éxito",
+  "@courseCreatedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "deleteCourseConfirmTitle": "¿Eliminar este curso?",
+  "deleteCourseConfirmBody": "Estás a punto de eliminar el curso \"{name}\". Esta acción dará de baja el curso y no podrá deshacerse.",
+  "@deleteCourseConfirmBody": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "yesDeleteCourse": "Sí, eliminar curso",
+  "courseDeletedSuccess": "Curso \"{name}\" eliminado correctamente.",
+  "@courseDeletedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "courseNameHint": "Ej. Inglés Avanzado B2",
+  "courseNameRequired": "Nombre obligatorio",
+  "cannotSaveAttendanceNotClassDay": "No es posible registrar asistencia: Hoy no es día de clase para este curso.",
+  "attendanceSaved": "Asistencia guardada correctamente ({count} presentes)",
+  "@attendanceSaved": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "courseOptions": "Opciones del curso",
+  "notClassDayBanner": "Hoy no hay clase. La asistencia solo está disponible los días de clase.",
+  "addStudentShort": "+ Agregar alumno",
+  "attendanceLog": "Registro de asistencia",
+  "allStudentsMarkedToday": "Todos los alumnos tienen asistencia asignada hoy",
+  "noStudentsInCourse": "Aún no hay alumnos inscritos en este curso",
+  "sessionOf": "Sesión {current} de {total}",
+  "@sessionOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "todayAttendance": "Hoy, Asistencia",
+  "enrolledLabel": "Inscritos",
+  "activeLabel": "Activos",
+  "presentsLabel": "Presentes",
+  "absencesLabel": "Faltas",
+  "spotsLabel": "Cupos",
+  "ofCapacity": "De {capacity}",
+  "@ofCapacity": {
+    "placeholders": { "capacity": { "type": "int" } }
+  },
+  "studentRegisteredSuccess": "Alumno registrado con éxito",
+  "addStudentTitle": "Agregar Alumno",
+  "addStudentDesc": "Ingresa los datos para matricular e inscribir en {course}.",
+  "@addStudentDesc": {
+    "placeholders": { "course": { "type": "String" } }
+  },
+  "firstNamesLabel": "Nombres *",
+  "firstNameHint": "Ej. Camila",
+  "lastNamesLabel": "Apellidos *",
+  "lastNameHint": "Ej. Morales Díaz",
+  "ageLabel": "Edad",
+  "tutorNameLabel": "Nombre del Tutor / Apoderado",
+  "tutorNameHint": "Ej. Patricia Díaz",
+  "tutorPhoneRequiredLabel": "Teléfono Móvil (WhatsApp) *",
+  "phoneRequiredWhatsapp": "Teléfono requerido para WhatsApp",
+  "emailLabel": "Correo Electrónico",
+  "emailHint": "tutor@ejemplo.com",
+  "tutorFallback": "Tutor",
+  "noTutorPhone": "El alumno no tiene registrado teléfono de tutor",
+  "whatsappProgressMessage": "Hola {tutor}, le escribo desde Docentia para informarle sobre el progreso de su tutorado/a {student}.",
+  "@whatsappProgressMessage": {
+    "placeholders": {
+      "tutor": { "type": "String" },
+      "student": { "type": "String" }
+    }
+  },
+  "whatsappOpenError": "No se pudo abrir WhatsApp en este dispositivo",
+  "deactivateStudentTitle": "¿Dar de baja al alumno?",
+  "deactivateStudentBody": "El alumno {name} dejará de figurar en la lista activa del curso, pero sus asistencias y pagos se conservarán intactos.",
+  "@deactivateStudentBody": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "studentDeactivated": "Alumno dado de baja. Historial conservado.",
+  "confirmDeactivate": "Confirmar Baja",
+  "newMonthlyFee": "Nueva Cuota Mensual",
+  "feeConfigHelp": "Configura el periodo y la fecha de vencimiento. Solo se permite una cuota por mes:",
+  "monthAndYear": "Mes y Año:",
+  "dueDateField": "Vencimiento:",
+  "monthStart": "Inicio de mes",
+  "monthStartDay1": "Día 1 del mes correspondiente",
+  "monthEnd": "Fin de mes",
+  "monthEndLastDay": "Último día válido (considera bisiestos)",
+  "calculatedDate": "Fecha calculada:",
+  "amountToCharge": "Monto a cobrar:",
+  "createFee": "Crear Cuota",
+  "feeCreated": "Cuota generada correctamente para {period}.",
+  "@feeCreated": {
+    "placeholders": { "period": { "type": "String" } }
+  },
+  "feeAlreadyExists": "La cuota de este mes ya está registrada para este alumno y curso.",
+  "modifyDueDate": "Modificar Vencimiento",
+  "changeDueOption": "Cambiar opción de vencimiento para la cuota de {period}:",
+  "@changeDueOption": {
+    "placeholders": { "period": { "type": "String" } }
+  },
+  "monthStartDay1Short": "Inicio de mes (Día 1)",
+  "monthEndLastDayShort": "Fin de mes (Último día)",
+  "resultingDueDate": "Fecha de vencimiento resultante: {date}",
+  "@resultingDueDate": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "dueDateUpdated": "Vencimiento actualizado a {date}",
+  "@dueDateUpdated": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "update": "Actualizar",
+  "confirmPayment": "Confirmar Pago",
+  "reviewPaymentData": "Revisa los datos del pago que vas a registrar:",
+  "studentColon": "Alumno:",
+  "courseColon": "Curso:",
+  "monthlyFeeColon": "Mensualidad:",
+  "paymentDateColon": "Fecha de pago:",
+  "amountToPay": "Monto a pagar:",
+  "paymentConfirmed": "Pago de {amount} confirmado para {student}",
+  "@paymentConfirmed": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "student": { "type": "String" }
+    }
+  },
+  "studentNotFound": "Alumno no encontrado",
+  "regularStudent": "Alumno Regular",
+  "deactivatedStudent": "Dado de Baja",
+  "whatsappTutor": "WhatsApp Tutor",
+  "studentAttendance": "Asistencia del Alumno",
+  "realtimeRecord": "Registro en tiempo real",
+  "classesLabel": "Clases",
+  "attendancesLabel": "Asistencias",
+  "percentageLabel": "Porcentaje",
+  "metricsError": "Error calculando métricas",
+  "tutorDataTitle": "Datos del Tutor / Apoderado",
+  "nameLabel": "Nombre",
+  "mobilePhone": "Teléfono Móvil",
+  "secondaryPhone": "Teléfono Secundario",
+  "noFeesYet": "Aún no hay cuotas emitidas para este alumno.",
+  "generateMonthly": "Generar mensualidad",
+  "dueOn": "Vence: {date}",
+  "@dueOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "startShort": "Inicio",
+  "confirmPaymentShort": "Confirmar pago",
+  "paymentsLoadError": "Error al cargar pagos",
+  "swipeMarkHint": "Desliza: ⟵ Falta | Presente ⟶",
+  "swipeCorrectHint": "Desliza en sentido contrario para corregir",
+  "classDaysOnly": "Solo días de clase",
+  "noteTitle": "Nota / Justificante",
+  "noteReasonLabel": "Motivo de falta / observación",
+  "noteHint": "Ej. Cita médica, permiso familiar...",
+  "viewNote": "Ver nota",
+  "attendanceHistoryTitle": "Registro de Asistencia",
+  "noSessionsYet": "Sin clases registradas aún",
+  "noSessionsDesc": "Cuando guardes la asistencia de una clase, su fecha, horario y detalle de alumnos presentes y faltas se conservarán aquí.",
+  "historyLoadError": "Error al cargar historial: {detail}",
+  "@historyLoadError": {
+    "placeholders": { "detail": { "type": "String" } }
+  },
+  "presentsCount": "Presentes: {count}",
+  "@presentsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "absencesCount": "Faltas: {count}",
+  "@absencesCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "presentsHeader": "Presentes — {count}",
+  "@presentsHeader": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "noPresentsRecorded": "Ningún alumno presente registrado",
+  "absencesHeader": "Faltas — {count}",
+  "@absencesHeader": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "noAbsences": "Sin inasistencias en esta clase",
+  "financeStatsTitle": "Estadísticas Financieras",
+  "allYearTab": "Todo el Año",
+  "netProfitFormula": "Ganancia Neta (Ingresos - Gastos)",
+  "marginLabel": "Margen: {percent}%",
+  "@marginLabel": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "collectedWithAmount": "Cobrado: {amount}",
+  "@collectedWithAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "expensesWithAmount": "Gastos: {amount}",
+  "@expensesWithAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "teacherExpenses": "Gastos del Docente",
+  "expenseDescriptionLabel": "Descripción del gasto",
+  "amountDollarLabel": "Monto ($)",
+  "categoryMaterials": "Materiales y Libros",
+  "categorySoftware": "Software y Licencias",
+  "categorySupplies": "Insumos de Aula",
+  "categoryTransport": "Transporte",
+  "categoryMisc": "Varios",
+  "newSchoolEvent": "Nuevo Evento Escolar",
+  "eventTitleLabel": "Título del Evento *",
+  "eventTitleHint": "Ej. Primer Examen Parcial / Entrega de Proyectos",
+  "activityType": "Tipo de Actividad",
+  "eventTypeExam": "Examen",
+  "eventTypeProject": "Proyecto",
+  "eventTypeMeeting": "Reunión Apoderados",
+  "eventTypeHoliday": "Día Festivo",
+  "eventTypeSpecial": "Especial",
+  "associatedCourse": "Curso Asociado",
+  "allCoursesGeneral": "General / Todos los Cursos",
+  "dateLabel": "Fecha",
+  "timeLabel": "Horario",
+  "locationLabel": "Ubicación / Salón / Enlace (opcional)",
+  "locationHint": "Ej. Aula 3B, Laboratorio o Google Meet",
+  "descriptionInstructionsLabel": "Descripción / Instrucciones *",
+  "descriptionHint": "Detalles de la actividad, temas a evaluar o materiales requeridos...",
+  "extraEmailsLabel": "Correos adicionales de tutores (opcional)",
+  "extraEmailsHint": "apoderado@ejemplo.com, direccion@colegio.edu",
+  "eventTitleRequired": "El título del evento es obligatorio.",
+  "eventDescriptionRequired": "Por favor ingresa una descripción para el evento.",
+  "eventSaved": "Evento \"{title}\" registrado en el calendario",
+  "@eventSaved": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "saveEvent": "Guardar Evento",
+  "sendEventToParents": "Enviar Evento a Padres",
+  "bccPrivacyNotice": "Se preparará el correo para {count} tutores con copia oculta (BCC) protegiendo su privacidad.",
+  "@bccPrivacyNotice": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "subjectPrefix": "Asunto:",
+  "noticeCopied": "Aviso copiado al portapapeles",
+  "copyText": "Copiar Texto",
+  "openMail": "Abrir Correo",
+  "noMailClient": "No se encontró cliente de correo instalado. Mensaje copiado.",
+  "calendarClassesTitle": "Calendario de Clases y Eventos",
+  "schoolEvents": "Eventos Escolares",
+  "noSchoolEvents": "Sin eventos escolares registrados",
+  "noSchoolEventsDesc": "Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".",
+  "createEvent": "+ Crear Evento",
+  "coursePaymentsTitle": "Pagos y Cuotas de Cursos",
+  "noDueDatesToday": "Sin vencimientos de cuotas hoy",
+  "noDueDatesDesc": "No hay pagos con fecha límite programada para este día.",
+  "scheduledClasses": "Clases Programadas",
+  "noClassesThisDay": "No hay clases programadas para este día",
+  "noClassesThisDayDesc": "Selecciona otro día en el calendario semanal para consultar los horarios.",
+  "deleteEvent": "Eliminar Evento",
+  "eventDeleted": "Evento escolar eliminado",
+  "notifyParents": "Avisar a Padres",
+  "feeReminder": "Recordatorio de Cuota: {name}",
+  "@feeReminder": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "feeScheduleLine": "Fecha de cobro establecida: {schedule} · Cuota: {amount}",
+  "@feeScheduleLine": {
+    "placeholders": {
+      "schedule": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "monthStartRange": "Inicio de mes (Día 1-10)",
+  "monthEndDay30": "Fin de mes (Día 30)",
+  "attendanceAction": "Asistencia",
+  "classesTabCount": "Clases ({count})",
+  "@classesTabCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "eventsTabCount": "Eventos ({count})",
+  "@eventsTabCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "paymentsTabCount": "Pagos ({count})",
+  "@paymentsTabCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "schoolNoticeSubject": "[Docentia] Aviso Escolar: {title} ({date})",
+  "@schoolNoticeSubject": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "schoolNoticeBody": "Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma Académica",
+  "@schoolNoticeBody": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "date": { "type": "String" },
+      "schedule": { "type": "String" },
+      "location": { "type": "String" },
+      "description": { "type": "String" },
+      "teacher": { "type": "String" }
+    }
+  },
+  "principalTeacher": "Profesor Titular",
+  "locationLine": "\n• Ubicación: {place}",
+  "@locationLine": {
+    "placeholders": { "place": { "type": "String" } }
+  },
+  "attendancePctShort": "{percent}% asist.",
+  "@attendancePctShort": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "excusedCompact": "{count} just.",
+  "@excusedCompact": {
+    "placeholders": { "count": { "type": "int" } }
   }
 }

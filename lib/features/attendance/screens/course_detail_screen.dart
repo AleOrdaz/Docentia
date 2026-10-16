@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
@@ -62,11 +63,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     // Validación de negocio estricta: No permitir registrar si hoy no corresponde a clase
     if (course != null && !course.isClassDay(now)) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'No es posible registrar asistencia: Hoy no es día de clase para este curso.',
-            ),
+          SnackBar(
+            content: Text(l10n.cannotSaveAttendanceNotClassDay),
             backgroundColor: AppColors.error,
           ),
         );
@@ -109,15 +109,14 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     await ref.read(attendanceForDateProvider(param).notifier).persistAttendance();
 
     if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
             children: [
               const Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
               const SizedBox(width: 8),
-              Text(
-                'Asistencia guardada correctamente (${session.presentCount} presentes)',
-              ),
+              Expanded(child: Text(l10n.attendanceSaved(session.presentCount))),
             ],
           ),
           backgroundColor: AppColors.inverseSurface,
@@ -136,10 +135,11 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     final attendanceParam = AttendanceDateParam(courseId: widget.courseId, date: _todayDateStr);
     final attendanceAsync = ref.watch(attendanceForDateProvider(attendanceParam));
 
-    final courseName = course?.name ?? 'Curso';
-    final courseSchedule = course?.formattedSchedule.isNotEmpty == true
-        ? course!.formattedSchedule
-        : (course?.schedule ?? '');
+    final l10n = AppLocalizations.of(context)!;
+    final courseName = course?.name ?? l10n.courseFallback;
+    final courseSchedule = course != null
+        ? course.getLocalizedSchedule(context)
+        : '';
     final primaryColor = Theme.of(context).colorScheme.primary;
 
     final now = DateTime.now();
@@ -262,7 +262,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       ),
                       child: PopupMenuButton<String>(
                         icon: const Icon(Icons.more_vert, size: 20),
-                        tooltip: 'Opciones del curso',
+                        tooltip: l10n.courseOptions,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -272,17 +272,17 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                           }
                         },
                         itemBuilder: (ctx) => [
-                          const PopupMenuItem(
+                          PopupMenuItem(
                             value: 'edit',
                             child: Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.edit_outlined,
                                   size: 20,
                                   color: AppColors.onSurface,
                                 ),
-                                SizedBox(width: 10),
-                                Text('Editar curso'),
+                                const SizedBox(width: 10),
+                                Text(l10n.editCourseTitle),
                               ],
                             ),
                           ),
@@ -315,7 +315,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
-                            'Hoy no hay clase. La asistencia solo está disponible los días de clase.',
+                            l10n.notClassDayBanner,
                             style: AppTextStyles.labelSmall.copyWith(
                               color: AppColors.onSurfaceVariant,
                               fontWeight: FontWeight.w500,
@@ -341,8 +341,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       shape: const StadiumBorder(),
                     ),
                     icon: const Icon(Icons.person_add, size: 20),
-                    label: const Text(
-                      '+ Agregar alumno',
+                    label: Text(
+                      l10n.addStudentShort,
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -363,8 +363,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       shape: const StadiumBorder(),
                     ),
                     icon: const Icon(Icons.history_edu, size: 20),
-                    label: const Text(
-                      'Registro de asistencia',
+                    label: Text(
+                      l10n.attendanceLog,
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
@@ -376,7 +376,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Lista de Alumnos', style: AppTextStyles.titleMedium),
+                    Text(l10n.studentListTitle, style: AppTextStyles.titleMedium),
                     Row(
                       children: [
                         FilterChip(
@@ -389,7 +389,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
                           ),
-                          label: Text('Todos (${students.length})'),
+                          label: Text('${l10n.filterAll} (${students.length})'),
                           onSelected: (val) => setState(() => _filterPendingOnly = false),
                         ),
                         const SizedBox(width: 6),
@@ -403,7 +403,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
                           ),
-                          label: Text('Sin registrar'),
+                          label: Text(l10n.notRecorded),
                           onSelected: (val) => setState(() => _filterPendingOnly = true),
                         ),
                       ],
@@ -419,8 +419,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 32),
                       child: Text(
                         _filterPendingOnly
-                            ? 'Todos los alumnos tienen asistencia asignada hoy'
-                            : 'Aún no hay alumnos inscritos en este curso',
+                            ? l10n.allStudentsMarkedToday
+                            : l10n.noStudentsInCourse,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.outline,
                         ),
@@ -487,7 +487,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
             child: CircularProgressIndicator(),
           ),
         ),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => Center(child: Text(l10n.errorWithDetail('$err'))),
       ),
     );
   }

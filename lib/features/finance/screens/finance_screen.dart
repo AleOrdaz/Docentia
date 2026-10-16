@@ -5,12 +5,14 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../l10n/app_localizations.dart';
 import '../providers/finance_provider.dart';
 
 class FinanceScreen extends ConsumerWidget {
   const FinanceScreen({super.key});
 
   void _openAddExpenseDialog(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     final descController = TextEditingController();
     final amountController = TextEditingController();
     String category = 'Materiales';
@@ -19,30 +21,30 @@ class FinanceScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Registrar Gasto'),
+          title: Text(l10n.addExpenseBtn),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: descController,
-                decoration: const InputDecoration(labelText: 'Descripción del gasto'),
+                decoration: InputDecoration(labelText: l10n.expenseDescriptionLabel),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Monto (\$)'),
+                decoration: InputDecoration(labelText: l10n.amountDollarLabel),
               ),
               const SizedBox(height: 8),
               DropdownButton<String>(
                 value: category,
                 isExpanded: true,
-                items: const [
-                  DropdownMenuItem(value: 'Materiales', child: Text('Materiales y Libros')),
-                  DropdownMenuItem(value: 'Software', child: Text('Software y Licencias')),
-                  DropdownMenuItem(value: 'Insumos', child: Text('Insumos de Aula')),
-                  DropdownMenuItem(value: 'Transporte', child: Text('Transporte')),
-                  DropdownMenuItem(value: 'Varios', child: Text('Varios')),
+                items: [
+                  DropdownMenuItem(value: 'Materiales', child: Text(l10n.categoryMaterials)),
+                  DropdownMenuItem(value: 'Software', child: Text(l10n.categorySoftware)),
+                  DropdownMenuItem(value: 'Insumos', child: Text(l10n.categorySupplies)),
+                  DropdownMenuItem(value: 'Transporte', child: Text(l10n.categoryTransport)),
+                  DropdownMenuItem(value: 'Varios', child: Text(l10n.categoryMisc)),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => category = val);
@@ -53,7 +55,7 @@ class FinanceScreen extends ConsumerWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancelar'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () {
@@ -67,12 +69,29 @@ class FinanceScreen extends ConsumerWidget {
                   Navigator.of(ctx).pop();
                 }
               },
-              child: const Text('Guardar'),
+              child: Text(l10n.save),
             ),
           ],
         ),
       ),
     );
+  }
+
+  String _categoryLabel(AppLocalizations l10n, String category) {
+    switch (category) {
+      case 'Materiales':
+        return l10n.categoryMaterials;
+      case 'Software':
+        return l10n.categorySoftware;
+      case 'Insumos':
+        return l10n.categorySupplies;
+      case 'Transporte':
+        return l10n.categoryTransport;
+      case 'Varios':
+        return l10n.categoryMisc;
+      default:
+        return category;
+    }
   }
 
   @override
@@ -83,6 +102,7 @@ class FinanceScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = theme.colorScheme.primary;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       extendBody: true,
@@ -103,7 +123,7 @@ class FinanceScreen extends ConsumerWidget {
           },
         ),
         title: Text(
-          'Estadísticas Financieras',
+          l10n.financeStatsTitle,
           style: AppTextStyles.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
@@ -121,7 +141,7 @@ class FinanceScreen extends ConsumerWidget {
               children: [
                 Expanded(
                   child: FilterChip(
-                    label: const Text('Mes Actual'),
+                    label: Text(l10n.currentMonthTab),
                     selected: period == FinancePeriod.currentMonth,
                     selectedColor: primaryColor,
                     labelStyle: TextStyle(
@@ -134,7 +154,7 @@ class FinanceScreen extends ConsumerWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: FilterChip(
-                    label: const Text('Mes Anterior'),
+                    label: Text(l10n.previousMonthTab),
                     selected: period == FinancePeriod.previousMonth,
                     selectedColor: primaryColor,
                     labelStyle: TextStyle(
@@ -147,7 +167,7 @@ class FinanceScreen extends ConsumerWidget {
                 const SizedBox(width: 6),
                 Expanded(
                   child: FilterChip(
-                    label: const Text('Todo el Año'),
+                    label: Text(l10n.allYearTab),
                     selected: period == FinancePeriod.allTime,
                     selectedColor: primaryColor,
                     labelStyle: TextStyle(
@@ -166,7 +186,7 @@ class FinanceScreen extends ConsumerWidget {
               children: [
                 Expanded(
                   child: _buildFinancialTile(
-                    title: 'Ingresos',
+                    title: l10n.incomeLabel,
                     amount: summary.totalIncome,
                     color: AppColors.secondary,
                     icon: Icons.trending_up,
@@ -176,7 +196,7 @@ class FinanceScreen extends ConsumerWidget {
                 const SizedBox(width: 8),
                 Expanded(
                   child: _buildFinancialTile(
-                    title: 'Gastos',
+                    title: l10n.expensesLabel,
                     amount: summary.totalExpenses,
                     color: AppColors.error,
                     icon: Icons.trending_down,
@@ -205,7 +225,7 @@ class FinanceScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Ganancia Neta (Ingresos - Gastos)',
+                        l10n.netProfitFormula,
                         style: AppTextStyles.labelMedium.copyWith(
                           color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                         ),
@@ -227,7 +247,7 @@ class FinanceScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Text(
-                      'Margen: ${summary.profitMargin}%',
+                      l10n.marginLabel('${summary.profitMargin}'),
                       style: AppTextStyles.labelSmall.copyWith(
                         color: primaryColor,
                         fontWeight: FontWeight.bold,
@@ -253,7 +273,7 @@ class FinanceScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Distribución Financiera',
+                    l10n.financialDistribution,
                     style: AppTextStyles.titleSmall.copyWith(
                       color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                       fontWeight: FontWeight.bold,
@@ -287,7 +307,7 @@ class FinanceScreen extends ConsumerWidget {
                           Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.secondary, shape: BoxShape.circle)),
                           const SizedBox(width: 6),
                           Text(
-                            'Cobrado: ${formatCurrency(summary.totalIncome)}',
+                            l10n.collectedWithAmount(formatCurrency(summary.totalIncome)),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                             ),
@@ -299,7 +319,7 @@ class FinanceScreen extends ConsumerWidget {
                           Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle)),
                           const SizedBox(width: 6),
                           Text(
-                            'Gastos: ${formatCurrency(summary.totalExpenses)}',
+                            l10n.expensesWithAmount(formatCurrency(summary.totalExpenses)),
                             style: AppTextStyles.bodySmall.copyWith(
                               color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                             ),
@@ -318,7 +338,7 @@ class FinanceScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Gastos del Docente',
+                  l10n.teacherExpenses,
                   style: AppTextStyles.titleMedium.copyWith(
                     color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
                     fontWeight: FontWeight.bold,
@@ -332,7 +352,7 @@ class FinanceScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   ),
                   icon: const Icon(Icons.add, size: 16),
-                  label: const Text('Registrar', style: TextStyle(fontSize: 12)),
+                  label: Text(l10n.register, style: const TextStyle(fontSize: 12)),
                 ),
               ],
             ),
@@ -352,7 +372,7 @@ class FinanceScreen extends ConsumerWidget {
                   ),
                 ),
                 child: Text(
-                  'No hay gastos registrados en este periodo.',
+                  l10n.noExpensesPeriod,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                   ),
@@ -389,7 +409,7 @@ class FinanceScreen extends ConsumerWidget {
                               ),
                             ),
                             Text(
-                              '${exp.category} • ${exp.date}',
+                              '${_categoryLabel(l10n, exp.category)} • ${exp.date}',
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                               ),

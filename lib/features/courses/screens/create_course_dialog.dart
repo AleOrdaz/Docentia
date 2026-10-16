@@ -121,9 +121,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     final picked = await showTimePicker(
       context: context,
       initialTime: _startTime,
-      helpText: 'Seleccionar hora de inicio',
-      confirmText: 'Aceptar',
-      cancelText: 'Cancelar',
+      helpText: AppLocalizations.of(context)!.selectStartTime,
+      confirmText: AppLocalizations.of(context)!.accept,
+      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null) {
       setState(() => _startTime = picked);
@@ -134,9 +134,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     final picked = await showTimePicker(
       context: context,
       initialTime: _endTime,
-      helpText: 'Seleccionar hora de finalización',
-      confirmText: 'Aceptar',
-      cancelText: 'Cancelar',
+      helpText: AppLocalizations.of(context)!.selectEndTime,
+      confirmText: AppLocalizations.of(context)!.accept,
+      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null) {
       setState(() => _endTime = picked);
@@ -147,9 +147,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     if (!_formKey.currentState!.validate()) return;
 
     if (_selectedDays.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Por favor, selecciona al menos un día de clase.'),
+        SnackBar(
+          content: Text(l10n.selectAtLeastOneDay),
           backgroundColor: AppColors.error,
         ),
       );
@@ -187,7 +188,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
           Navigator.of(context).pop(updatedCourse);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Curso "$name" actualizado con éxito'),
+              content: Text(AppLocalizations.of(context)!.courseUpdatedSuccess(name)),
               backgroundColor: AppColors.inverseSurface,
               behavior: SnackBarBehavior.floating,
             ),
@@ -213,7 +214,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
           Navigator.of(context).pop(newCourse);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Curso "$name" creado con éxito'),
+              content: Text(AppLocalizations.of(context)!.courseCreatedSuccess(name)),
               backgroundColor: AppColors.inverseSurface,
               behavior: SnackBarBehavior.floating,
             ),
@@ -232,6 +233,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     showDialog(
       context: context,
       builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
         return AlertDialog(
           backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -250,7 +252,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  '¿Eliminar este curso?',
+                  l10n.deleteCourseConfirmTitle,
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
@@ -261,7 +263,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
             ],
           ),
           content: Text(
-            'Estás a punto de eliminar el curso "${course.name}". Esta acción dará de baja el curso y no podrá deshacerse.',
+            l10n.deleteCourseConfirmBody(course.name),
             style: TextStyle(
               fontSize: 13,
               color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF43474E),
@@ -271,7 +273,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
               child: Text(
-                'Cancelar',
+                l10n.cancel,
                 style: TextStyle(
                   color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                 ),
@@ -291,14 +293,14 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Curso "${course.name}" eliminado correctamente.'),
+                      content: Text(l10n.courseDeletedSuccess(course.name)),
                       backgroundColor: const Color(0xFFD32F2F),
                     ),
                   );
                 }
               },
               icon: const Icon(Icons.delete_forever, size: 18),
-              label: const Text('Sí, eliminar curso'),
+              label: Text(l10n.yesDeleteCourse),
             ),
           ],
         );
@@ -357,9 +359,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                   _buildField(
                     label: l10n?.courseNameLabel ?? 'Nombre del Curso *',
                     controller: _nameController,
-                    hint: 'Ej. Inglés Avanzado B2',
+                    hint: l10n?.courseNameHint ?? 'Ej. Inglés Avanzado B2',
                     validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? (l10n?.courseNameLabel ?? 'Nombre obligatorio') : null,
+                    (v == null || v.trim().isEmpty) ? (l10n?.courseNameRequired ?? 'Nombre obligatorio') : null,
                   ),
                   const SizedBox(height: 14),
 

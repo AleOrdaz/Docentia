@@ -129,5 +129,359 @@
     "placeholders": {
       "total": { "type": "int" }
     }
+  },
+  "accept": "Accept",
+  "required": "Required",
+  "errorWithDetail": "Error: {detail}",
+  "@errorWithDetail": {
+    "placeholders": { "detail": { "type": "String" } }
+  },
+  "courseFallback": "Course",
+  "studentFallback": "Student",
+  "teacherFallback": "Teacher",
+  "yearsOld": "{age} years",
+  "@yearsOld": {
+    "placeholders": { "age": { "type": "int" } }
+  },
+  "duePrefix": "Due",
+  "paidStatus": "Paid",
+  "overdueStatus": "Overdue",
+  "pendingStatus": "Pending",
+  "upcomingStatus": "Due soon",
+  "presentStatus": "Present",
+  "absentStatus": "Absent",
+  "excusedStatus": "Excused",
+  "excusedNoteFallback": "Excused",
+  "unmarkedStatus": "Unmarked",
+  "notRecorded": "Not recorded",
+  "register": "Save",
+  "perMonth": "month",
+  "enrolledWord": "enrolled",
+  "appVersion": "Docentia v1.0.0",
+  "loginShortSubtitle": "Academic management and attendance tracking for educators.",
+  "continueWithGoogleShort": "Continue with Google",
+  "termsPrefix": "By continuing, you accept our",
+  "termsLink": "Terms and Conditions",
+  "privacyLink": "Privacy Policy",
+  "whatsappPhone": "WhatsApp / Phone",
+  "biography": "Biography",
+  "myCourses": "My Courses",
+  "courseFee": "Course fee",
+  "noCoursesManageDesc": "Create your first course to start managing students, attendance, and payments.",
+  "selectStartTime": "Select start time",
+  "selectEndTime": "Select end time",
+  "selectAtLeastOneDay": "Please select at least one class day.",
+  "courseUpdatedSuccess": "Course \"{name}\" updated successfully",
+  "@courseUpdatedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "courseCreatedSuccess": "Course \"{name}\" created successfully",
+  "@courseCreatedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "deleteCourseConfirmTitle": "Delete this course?",
+  "deleteCourseConfirmBody": "You are about to delete the course \"{name}\". The course will be deactivated and this cannot be undone.",
+  "@deleteCourseConfirmBody": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "yesDeleteCourse": "Yes, delete course",
+  "courseDeletedSuccess": "Course \"{name}\" deleted.",
+  "@courseDeletedSuccess": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "courseNameHint": "E.g. Advanced English B2",
+  "courseNameRequired": "Name is required",
+  "cannotSaveAttendanceNotClassDay": "Attendance cannot be saved: today is not a class day for this course.",
+  "attendanceSaved": "Attendance saved ({count} present)",
+  "@attendanceSaved": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "courseOptions": "Course options",
+  "notClassDayBanner": "No class today. Attendance is only available on class days.",
+  "addStudentShort": "+ Add student",
+  "attendanceLog": "Attendance log",
+  "allStudentsMarkedToday": "Every student already has attendance for today",
+  "noStudentsInCourse": "No students are enrolled in this course yet",
+  "sessionOf": "Session {current} of {total}",
+  "@sessionOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "todayAttendance": "Today, Attendance",
+  "enrolledLabel": "Enrolled",
+  "activeLabel": "Active",
+  "presentsLabel": "Present",
+  "absencesLabel": "Absences",
+  "spotsLabel": "Seats",
+  "ofCapacity": "Of {capacity}",
+  "@ofCapacity": {
+    "placeholders": { "capacity": { "type": "int" } }
+  },
+  "studentRegisteredSuccess": "Student registered successfully",
+  "addStudentTitle": "Add Student",
+  "addStudentDesc": "Enter the details to enroll the student in {course}.",
+  "@addStudentDesc": {
+    "placeholders": { "course": { "type": "String" } }
+  },
+  "firstNamesLabel": "First name *",
+  "firstNameHint": "E.g. Camila",
+  "lastNamesLabel": "Last name *",
+  "lastNameHint": "E.g. Morales Díaz",
+  "ageLabel": "Age",
+  "tutorNameLabel": "Guardian / Tutor name",
+  "tutorNameHint": "E.g. Patricia Díaz",
+  "tutorPhoneRequiredLabel": "Mobile phone (WhatsApp) *",
+  "phoneRequiredWhatsapp": "Phone is required for WhatsApp",
+  "emailLabel": "Email",
+  "emailHint": "tutor@example.com",
+  "tutorFallback": "Tutor",
+  "noTutorPhone": "This student has no guardian phone on file",
+  "whatsappProgressMessage": "Hello {tutor}, I'm writing from Docentia to update you on {student}'s progress.",
+  "@whatsappProgressMessage": {
+    "placeholders": {
+      "tutor": { "type": "String" },
+      "student": { "type": "String" }
+    }
+  },
+  "whatsappOpenError": "WhatsApp could not be opened on this device",
+  "deactivateStudentTitle": "Deactivate this student?",
+  "deactivateStudentBody": "{name} will leave the active course list, but attendance and payments will be kept.",
+  "@deactivateStudentBody": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "studentDeactivated": "Student deactivated. History kept.",
+  "confirmDeactivate": "Confirm deactivation",
+  "newMonthlyFee": "New Monthly Fee",
+  "feeConfigHelp": "Set the period and due date. Only one fee is allowed per month:",
+  "monthAndYear": "Month and year:",
+  "dueDateField": "Due date:",
+  "monthStart": "Start of month",
+  "monthStartDay1": "Day 1 of the corresponding month",
+  "monthEnd": "End of month",
+  "monthEndLastDay": "Last valid day (includes leap years)",
+  "calculatedDate": "Calculated date:",
+  "amountToCharge": "Amount due:",
+  "createFee": "Create fee",
+  "feeCreated": "Fee created for {period}.",
+  "@feeCreated": {
+    "placeholders": { "period": { "type": "String" } }
+  },
+  "feeAlreadyExists": "A fee for this month is already registered for this student and course.",
+  "modifyDueDate": "Change due date",
+  "changeDueOption": "Change the due date option for the {period} fee:",
+  "@changeDueOption": {
+    "placeholders": { "period": { "type": "String" } }
+  },
+  "monthStartDay1Short": "Start of month (Day 1)",
+  "monthEndLastDayShort": "End of month (last day)",
+  "resultingDueDate": "Resulting due date: {date}",
+  "@resultingDueDate": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "dueDateUpdated": "Due date updated to {date}",
+  "@dueDateUpdated": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "update": "Update",
+  "confirmPayment": "Confirm payment",
+  "reviewPaymentData": "Review the payment you are about to record:",
+  "studentColon": "Student:",
+  "courseColon": "Course:",
+  "monthlyFeeColon": "Monthly fee:",
+  "paymentDateColon": "Payment date:",
+  "amountToPay": "Amount to pay:",
+  "paymentConfirmed": "Payment of {amount} confirmed for {student}",
+  "@paymentConfirmed": {
+    "placeholders": {
+      "amount": { "type": "String" },
+      "student": { "type": "String" }
+    }
+  },
+  "studentNotFound": "Student not found",
+  "regularStudent": "Active student",
+  "deactivatedStudent": "Deactivated",
+  "whatsappTutor": "WhatsApp tutor",
+  "studentAttendance": "Student attendance",
+  "realtimeRecord": "Live record",
+  "classesLabel": "Classes",
+  "attendancesLabel": "Present",
+  "percentageLabel": "Percentage",
+  "metricsError": "Could not calculate metrics",
+  "tutorDataTitle": "Guardian / Tutor details",
+  "nameLabel": "Name",
+  "mobilePhone": "Mobile phone",
+  "secondaryPhone": "Secondary phone",
+  "noFeesYet": "No fees have been issued for this student yet.",
+  "generateMonthly": "Generate monthly fee",
+  "dueOn": "Due: {date}",
+  "@dueOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "startShort": "Start",
+  "confirmPaymentShort": "Confirm payment",
+  "paymentsLoadError": "Could not load payments",
+  "swipeMarkHint": "Swipe: ⟵ Absent | Present ⟶",
+  "swipeCorrectHint": "Swipe the other way to correct",
+  "classDaysOnly": "Class days only",
+  "noteTitle": "Note / Excuse",
+  "noteReasonLabel": "Absence reason / note",
+  "noteHint": "E.g. Medical appointment, family leave...",
+  "viewNote": "View note",
+  "attendanceHistoryTitle": "Attendance log",
+  "noSessionsYet": "No classes recorded yet",
+  "noSessionsDesc": "When you save attendance for a class, its date, time, and the list of present and absent students will be kept here.",
+  "historyLoadError": "Could not load history: {detail}",
+  "@historyLoadError": {
+    "placeholders": { "detail": { "type": "String" } }
+  },
+  "presentsCount": "Present: {count}",
+  "@presentsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "absencesCount": "Absences: {count}",
+  "@absencesCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "presentsHeader": "Present — {count}",
+  "@presentsHeader": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "noPresentsRecorded": "No students marked present",
+  "absencesHeader": "Absences — {count}",
+  "@absencesHeader": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "noAbsences": "No absences in this class",
+  "financeStatsTitle": "Financial stats",
+  "allYearTab": "All year",
+  "netProfitFormula": "Net profit (income − expenses)",
+  "marginLabel": "Margin: {percent}%",
+  "@marginLabel": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "collectedWithAmount": "Collected: {amount}",
+  "@collectedWithAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "expensesWithAmount": "Expenses: {amount}",
+  "@expensesWithAmount": {
+    "placeholders": { "amount": { "type": "String" } }
+  },
+  "teacherExpenses": "Teacher expenses",
+  "expenseDescriptionLabel": "Expense description",
+  "amountDollarLabel": "Amount ($)",
+  "categoryMaterials": "Materials and books",
+  "categorySoftware": "Software and licenses",
+  "categorySupplies": "Classroom supplies",
+  "categoryTransport": "Transport",
+  "categoryMisc": "Miscellaneous",
+  "newSchoolEvent": "New school event",
+  "eventTitleLabel": "Event title *",
+  "eventTitleHint": "E.g. Midterm exam / Project deadline",
+  "activityType": "Activity type",
+  "eventTypeExam": "Exam",
+  "eventTypeProject": "Project",
+  "eventTypeMeeting": "Parent meeting",
+  "eventTypeHoliday": "Holiday",
+  "eventTypeSpecial": "Special",
+  "associatedCourse": "Related course",
+  "allCoursesGeneral": "General / All courses",
+  "dateLabel": "Date",
+  "timeLabel": "Time",
+  "locationLabel": "Location / Room / Link (optional)",
+  "locationHint": "E.g. Room 3B, Lab, or Google Meet",
+  "descriptionInstructionsLabel": "Description / Instructions *",
+  "descriptionHint": "Activity details, topics to assess, or required materials...",
+  "extraEmailsLabel": "Additional guardian emails (optional)",
+  "extraEmailsHint": "guardian@example.com, office@school.edu",
+  "eventTitleRequired": "The event title is required.",
+  "eventDescriptionRequired": "Please enter a description for the event.",
+  "eventSaved": "Event \"{title}\" added to the calendar",
+  "@eventSaved": {
+    "placeholders": { "title": { "type": "String" } }
+  },
+  "saveEvent": "Save event",
+  "sendEventToParents": "Send event to parents",
+  "bccPrivacyNotice": "The email will be prepared for {count} guardians using hidden copy (BCC) to protect their privacy.",
+  "@bccPrivacyNotice": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "subjectPrefix": "Subject:",
+  "noticeCopied": "Notice copied to the clipboard",
+  "copyText": "Copy text",
+  "openMail": "Open mail",
+  "noMailClient": "No mail app was found. The message was copied.",
+  "calendarClassesTitle": "Class and event calendar",
+  "schoolEvents": "School events",
+  "noSchoolEvents": "No school events recorded",
+  "noSchoolEventsDesc": "You can add exams, parent meetings, or activities with the \"+ New event\" button.",
+  "createEvent": "+ Create event",
+  "coursePaymentsTitle": "Course payments and fees",
+  "noDueDatesToday": "No fees due today",
+  "noDueDatesDesc": "There are no payments with a due date on this day.",
+  "scheduledClasses": "Scheduled classes",
+  "noClassesThisDay": "No classes scheduled for this day",
+  "noClassesThisDayDesc": "Select another day in the weekly calendar to see the schedule.",
+  "deleteEvent": "Delete event",
+  "eventDeleted": "School event deleted",
+  "notifyParents": "Notify parents",
+  "feeReminder": "Fee reminder: {name}",
+  "@feeReminder": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "feeScheduleLine": "Scheduled billing date: {schedule} · Fee: {amount}",
+  "@feeScheduleLine": {
+    "placeholders": {
+      "schedule": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "monthStartRange": "Start of month (day 1–10)",
+  "monthEndDay30": "End of month (day 30)",
+  "attendanceAction": "Attendance",
+  "classesTabCount": "Classes ({count})",
+  "@classesTabCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "eventsTabCount": "Events ({count})",
+  "@eventsTabCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "paymentsTabCount": "Payments ({count})",
+  "@paymentsTabCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "schoolNoticeSubject": "[Docentia] School notice: {title} ({date})",
+  "@schoolNoticeSubject": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "date": { "type": "String" }
+    }
+  },
+  "schoolNoticeBody": "Dear parents and guardians:\n\nThis school notice is to inform you of the following activity scheduled in Docentia:\n• Event: {title}\n• Date: {date}\n• Time: {schedule}{location}\n• Description: {description}\n\nThank you for your support and punctual attendance.\n\nSincerely,\n{teacher}\nDocentia - Academic Platform",
+  "@schoolNoticeBody": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "date": { "type": "String" },
+      "schedule": { "type": "String" },
+      "location": { "type": "String" },
+      "description": { "type": "String" },
+      "teacher": { "type": "String" }
+    }
+  },
+  "principalTeacher": "Lead teacher",
+  "locationLine": "\n• Location: {place}",
+  "@locationLine": {
+    "placeholders": { "place": { "type": "String" } }
+  },
+  "attendancePctShort": "{percent}% att.",
+  "@attendancePctShort": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
+  "excusedCompact": "{count} exc.",
+  "@excusedCompact": {
+    "placeholders": { "count": { "type": "int" } }
   }
 }

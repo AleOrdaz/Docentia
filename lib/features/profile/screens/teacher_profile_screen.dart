@@ -38,7 +38,7 @@ class TeacherProfileScreen extends ConsumerWidget {
             TextField(
               controller: phoneCtrl,
               decoration: InputDecoration(
-                labelText: 'WhatsApp / Teléfono',
+                labelText: l10n.whatsappPhone,
                 labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
               ),
               style: TextStyle(color: AppColors.textPrimary(ctx)),
@@ -47,7 +47,7 @@ class TeacherProfileScreen extends ConsumerWidget {
             TextField(
               controller: bioCtrl,
               decoration: InputDecoration(
-                labelText: 'Biografía',
+                labelText: l10n.biography,
                 labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
               ),
               style: TextStyle(color: AppColors.textPrimary(ctx)),
@@ -77,7 +77,7 @@ class TeacherProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final authState = ref.watch(authProvider);
     final teacher = authState.teacher;
     final primaryColor = Theme.of(context).colorScheme.primary;
@@ -145,7 +145,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
 
                   Text(
-                    teacher?.name ?? 'Profesor',
+                    teacher?.name ?? l10n.teacherFallback,
                     style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
                   ),
                   Text(

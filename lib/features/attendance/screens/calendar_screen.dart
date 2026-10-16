@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
@@ -34,31 +36,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     _selectedDate = DateTime.now();
   }
 
-  static const _daysOfWeekNames = [
-    'Lun',
-    'Mar',
-    'Mié',
-    'Jue',
-    'Vie',
-    'Sáb',
-    'Dom'
-  ];
-
-  static const _monthsNames = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre'
-  ];
-
   String _toDateStr(DateTime date) {
     final y = date.year.toString().padLeft(4, '0');
     final m = date.month.toString().padLeft(2, '0');
@@ -72,8 +49,23 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     return List.generate(7, (i) => monday.add(Duration(days: i)));
   }
 
+  String _weekdayShort(DateTime date) {
+    final locale = Localizations.localeOf(context).toString();
+    final raw = DateFormat.E(locale).format(date).replaceAll('.', '');
+    if (raw.isEmpty) return '';
+    return '${raw[0].toUpperCase()}${raw.substring(1)}';
+  }
+
+  String _monthYearLabel() {
+    final locale = Localizations.localeOf(context).toString();
+    final raw = DateFormat.MMMM(locale).format(_selectedDate);
+    final month = raw.isEmpty ? '' : '${raw[0].toUpperCase()}${raw.substring(1)}';
+    return '$month ${_selectedDate.year}';
+  }
+
   // --- Modal para Crear Nuevo Evento ---
   void _openCreateEventDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final coursesAsync = ref.read(coursesProvider);
     final courses = coursesAsync.value ?? [];
 
@@ -138,7 +130,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 color: primaryColor, size: 24),
                             const SizedBox(width: 8),
                             Text(
-                              'Nuevo Evento Escolar',
+                              l10n.newSchoolEvent,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -187,16 +179,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
                     // Título
                     _buildTextField(
-                      label: 'Título del Evento *',
+                      label: l10n.eventTitleLabel,
                       controller: titleController,
-                      hint: 'Ej. Primer Examen Parcial / Entrega de Proyectos',
+                      hint: l10n.eventTitleHint,
                       isDark: isDark,
                     ),
                     const SizedBox(height: 12),
 
                     // Tipo de evento
                     Text(
-                      'Tipo de Actividad',
+                      l10n.activityType,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -210,27 +202,27 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       spacing: 8,
                       runSpacing: 6,
                       children: [
-                        ('exam', 'Examen', Icons.assignment_outlined),
-                        ('project', 'Proyecto', Icons.palette_outlined),
-                        ('meeting', 'Reunión Apoderados', Icons.groups_outlined),
-                        ('holiday', 'Día Festivo', Icons.beach_access_outlined),
-                        ('special', 'Especial', Icons.star_outline),
+                        (id: 'exam', label: l10n.eventTypeExam, icon: Icons.assignment_outlined),
+                        (id: 'project', label: l10n.eventTypeProject, icon: Icons.palette_outlined),
+                        (id: 'meeting', label: l10n.eventTypeMeeting, icon: Icons.groups_outlined),
+                        (id: 'holiday', label: l10n.eventTypeHoliday, icon: Icons.beach_access_outlined),
+                        (id: 'special', label: l10n.eventTypeSpecial, icon: Icons.star_outline),
                       ].map((item) {
-                        final isSel = eventType == item.$1;
+                        final isSel = eventType == item.id;
                         return ChoiceChip(
                           label: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(item.$3,
+                              Icon(item.icon,
                                   size: 14,
                                   color: isSel ? Colors.white : primaryColor),
                               const SizedBox(width: 4),
-                              Text(item.$2),
+                              Text(item.label),
                             ],
                           ),
                           selected: isSel,
                           onSelected: (val) {
-                            if (val) setModalState(() => eventType = item.$1);
+                            if (val) setModalState(() => eventType = item.id);
                           },
                           selectedColor: primaryColor,
                           labelStyle: TextStyle(
@@ -246,7 +238,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     // Curso relacionado
                     if (courses.isNotEmpty) ...[
                       Text(
-                        'Curso Asociado',
+                        l10n.associatedCourse,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -272,9 +264,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                 ? const Color(0xFF1E293B)
                                 : Colors.white,
                             items: [
-                              const DropdownMenuItem(
+                              DropdownMenuItem(
                                 value: '',
-                                child: Text('General / Todos los Cursos'),
+                                child: Text(l10n.allCoursesGeneral),
                               ),
                               ...courses.map((c) => DropdownMenuItem(
                                 value: c.id,
@@ -299,7 +291,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Fecha',
+                                l10n.dateLabel,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -352,7 +344,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Horario',
+                                l10n.timeLabel,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -402,19 +394,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
                     // Ubicación
                     _buildTextField(
-                      label: 'Ubicación / Salón / Enlace (opcional)',
+                      label: l10n.locationLabel,
                       controller: locationController,
-                      hint: 'Ej. Aula 3B, Laboratorio o Google Meet',
+                      hint: l10n.locationHint,
                       isDark: isDark,
                     ),
                     const SizedBox(height: 12),
 
                     // Descripción
                     _buildTextField(
-                      label: 'Descripción / Instrucciones *',
+                      label: l10n.descriptionInstructionsLabel,
                       controller: descController,
-                      hint:
-                      'Detalles de la actividad, temas a evaluar o materiales requeridos...',
+                      hint: l10n.descriptionHint,
                       maxLines: 3,
                       isDark: isDark,
                     ),
@@ -422,9 +413,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
                     // Correos adicionales
                     _buildTextField(
-                      label: 'Correos adicionales de tutores (opcional)',
+                      label: l10n.extraEmailsLabel,
                       controller: emailsController,
-                      hint: 'apoderado@ejemplo.com, direccion@colegio.edu',
+                      hint: l10n.extraEmailsHint,
                       isDark: isDark,
                     ),
                     const SizedBox(height: 18),
@@ -435,7 +426,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       children: [
                         TextButton(
                           onPressed: () => Navigator.of(modalCtx).pop(),
-                          child: const Text('Cancelar'),
+                          child: Text(l10n.cancel),
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton.icon(
@@ -444,13 +435,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             final desc = descController.text.trim();
 
                             if (title.isEmpty) {
-                              setModalState(() => formError =
-                              'El título del evento es obligatorio.');
+                              setModalState(() => formError = l10n.eventTitleRequired);
                               return;
                             }
                             if (desc.isEmpty) {
-                              setModalState(() => formError =
-                              'Por favor ingresa una descripción para el evento.');
+                              setModalState(() => formError = l10n.eventDescriptionRequired);
                               return;
                             }
 
@@ -483,14 +472,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                      'Evento "$title" registrado en el calendario'),
+                                      l10n.eventSaved(title)),
                                   backgroundColor: primaryColor,
                                 ),
                               );
                             }
                           },
                           icon: const Icon(Icons.save, size: 18),
-                          label: const Text('Guardar Evento'),
+                          label: Text(l10n.saveEvent),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
                             foregroundColor: Colors.white,
@@ -515,8 +504,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   // --- Modal para Notificar Evento a Padres de Familia ---
   void _openShareEventDialog(BuildContext context, CalendarEvent event) {
+    final l10n = AppLocalizations.of(context)!;
     final authState = ref.read(authProvider);
-    final teacherName = authState.teacher?.name ?? 'Profesor Titular';
+    final teacherName = authState.teacher?.name ?? l10n.principalTeacher;
     final allStudents = ref.read(allActiveStudentsProvider).value ?? [];
 
     final tutorEmails = allStudents
@@ -527,20 +517,19 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     final allRecipients = {...tutorEmails, ...event.emailRecipients}.toList();
 
-    final subject = '[Docentia] Aviso Escolar: ${event.title} (${event.date})';
-    final body = '''Estimados Padres de Familia y Tutores:
-
-Por medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:
-• Evento: ${event.title}
-• Fecha: ${event.date}
-• Horario: ${event.startTime}${event.endTime != null && event.endTime!.isNotEmpty ? ' - ${event.endTime}' : ''}${event.location != null && event.location!.isNotEmpty ? '\n• Ubicación: ${event.location}' : ''}
-• Descripción: ${event.description}
-
-Agradecemos su valioso apoyo y puntual acompañamiento.
-
-Atentamente,
-$teacherName
-Docentia - Plataforma Académica''';
+    final locationLine = event.location != null && event.location!.isNotEmpty
+        ? l10n.locationLine(event.location!)
+        : '';
+    final schedule = '${event.startTime}${event.endTime != null && event.endTime!.isNotEmpty ? ' - ${event.endTime}' : ''}';
+    final subject = l10n.schoolNoticeSubject(event.title, event.date);
+    final body = l10n.schoolNoticeBody(
+      event.title,
+      event.date,
+      schedule,
+      locationLine,
+      event.description,
+      teacherName,
+    );
 
     showModalBottomSheet(
       context: context,
@@ -580,7 +569,7 @@ Docentia - Plataforma Académica''';
                       const Icon(Icons.mail, color: Color(0xFF0284C7), size: 24),
                       const SizedBox(width: 8),
                       Text(
-                        'Enviar Evento a Padres',
+                        l10n.sendEventToParents,
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -620,7 +609,7 @@ Docentia - Plataforma Académica''';
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        'Se preparará el correo para ${allRecipients.length} tutores con copia oculta (BCC) protegiendo su privacidad.',
+                        l10n.bccPrivacyNotice(allRecipients.length),
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark
@@ -653,7 +642,7 @@ Docentia - Plataforma Académica''';
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Asunto: $subject',
+                      '${l10n.subjectPrefix} $subject',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -687,13 +676,13 @@ Docentia - Plataforma Académica''';
                         Clipboard.setData(ClipboardData(text: '$subject\n\n$body'));
                         Navigator.of(ctx).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Aviso copiado al portapapeles'),
+                          SnackBar(
+                            content: Text(l10n.noticeCopied),
                           ),
                         );
                       },
                       icon: const Icon(Icons.copy, size: 16),
-                      label: const Text('Copiar Texto',
+                      label: Text(l10n.copyText,
                           style: TextStyle(fontSize: 12)),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -725,16 +714,16 @@ Docentia - Plataforma Académica''';
                         } else {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
                                 content: Text(
-                                    'No se encontró cliente de correo instalado. Mensaje copiado.'),
+                                    l10n.noMailClient),
                               ),
                             );
                           }
                         }
                       },
                       icon: const Icon(Icons.open_in_new, size: 16),
-                      label: const Text('Abrir Correo',
+                      label: Text(l10n.openMail,
                           style: TextStyle(fontSize: 12)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0284C7),
@@ -806,6 +795,7 @@ Docentia - Plataforma Académica''';
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = theme.colorScheme.primary;
+    final l10n = AppLocalizations.of(context)!;
 
     final coursesAsync = ref.watch(coursesProvider);
     final eventsAsync = ref.watch(calendarEventsProvider);
@@ -875,7 +865,7 @@ Docentia - Plataforma Académica''';
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Calendario de Clases y Eventos',
+          l10n.calendarClassesTitle,
           style: AppTextStyles.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
@@ -883,7 +873,7 @@ Docentia - Plataforma Académica''';
         ),
         actions: [
           IconButton(
-            tooltip: 'Nuevo Evento',
+            tooltip: l10n.newEventBtn.replaceAll('+', '').trim(),
             icon: Icon(Icons.add_circle, color: primaryColor, size: 28),
             onPressed: () => _openCreateEventDialog(context),
           ),
@@ -923,7 +913,7 @@ Docentia - Plataforma Académica''';
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${_monthsNames[_selectedDate.month - 1]} ${_selectedDate.year}',
+                        _monthYearLabel(),
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -1000,7 +990,7 @@ Docentia - Plataforma Académica''';
                           child: Column(
                             children: [
                               Text(
-                                _daysOfWeekNames[date.weekday - 1],
+                                _weekdayShort(date),
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
@@ -1086,17 +1076,17 @@ Docentia - Plataforma Académica''';
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  _buildTabChip('all', 'Todos', isDark, primaryColor),
+                  _buildTabChip('all', l10n.filterAll, isDark, primaryColor),
                   const SizedBox(width: 8),
-                  _buildTabChip('classes', 'Clases (${dayCourses.length})',
+                  _buildTabChip('classes', l10n.classesTabCount(dayCourses.length),
                       isDark, primaryColor),
                   const SizedBox(width: 8),
-                  _buildTabChip('events', 'Eventos (${dayEvents.length})',
+                  _buildTabChip('events', l10n.eventsTabCount(dayEvents.length),
                       isDark, primaryColor),
                   const SizedBox(width: 8),
                   _buildTabChip(
                       'payments',
-                      'Pagos (${dayPayments.length + generalScheduleCourses.length})',
+                      l10n.paymentsTabCount(dayPayments.length + generalScheduleCourses.length),
                       isDark,
                       primaryColor),
                 ],
@@ -1114,7 +1104,7 @@ Docentia - Plataforma Académica''';
                       Icon(Icons.event, color: primaryColor, size: 20),
                       const SizedBox(width: 6),
                       Text(
-                        'Eventos Escolares',
+                        l10n.schoolEvents,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -1128,7 +1118,7 @@ Docentia - Plataforma Académica''';
                   TextButton.icon(
                     onPressed: () => _openCreateEventDialog(context),
                     icon: const Icon(Icons.add, size: 16),
-                    label: const Text('Nuevo Evento',
+                    label: Text(l10n.newEventBtn.replaceAll('+', '').trim(),
                         style: TextStyle(fontSize: 12)),
                   ),
                 ],
@@ -1137,14 +1127,13 @@ Docentia - Plataforma Académica''';
               if (dayEvents.isEmpty)
                 _buildEmptyCard(
                   icon: Icons.event_available,
-                  title: 'Sin eventos escolares registrados',
-                  subtitle:
-                  'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón "+ Nuevo Evento".',
+                  title: l10n.noSchoolEvents,
+                  subtitle: l10n.noSchoolEventsDesc,
                   isDark: isDark,
                   action: TextButton.icon(
                     onPressed: () => _openCreateEventDialog(context),
                     icon: const Icon(Icons.add, size: 16),
-                    label: const Text('+ Crear Evento'),
+                    label: Text(l10n.createEvent),
                   ),
                 )
               else
@@ -1160,7 +1149,7 @@ Docentia - Plataforma Académica''';
                       color: Color(0xFF00796B), size: 20),
                   const SizedBox(width: 6),
                   Text(
-                    'Pagos y Cuotas de Cursos',
+                    l10n.coursePaymentsTitle,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -1175,9 +1164,8 @@ Docentia - Plataforma Académica''';
               if (dayPayments.isEmpty && generalScheduleCourses.isEmpty)
                 _buildEmptyCard(
                   icon: Icons.check_circle_outline,
-                  title: 'Sin vencimientos de cuotas hoy',
-                  subtitle:
-                  'No hay pagos con fecha límite programada para este día.',
+                  title: l10n.noDueDatesToday,
+                  subtitle: l10n.noDueDatesDesc,
                   isDark: isDark,
                 )
               else ...[
@@ -1192,8 +1180,8 @@ Docentia - Plataforma Académica''';
                     payment: p,
                     studentName: student != null
                         ? '${student.name} ${student.lastName}'
-                        : 'Alumno',
-                    courseName: course?.name ?? 'Curso',
+                        : l10n.studentFallback,
+                    courseName: course?.name ?? l10n.courseFallback,
                     isDark: isDark,
                   );
                 }),
@@ -1214,7 +1202,7 @@ Docentia - Plataforma Académica''';
                   Icon(Icons.school_outlined, color: primaryColor, size: 20),
                   const SizedBox(width: 6),
                   Text(
-                    'Clases Programadas',
+                    l10n.scheduledClasses,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -1229,9 +1217,8 @@ Docentia - Plataforma Académica''';
               if (dayCourses.isEmpty)
                 _buildEmptyCard(
                   icon: Icons.calendar_today_outlined,
-                  title: 'No hay clases programadas para este día',
-                  subtitle:
-                  'Selecciona otro día en el calendario semanal para consultar los horarios.',
+                  title: l10n.noClassesThisDay,
+                  subtitle: l10n.noClassesThisDayDesc,
                   isDark: isDark,
                 )
               else
@@ -1314,13 +1301,13 @@ Docentia - Plataforma Académica''';
               IconButton(
                 icon: const Icon(Icons.delete_outline,
                     color: Color(0xFFD32F2F), size: 18),
-                tooltip: 'Eliminar Evento',
+                tooltip: l10n.deleteEvent,
                 onPressed: () {
                   ref
                       .read(calendarEventsProvider.notifier)
                       .deleteEvent(event.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Evento escolar eliminado')),
+                    SnackBar(content: Text(l10n.eventDeleted)),
                   );
                 },
               ),
@@ -1369,7 +1356,7 @@ Docentia - Plataforma Académica''';
               FilledButton.tonalIcon(
                 onPressed: () => _openShareEventDialog(context, event),
                 icon: const Icon(Icons.mail_outline, size: 16),
-                label: const Text('Avisar a Padres',
+                label: Text(l10n.notifyParents,
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFFE0F2FE),
@@ -1393,6 +1380,8 @@ Docentia - Plataforma Académica''';
     required String courseName,
     required bool isDark,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).toString();
     final isPaid = payment.status == PaymentStatus.paid;
     final isOverdue = payment.status == PaymentStatus.overdue;
 
@@ -1409,10 +1398,10 @@ Docentia - Plataforma Académica''';
         : const Color(0xFF00236F);
 
     final statusText = isPaid
-        ? 'Pagado'
+        ? l10n.paidStatus
         : isOverdue
-        ? 'Atrasado'
-        : 'Pendiente';
+        ? l10n.overdueStatus
+        : l10n.pendingStatus;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -1443,7 +1432,7 @@ Docentia - Plataforma Académica''';
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '$courseName · ${payment.period}',
+                  '$courseName · ${Payment.formatPeriodName(payment.periodYear, payment.periodMonth, locale)}',
                   style: TextStyle(
                     fontSize: 11.5,
                     color: isDark
@@ -1495,6 +1484,10 @@ Docentia - Plataforma Académica''';
     required bool isDark,
     required Color primaryColor,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+    final schedule = course.paymentSchedule == PaymentSchedule.firstHalf
+        ? l10n.monthStartRange
+        : l10n.monthEndDay30;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -1522,7 +1515,7 @@ Docentia - Plataforma Académica''';
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Recordatorio de Cuota: ${course.name}',
+                  l10n.feeReminder(course.name),
                   style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.bold,
@@ -1533,7 +1526,7 @@ Docentia - Plataforma Académica''';
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Fecha de cobro establecida: ${course.paymentSchedule == PaymentSchedule.firstHalf ? "Inicio de mes (Día 1-10)" : "Fin de mes (Día 30)"} · Cuota: ${formatCurrency(course.cost)}',
+                  l10n.feeScheduleLine(schedule, formatCurrency(course.cost)),
                   style: TextStyle(
                     fontSize: 11.5,
                     color: isDark
@@ -1555,6 +1548,7 @@ Docentia - Plataforma Académica''';
     required Color primaryColor,
   }) {
     final iconData = getCourseIcon(course.iconKey);
+    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -1627,8 +1621,8 @@ Docentia - Plataforma Académica''';
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               shape: const StadiumBorder(),
             ),
-            child: const Text('Asistencia',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            child: Text(l10n.attendanceAction,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

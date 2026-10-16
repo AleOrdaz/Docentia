@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../l10n/app_localizations.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
 import '../providers/courses_provider.dart';
@@ -34,6 +35,7 @@ class CoursesListScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = theme.colorScheme.primary;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       extendBody: true,
@@ -43,7 +45,7 @@ class CoursesListScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          'Mis Cursos',
+          l10n.myCourses,
           style: AppTextStyles.titleMedium.copyWith(
             fontWeight: FontWeight.bold,
             color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
@@ -61,9 +63,9 @@ class CoursesListScreen extends ConsumerWidget {
                 shape: const StadiumBorder(),
               ),
               icon: const Icon(Icons.add, size: 16),
-              label: const Text(
-                'Nuevo curso',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              label: Text(
+                l10n.newCourseBtn.replaceAll('+', '').trim(),
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -92,7 +94,7 @@ class CoursesListScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Aún no tienes cursos',
+                      l10n.noCoursesYet,
                       style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF00174D),
@@ -100,7 +102,7 @@ class CoursesListScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Crea tu primer curso para comenzar a gestionar alumnos, asistencias y pagos.',
+                      l10n.noCoursesManageDesc,
                       textAlign: TextAlign.center,
                       style: AppTextStyles.bodySmall.copyWith(
                         color: const Color(0xFF5F6368),
@@ -117,7 +119,7 @@ class CoursesListScreen extends ConsumerWidget {
                             horizontal: 24, vertical: 12),
                       ),
                       icon: const Icon(Icons.add, size: 18),
-                      label: const Text('Nuevo curso'),
+                      label: Text(l10n.newCourseBtn.replaceAll('+', '').trim()),
                     ),
                   ],
                 ),
@@ -136,13 +138,14 @@ class CoursesListScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => Center(child: Text(l10n.errorWithDetail('$err'))),
       ),
     );
   }
 
   Widget _buildCourseCard(
       BuildContext context, WidgetRef ref, Course course, Color primaryColor) {
+    final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final studentsAsync = ref.watch(studentsForCourseProvider(course.id));
     final studentsCount = studentsAsync.value?.length ?? 0;
@@ -206,7 +209,7 @@ class CoursesListScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'CURSO',
+                        l10n.navCourses.toUpperCase(),
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -274,13 +277,13 @@ class CoursesListScreen extends ConsumerWidget {
                         }
                       },
                       itemBuilder: (ctx) => [
-                        const PopupMenuItem(
+                        PopupMenuItem(
                           value: 'edit',
                           child: Row(
                             children: [
-                              Icon(Icons.edit_outlined, size: 18),
-                              SizedBox(width: 8),
-                              Text('Editar curso'),
+                              const Icon(Icons.edit_outlined, size: 18),
+                              const SizedBox(width: 8),
+                              Text(l10n.editCourseTitle),
                             ],
                           ),
                         ),
@@ -303,7 +306,7 @@ class CoursesListScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '$studentsCount de ${course.capacity} alumnos inscritos',
+                  '$studentsCount ${l10n.ofTotal(course.capacity)} ${l10n.studentPlural} ${l10n.enrolledWord}',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -366,7 +369,7 @@ class CoursesListScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${formatCurrency(course.cost)} / mes',
+                          '${formatCurrency(course.cost)} / ${l10n.perMonth}',
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
@@ -376,7 +379,7 @@ class CoursesListScreen extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          'Cuota del curso',
+                          l10n.courseFee,
                           style: TextStyle(
                             fontSize: 10,
                             color: isDark
@@ -410,7 +413,7 @@ class CoursesListScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Vence: ${course.paymentSchedule.displayName}',
+                        '${l10n.duePrefix}: ${course.paymentSchedule.getLocalizedName(context)}',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
