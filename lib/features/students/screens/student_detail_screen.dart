@@ -140,7 +140,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerLow,
+                              color: AppColors.surfaceLow(dialogCtx),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: DropdownButtonHideUnderline(
@@ -171,7 +171,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerLow,
+                              color: AppColors.surfaceLow(dialogCtx),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: DropdownButtonHideUnderline(
@@ -204,7 +204,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
                     Container(
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerLow,
+                        color: AppColors.surfaceLow(dialogCtx),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -240,9 +240,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerLowest,
+                        color: AppColors.surfaceLowest(dialogCtx),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.surfaceContainer),
+                        border: Border.all(color: AppColors.cardBorder(dialogCtx)),
                       ),
                       child: Column(
                         children: [
@@ -376,7 +376,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                   const SizedBox(height: 12),
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
+                      color: AppColors.surfaceLow(dialogCtx),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -477,18 +477,18 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLow,
+                color: AppColors.surfaceLow(ctx),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
                 children: [
-                  _buildPaymentSummaryRow(l10n.studentColon, studentName),
+                  _buildPaymentSummaryRow(ctx, l10n.studentColon, studentName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow(l10n.courseColon, courseName),
+                  _buildPaymentSummaryRow(ctx, l10n.courseColon, courseName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow(l10n.monthlyFeeColon, periodName),
+                  _buildPaymentSummaryRow(ctx, l10n.monthlyFeeColon, periodName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow(l10n.paymentDateColon, todayFormatted),
+                  _buildPaymentSummaryRow(ctx, l10n.paymentDateColon, todayFormatted),
                   const Divider(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -565,7 +565,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     }
   }
 
-  Widget _buildPaymentSummaryRow(String label, String value) {
+  Widget _buildPaymentSummaryRow(BuildContext context, String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -573,7 +573,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
         Flexible(
           child: Text(
             value,
-            style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold, color: AppColors.onSurface),
+            style: AppTextStyles.bodySmall.copyWith(
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary(context),
+            ),
             textAlign: TextAlign.end,
             overflow: TextOverflow.ellipsis,
           ),
@@ -589,6 +592,12 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     final course = ref.watch(selectedCourseProvider);
     final courseId = course?.id ?? 'course-1';
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final cardBg = AppColors.cardBg(context);
+    final cardBorder = AppColors.cardBorder(context);
+    final surfaceLow = AppColors.surfaceLow(context);
+    final surfaceMid = AppColors.surfaceMid(context);
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
 
     final studentsAsync = ref.watch(studentsForCourseProvider(courseId));
     final student = studentsAsync.value
@@ -616,7 +625,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        title: Text(l10n.studentDetailTitle, style: AppTextStyles.titleMedium),
+        title: Text(
+          l10n.studentDetailTitle,
+          style: AppTextStyles.titleMedium.copyWith(color: textPrimary),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -626,9 +638,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
               ),
               child: Row(
                 children: [
@@ -654,14 +666,17 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       children: [
                         Text(
                           student.fullName,
-                          style: AppTextStyles.titleLarge,
+                          style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Row(
                           children: [
-                            Text(l10n.yearsOld(student.age), style: AppTextStyles.bodySmall),
+                            Text(
+                              l10n.yearsOld(student.age),
+                              style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                            ),
                             const SizedBox(width: 6),
-                            Text('•', style: AppTextStyles.bodySmall),
+                            Text('•', style: AppTextStyles.bodySmall.copyWith(color: textSecondary)),
                             const SizedBox(width: 6),
                             Text(
                               course?.name ?? l10n.courseFallback,
@@ -722,7 +737,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                   onPressed: () => _confirmDeactivate(context, student.fullName),
                   icon: const Icon(Icons.person_remove, color: AppColors.error),
                   style: IconButton.styleFrom(
-                    backgroundColor: AppColors.surfaceContainerLow,
+                    backgroundColor: surfaceLow,
                   ),
                 ),
               ],
@@ -733,9 +748,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -747,10 +762,16 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         children: [
                           Icon(Icons.how_to_reg, color: primaryColor, size: 20),
                           const SizedBox(width: 8),
-                          Text(l10n.studentAttendance, style: AppTextStyles.titleSmall),
+                          Text(
+                            l10n.studentAttendance,
+                            style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                          ),
                         ],
                       ),
-                      Text(l10n.realtimeRecord, style: AppTextStyles.labelSmall),
+                      Text(
+                        l10n.realtimeRecord,
+                        style: AppTextStyles.labelSmall.copyWith(color: textSecondary),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -760,13 +781,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       children: [
                         Row(
                           children: [
-                            Expanded(child: _buildStatBox(l10n.classesLabel, stats.totalClasses.toString())),
+                            Expanded(child: _buildStatBox(context, l10n.classesLabel, stats.totalClasses.toString())),
                             const SizedBox(width: 8),
-                            Expanded(child: _buildStatBox(l10n.attendancesLabel, stats.presents.toString(), color: AppColors.secondary)),
+                            Expanded(child: _buildStatBox(context, l10n.attendancesLabel, stats.presents.toString(), color: AppColors.secondary)),
                             const SizedBox(width: 8),
-                            Expanded(child: _buildStatBox(l10n.absencesLabel, stats.absences.toString(), color: AppColors.error)),
+                            Expanded(child: _buildStatBox(context, l10n.absencesLabel, stats.absences.toString(), color: AppColors.error)),
                             const SizedBox(width: 8),
-                            Expanded(child: _buildStatBox(l10n.percentageLabel, '${stats.percentage}%', color: primaryColor)),
+                            Expanded(child: _buildStatBox(context, l10n.percentageLabel, '${stats.percentage}%', color: primaryColor)),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -775,7 +796,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           child: LinearProgressIndicator(
                             value: (stats.percentage / 100).clamp(0.0, 1.0),
                             minHeight: 6,
-                            backgroundColor: AppColors.surfaceContainer,
+                            backgroundColor: surfaceMid,
                             valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
                           ),
                         ),
@@ -793,9 +814,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -804,15 +825,18 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                     children: [
                       Icon(Icons.family_restroom, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
-                      Text(l10n.tutorDataTitle, style: AppTextStyles.titleSmall),
+                      Text(
+                        l10n.tutorDataTitle,
+                        style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _buildTutorField(l10n.nameLabel, student.tutorName),
-                  _buildTutorField(l10n.mobilePhone, student.tutorPhone),
-                  _buildTutorField(l10n.emailLabel, student.tutorEmail),
+                  _buildTutorField(context, l10n.nameLabel, student.tutorName),
+                  _buildTutorField(context, l10n.mobilePhone, student.tutorPhone),
+                  _buildTutorField(context, l10n.emailLabel, student.tutorEmail),
                   if (student.secondaryPhone != null && student.secondaryPhone!.isNotEmpty)
-                    _buildTutorField(l10n.secondaryPhone, student.secondaryPhone!),
+                    _buildTutorField(context, l10n.secondaryPhone, student.secondaryPhone!),
                 ],
               ),
             ),
@@ -822,9 +846,9 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerLowest,
+                color: cardBg,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.surfaceContainer),
+                border: Border.all(color: cardBorder),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -836,7 +860,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         children: [
                           Icon(Icons.payments_outlined, color: primaryColor, size: 20),
                           const SizedBox(width: 8),
-                          Text(l10n.monthlyFeesTitle, style: AppTextStyles.titleSmall),
+                          Text(
+                            l10n.monthlyFeesTitle,
+                            style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                          ),
                         ],
                       ),
                       if (course != null)
@@ -912,15 +939,15 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                             badgeBg = AppColors.errorContainer;
                             badgeFg = AppColors.onErrorContainer;
                           } else {
-                            badgeBg = AppColors.surfaceContainer;
-                            badgeFg = AppColors.onSurfaceVariant;
+                            badgeBg = surfaceMid;
+                            badgeFg = textSecondary;
                           }
 
                           return Container(
                             margin: const EdgeInsets.only(bottom: 10),
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerLow,
+                              color: surfaceLow,
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isUpcoming
@@ -942,12 +969,15 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                       children: [
                                         Text(
                                           Payment.formatPeriodName(p.periodYear, p.periodMonth, locale),
-                                          style: AppTextStyles.titleSmall,
+                                          style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
                                         ),
                                         const SizedBox(height: 2),
                                         Row(
                                           children: [
-                                            Text(l10n.dueOn(p.dueDate), style: AppTextStyles.bodySmall),
+                                            Text(
+                                              l10n.dueOn(p.dueDate),
+                                              style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                                            ),
                                             if (!isPaid) ...[
                                               const SizedBox(width: 6),
                                               InkWell(
@@ -1010,7 +1040,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                       formatCurrency(p.amount),
                                       style: AppTextStyles.titleMedium.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        color: isPaid ? AppColors.secondary : AppColors.onSurface,
+                                        color: isPaid ? AppColors.secondary : textPrimary,
                                       ),
                                     ),
                                     if (!isPaid)
@@ -1088,21 +1118,27 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     );
   }
 
-  Widget _buildStatBox(String title, String value, {Color? color}) {
+  Widget _buildStatBox(BuildContext context, String title, String value, {Color? color}) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
+        color: AppColors.surfaceLow(context),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [
-          Text(title, style: AppTextStyles.labelSmall.copyWith(fontSize: 10)),
+          Text(
+            title,
+            style: AppTextStyles.labelSmall.copyWith(
+              fontSize: 10,
+              color: AppColors.textSecondary(context),
+            ),
+          ),
           const SizedBox(height: 2),
           Text(
             value,
             style: AppTextStyles.titleMedium.copyWith(
-              color: color ?? AppColors.onSurface,
+              color: color ?? AppColors.textPrimary(context),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1111,14 +1147,23 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     );
   }
 
-  Widget _buildTutorField(String label, String value) {
+  Widget _buildTutorField(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTextStyles.bodySmall),
-          Text(value, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary(context)),
+          ),
+          Text(
+            value,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary(context),
+            ),
+          ),
         ],
       ),
     );

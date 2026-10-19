@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
@@ -49,6 +50,7 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: AppTextStyles.titleMedium.copyWith(color: AppColors.onSurface),
         iconTheme: const IconThemeData(color: AppColors.onSurface),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -91,6 +93,8 @@ class AppTheme {
     const darkBg = Color(0xFF0B132B);
     const onDark = Color(0xFFF8FAFC);
     const onDarkVariant = Color(0xFF94A3B8);
+    final resolvedPrimary =
+        AppColors.primaryForTheme(primaryColor, Brightness.dark);
 
     return ThemeData(
       useMaterial3: true,
@@ -98,9 +102,9 @@ class AppTheme {
       scaffoldBackgroundColor: darkBg,
       colorScheme: ColorScheme(
         brightness: Brightness.dark,
-        primary: primaryColor,
+        primary: resolvedPrimary,
         onPrimary: Colors.white,
-        primaryContainer: primaryColor.withValues(alpha: 0.25),
+        primaryContainer: resolvedPrimary.withValues(alpha: 0.25),
         onPrimaryContainer: Colors.white,
         secondary: const Color(0xFF14B8A6),
         onSecondary: Colors.white,
@@ -136,11 +140,12 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: onDark),
         iconTheme: IconThemeData(color: onDark),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          backgroundColor: primaryColor,
+          backgroundColor: resolvedPrimary,
           foregroundColor: Colors.white,
           shape: const StadiumBorder(),
           textStyle: AppTextStyles.labelLarge.copyWith(color: Colors.white),
@@ -148,7 +153,7 @@ class AppTheme {
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: primaryColor,
+          backgroundColor: resolvedPrimary,
           foregroundColor: Colors.white,
           shape: const StadiumBorder(),
           textStyle: AppTextStyles.labelLarge,

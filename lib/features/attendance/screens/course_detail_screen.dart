@@ -141,6 +141,9 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
         ? course.getLocalizedSchedule(context)
         : '';
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final surfaceMid = AppColors.surfaceMid(context);
+    final textSecondary = AppColors.textSecondary(context);
+    final textPrimary = AppColors.textPrimary(context);
 
     final now = DateTime.now();
     final isClassDay = course?.isClassDay(now) ?? true;
@@ -232,22 +235,22 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          color: AppColors.surfaceContainer,
+                          color: surfaceMid,
                           borderRadius: BorderRadius.circular(100),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.schedule,
                               size: 14,
-                              color: AppColors.onSurfaceVariant,
+                              color: textSecondary,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               courseSchedule,
                               style: AppTextStyles.labelSmall.copyWith(
-                                color: AppColors.onSurfaceVariant,
+                                color: textSecondary,
                               ),
                             ),
                           ],
@@ -256,12 +259,12 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     const Spacer(),
                     // Menú de tres puntos para opciones del curso
                     Container(
-                      decoration: const BoxDecoration(
-                        color: AppColors.surfaceContainer,
+                      decoration: BoxDecoration(
+                        color: surfaceMid,
                         shape: BoxShape.circle,
                       ),
                       child: PopupMenuButton<String>(
-                        icon: const Icon(Icons.more_vert, size: 20),
+                        icon: Icon(Icons.more_vert, size: 20, color: textPrimary),
                         tooltip: l10n.courseOptions,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
@@ -276,10 +279,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                             value: 'edit',
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.edit_outlined,
                                   size: 20,
-                                  color: AppColors.onSurface,
+                                  color: AppColors.textPrimary(ctx),
                                 ),
                                 const SizedBox(width: 10),
                                 Text(l10n.editCourseTitle),
@@ -301,23 +304,23 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerHigh,
+                      color: AppColors.surfaceHigh(context),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.info_outline,
                           size: 18,
-                          color: AppColors.onSurfaceVariant,
+                          color: textSecondary,
                         ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             l10n.notClassDayBanner,
                             style: AppTextStyles.labelSmall.copyWith(
-                              color: AppColors.onSurfaceVariant,
+                              color: textSecondary,
                               fontWeight: FontWeight.w500,
                             ),
                             textAlign: TextAlign.center,
@@ -336,7 +339,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   child: FilledButton.tonalIcon(
                     onPressed: () => _openAddStudentModal(courseName),
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.surfaceContainerHigh,
+                      backgroundColor: AppColors.surfaceHigh(context),
                       foregroundColor: primaryColor,
                       shape: const StadiumBorder(),
                     ),
@@ -376,7 +379,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(l10n.studentListTitle, style: AppTextStyles.titleMedium),
+                    Text(
+                      l10n.studentListTitle,
+                      style: AppTextStyles.titleMedium.copyWith(color: textPrimary),
+                    ),
                     Row(
                       children: [
                         FilterChip(
@@ -385,7 +391,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                           labelStyle: TextStyle(
                             color: !_filterPendingOnly
                                 ? AppColors.onPrimary
-                                : AppColors.onSurfaceVariant,
+                                : textSecondary,
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
                           ),
@@ -399,7 +405,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                           labelStyle: TextStyle(
                             color: _filterPendingOnly
                                 ? AppColors.onPrimary
-                                : AppColors.onSurfaceVariant,
+                                : textSecondary,
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
                           ),
@@ -422,7 +428,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                             ? l10n.allStudentsMarkedToday
                             : l10n.noStudentsInCourse,
                         style: AppTextStyles.bodyMedium.copyWith(
-                          color: AppColors.outline,
+                          color: AppColors.outlineAdaptive(context),
                         ),
                         textAlign: TextAlign.center,
                       ),

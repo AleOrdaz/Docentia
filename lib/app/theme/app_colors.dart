@@ -61,6 +61,17 @@ class AppColors {
   // Canales y WhatsApp
   static const Color whatsapp = Color(0xFF25D366);
 
+  /// Aclara primarios muy oscuros para que sean legibles sobre fondos dark.
+  static Color primaryForTheme(Color primary, Brightness brightness) {
+    if (brightness != Brightness.dark) return primary;
+    final hsl = HSLColor.fromColor(primary);
+    if (hsl.lightness >= 0.45) return primary;
+    return hsl
+        .withLightness(0.55)
+        .withSaturation(hsl.saturation.clamp(0.35, 0.75))
+        .toColor();
+  }
+
   // Adaptativos según el tema activo (Dark / Light)
   static Color cardBg(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -72,9 +83,19 @@ class AppColors {
     return isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9);
   }
 
+  static Color surfaceLowest(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF151D2E) : surfaceContainerLowest;
+  }
+
   static Color surfaceLow(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? const Color(0xFF1E2A42) : const Color(0xFFEFF4FF);
+  }
+
+  static Color surfaceMid(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF243352) : surfaceContainer;
   }
 
   static Color surfaceHigh(BuildContext context) {
@@ -90,5 +111,15 @@ class AppColors {
   static Color textSecondary(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return isDark ? const Color(0xFF94A3B8) : const Color(0xFF444651);
+  }
+
+  static Color outlineAdaptive(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF64748B) : outline;
+  }
+
+  static Color outlineVariantAdaptive(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return isDark ? const Color(0xFF334155) : outlineVariant;
   }
 }

@@ -137,8 +137,16 @@ class HomeScreen extends ConsumerWidget {
                       width: 150,
                       child: Container(
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0x00E8F0FE), Color(0xFFE3EDFF)],
+                          gradient: LinearGradient(
+                            colors: isDark
+                                ? [
+                                    const Color(0x000B132B),
+                                    primaryColor.withValues(alpha: 0.12),
+                                  ]
+                                : const [
+                                    Color(0x00E8F0FE),
+                                    Color(0xFFE3EDFF),
+                                  ],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           ),
@@ -282,15 +290,17 @@ class HomeScreen extends ConsumerWidget {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE3EDFF),
+                              color: isDark
+                                  ? primaryColor.withValues(alpha: 0.2)
+                                  : const Color(0xFFE3EDFF),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
                               '${todayCourses.length}',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF00236F),
+                                color: primaryColor,
                               ),
                             ),
                           ),
@@ -300,7 +310,7 @@ class HomeScreen extends ConsumerWidget {
                     FilledButton.icon(
                       onPressed: () => _openCreateCourseDialog(context),
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF00236F),
+                        backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 10),
@@ -327,14 +337,20 @@ class HomeScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(
                         vertical: 36, horizontal: 20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF151D2E) : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFEEF2F9)),
-                      boxShadow: const [
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF22304A)
+                            : const Color(0xFFEEF2F9),
+                      ),
+                      boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.02),
+                          color: isDark
+                              ? Colors.black.withValues(alpha: 0.3)
+                              : const Color.fromRGBO(0, 0, 0, 0.02),
                           blurRadius: 10,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -342,39 +358,45 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(16),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE8EFFF),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? primaryColor.withValues(alpha: 0.2)
+                                : const Color(0xFFE8EFFF),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.school_outlined,
                             size: 40,
-                            color: Color(0xFF00236F),
+                            color: primaryColor,
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           l10n?.noCoursesYet ?? 'Aún no tienes cursos',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF00174D),
+                            color: isDark
+                                ? const Color(0xFFF8FAFC)
+                                : const Color(0xFF00174D),
                           ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           l10n?.noCoursesYetDesc ?? 'Crea tu primer curso para comenzar a inscribir alumnos y llevar el control.',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF5F6368),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF5F6368),
                           ),
                         ),
                         const SizedBox(height: 18),
                         FilledButton.icon(
                           onPressed: () => _openCreateCourseDialog(context),
                           style: FilledButton.styleFrom(
-                            backgroundColor: const Color(0xFF00236F),
+                            backgroundColor: primaryColor,
                             foregroundColor: Colors.white,
                             shape: const StadiumBorder(),
                             padding: const EdgeInsets.symmetric(
@@ -393,14 +415,20 @@ class HomeScreen extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(
                         vertical: 32, horizontal: 20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF151D2E) : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFEEF2F9)),
-                      boxShadow: const [
+                      border: Border.all(
+                        color: isDark
+                            ? const Color(0xFF22304A)
+                            : const Color(0xFFEEF2F9),
+                      ),
+                      boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(0, 35, 111, 0.03),
+                          color: isDark
+                              ? Colors.black.withValues(alpha: 0.3)
+                              : const Color.fromRGBO(0, 35, 111, 0.03),
                           blurRadius: 10,
-                          offset: Offset(0, 2),
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
@@ -408,32 +436,38 @@ class HomeScreen extends ConsumerWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFE8EFFF),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? primaryColor.withValues(alpha: 0.2)
+                                : const Color(0xFFE8EFFF),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.event_available_outlined,
                             size: 34,
-                            color: Color(0xFF00236F),
+                            color: primaryColor,
                           ),
                         ),
                         const SizedBox(height: 14),
                         Text(
                           l10n?.noCoursesTodayTitle ?? 'Hoy no tienes clases programadas',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF00174D),
+                            color: isDark
+                                ? const Color(0xFFF8FAFC)
+                                : const Color(0xFF00174D),
                           ),
                         ),
                         const SizedBox(height: 6),
                         Text(
                           l10n?.noCoursesTodayDesc ?? 'Es tiempo de un respiro. Un buen momento para organizar tus próximos cursos o revisar tus avances del mes.',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF5F6368),
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF5F6368),
                             height: 1.35,
                           ),
                         ),
