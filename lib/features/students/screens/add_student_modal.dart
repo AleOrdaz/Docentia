@@ -94,10 +94,14 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLowest(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: EdgeInsets.only(
         left: 20,
@@ -112,32 +116,33 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Drag handle
               Center(
                 child: Container(
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.outlineVariant,
+                    color: AppColors.outlineVariantAdaptive(context),
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // Título y botón cerrar
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.person_add, color: AppColors.primary, size: 24),
+                      Icon(Icons.person_add, color: primaryColor, size: 24),
                       const SizedBox(width: 8),
-                      Text(l10n.addStudentTitle, style: AppTextStyles.titleLarge),
+                      Text(
+                        l10n.addStudentTitle,
+                        style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                      ),
                     ],
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: AppColors.onSurfaceVariant),
+                    icon: Icon(Icons.close, color: textSecondary),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -145,11 +150,10 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
 
               Text(
                 l10n.addStudentDesc(widget.courseName),
-                style: AppTextStyles.bodySmall,
+                style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
               ),
               const SizedBox(height: 16),
 
-              // Nombres y Apellidos
               Row(
                 children: [
                   Expanded(
@@ -175,7 +179,6 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
               const SizedBox(height: 12),
 
-              // Edad
               _buildTextField(
                 label: l10n.ageLabel,
                 controller: _ageController,
@@ -184,7 +187,6 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
               const SizedBox(height: 12),
 
-              // Nombre del Tutor
               _buildTextField(
                 label: l10n.tutorNameLabel,
                 controller: _tutorNameController,
@@ -192,7 +194,6 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
               const SizedBox(height: 12),
 
-              // Teléfono WhatsApp
               _buildTextField(
                 label: l10n.tutorPhoneRequiredLabel,
                 controller: _tutorPhoneController,
@@ -204,7 +205,6 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
               const SizedBox(height: 12),
 
-              // Correo Electrónico
               _buildTextField(
                 label: l10n.emailLabel,
                 controller: _tutorEmailController,
@@ -213,15 +213,14 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
               const SizedBox(height: 20),
 
-              // Botones de acción
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
-                      foregroundColor: AppColors.onSurface,
-                      backgroundColor: AppColors.surfaceContainer,
+                      foregroundColor: textPrimary,
+                      backgroundColor: AppColors.surfaceMid(context),
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     ),
@@ -231,7 +230,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                   ElevatedButton.icon(
                     onPressed: _isSubmitting ? null : _submit,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: primaryColor,
                       foregroundColor: AppColors.onPrimary,
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -262,21 +261,26 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
     Widget? prefixIcon,
     String? Function(String?)? validator,
   }) {
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelMedium),
+        Text(label, style: AppTextStyles.labelMedium.copyWith(color: textSecondary)),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           validator: validator,
-          style: AppTextStyles.bodyMedium,
+          style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppTextStyles.bodyMedium.copyWith(color: AppColors.outline),
+            hintStyle: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.outlineAdaptive(context),
+            ),
             filled: true,
-            fillColor: AppColors.surfaceContainerLow,
+            fillColor: AppColors.surfaceLow(context),
             prefixIcon: prefixIcon,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),

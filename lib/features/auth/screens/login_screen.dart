@@ -12,6 +12,11 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -19,23 +24,24 @@ class LoginScreen extends ConsumerWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Versión
               Align(
                 alignment: Alignment.topRight,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceContainerLow,
+                    color: AppColors.surfaceLow(context),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: Text(
                     l10n.appVersion,
-                    style: AppTextStyles.labelSmall.copyWith(fontSize: 10),
+                    style: AppTextStyles.labelSmall.copyWith(
+                      fontSize: 10,
+                      color: textSecondary,
+                    ),
                   ),
                 ),
               ),
 
-              // Contenido central
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -44,33 +50,40 @@ class LoginScreen extends ConsumerWidget {
                     height: 72,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? AppColors.surfaceLowest(context) : Colors.white,
                       borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
+                      border: Border.all(color: AppColors.cardBorder(context)),
+                      boxShadow: [
                         BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.08),
+                          color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
                           blurRadius: 16,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
                     child: Image.network(
                       'https://lh3.googleusercontent.com/aida/AEtjO1XZ7e43VHwBaPjFd1fOXBK0dlNY57Cc-YaMli2NYFc7OQVOWhzSaCAAOv33tNxuQb5vMAA_0qf6G4ycivHEpU8c-KfCGJwd53WxGOMUvTLC3ge96FKHXlIz1rgDw3wCd6TeR7Bm0CXHYF_v6T06P5kmr3Tnm0iTTdVDWW7WTTYpUpOZxNdbsNXVzsJ-ny7otBxpWByZcXqmvsMI8NEFvjZjAJRYTKdtgdPklwiWkfoPh0JSobhTqsPxmiM',
-                      errorBuilder: (_, __, ___) => const Icon(Icons.school, size: 36, color: AppColors.primary),
+                      errorBuilder: (_, __, ___) =>
+                          Icon(Icons.school, size: 36, color: primaryColor),
                     ),
                   ),
                   const SizedBox(height: 16),
 
-                  Text(l10n.appName, style: AppTextStyles.headlineLarge.copyWith(fontWeight: FontWeight.bold)),
+                  Text(
+                    l10n.appName,
+                    style: AppTextStyles.headlineLarge.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: textPrimary,
+                    ),
+                  ),
                   const SizedBox(height: 6),
                   Text(
                     l10n.loginShortSubtitle,
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.onSurfaceVariant),
+                    style: AppTextStyles.bodyMedium.copyWith(color: textSecondary),
                   ),
                   const SizedBox(height: 32),
 
-                  // Botón Google
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -81,7 +94,8 @@ class LoginScreen extends ConsumerWidget {
                       },
                       style: OutlinedButton.styleFrom(
                         shape: const StadiumBorder(),
-                        side: const BorderSide(color: AppColors.outlineVariant),
+                        side: BorderSide(color: AppColors.outlineVariantAdaptive(context)),
+                        foregroundColor: textPrimary,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -94,17 +108,29 @@ class LoginScreen extends ConsumerWidget {
                               shape: BoxShape.circle,
                             ),
                             alignment: Alignment.center,
-                            child: const Text('G', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                            child: const Text(
+                              'G',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 12),
-                          Text(l10n.continueWithGoogleShort, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.onSurface)),
+                          Text(
+                            l10n.continueWithGoogleShort,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: textPrimary,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
 
-                  // Botón Apple
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -114,8 +140,8 @@ class LoginScreen extends ConsumerWidget {
                         if (context.mounted) context.go('/home');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
+                        backgroundColor: isDark ? Colors.white : Colors.black,
+                        foregroundColor: isDark ? Colors.black : Colors.white,
                         shape: const StadiumBorder(),
                       ),
                       child: Row(
@@ -123,7 +149,10 @@ class LoginScreen extends ConsumerWidget {
                         children: [
                           const Text('', style: TextStyle(fontSize: 20)),
                           const SizedBox(width: 8),
-                          Text(l10n.continueWithApple, style: const TextStyle(fontWeight: FontWeight.w600)),
+                          Text(
+                            l10n.continueWithApple,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
                         ],
                       ),
                     ),
@@ -131,17 +160,34 @@ class LoginScreen extends ConsumerWidget {
                 ],
               ),
 
-              // Términos y privacidad
               Column(
                 children: [
-                  Text(l10n.termsPrefix, style: AppTextStyles.labelSmall),
+                  Text(
+                    l10n.termsPrefix,
+                    style: AppTextStyles.labelSmall.copyWith(color: textSecondary),
+                  ),
                   const SizedBox(height: 2),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(l10n.termsLink, style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
-                      Text(' • ', style: AppTextStyles.labelSmall),
-                      Text(l10n.privacyLink, style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      Text(
+                        l10n.termsLink,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        ' • ',
+                        style: AppTextStyles.labelSmall.copyWith(color: textSecondary),
+                      ),
+                      Text(
+                        l10n.privacyLink,
+                        style: AppTextStyles.labelSmall.copyWith(
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ],
