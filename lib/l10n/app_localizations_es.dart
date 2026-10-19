@@ -329,7 +329,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get paymentsFilter => 'Vencimientos';
 
   @override
-  String get noEventsDay => 'No hay eventos o clases programadas para esta fecha.';
+  String get noEventsDay =>
+      'No hay eventos o clases programadas para esta fecha.';
 
   @override
   String get weekdayMonday => 'Lunes';
@@ -462,7 +463,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get appVersion => 'Docentia v1.0.0';
 
   @override
-  String get loginShortSubtitle => 'Plataforma de gestión académica y control de asistencia para docentes.';
+  String get loginShortSubtitle =>
+      'Plataforma de gestión académica y control de asistencia para docentes.';
 
   @override
   String get continueWithGoogleShort => 'Continuar con Google';
@@ -499,16 +501,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get selectEndTime => 'Seleccionar hora de finalización';
 
   @override
-  String get selectAtLeastOneDay => 'Por favor, selecciona al menos un día de clase.';
+  String get selectAtLeastOneDay =>
+      'Por favor, selecciona al menos un día de clase.';
 
   @override
   String courseUpdatedSuccess(String name) {
-    return 'Curso "$name" actualizado con éxito';
+    return 'Curso \"$name\" actualizado con éxito';
   }
 
   @override
   String courseCreatedSuccess(String name) {
-    return 'Curso "$name" creado con éxito';
+    return 'Curso \"$name\" creado con éxito';
   }
 
   @override
@@ -516,7 +519,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String deleteCourseConfirmBody(String name) {
-    return 'Estás a punto de eliminar el curso "$name". Esta acción dará de baja el curso y no podrá deshacerse.';
+    return 'Estás a punto de eliminar el curso \"$name\". Esta acción dará de baja el curso y no podrá deshacerse.';
   }
 
   @override
@@ -524,7 +527,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String courseDeletedSuccess(String name) {
-    return 'Curso "$name" eliminado correctamente.';
+    return 'Curso \"$name\" eliminado correctamente.';
   }
 
   @override
@@ -556,7 +559,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get attendanceLog => 'Registro de asistencia';
 
   @override
-  String get allStudentsMarkedToday => 'Todos los alumnos tienen asistencia asignada hoy';
+  String get allStudentsMarkedToday =>
+      'Todos los alumnos tienen asistencia asignada hoy';
 
   @override
   String get noStudentsInCourse => 'Aún no hay alumnos inscritos en este curso';
@@ -645,7 +649,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get whatsappOpenError => 'No se pudo abrir WhatsApp en este dispositivo';
+  String get whatsappOpenError =>
+      'No se pudo abrir WhatsApp en este dispositivo';
 
   @override
   String get deactivateStudentTitle => '¿Dar de baja al alumno?';
@@ -701,7 +706,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get feeAlreadyExists => 'La cuota de este mes ya está registrada para este alumno y curso.';
+  String get feeAlreadyExists =>
+      'La cuota de este mes ya está registrada para este alumno y curso.';
 
   @override
   String get modifyDueDate => 'Modificar Vencimiento';
@@ -734,7 +740,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get confirmPayment => 'Confirmar Pago';
 
   @override
-  String get reviewPaymentData => 'Revisa los datos del pago que vas a registrar:';
+  String get reviewPaymentData =>
+      'Revisa los datos del pago que vas a registrar:';
 
   @override
   String get studentColon => 'Alumno:';
@@ -935,7 +942,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventTitleLabel => 'Título del Evento *';
 
   @override
-  String get eventTitleHint => 'Ej. Primer Examen Parcial / Entrega de Proyectos';
+  String get eventTitleHint =>
+      'Ej. Primer Examen Parcial / Entrega de Proyectos';
 
   @override
   String get activityType => 'Tipo de Actividad';
@@ -977,7 +985,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get descriptionInstructionsLabel => 'Descripción / Instrucciones *';
 
   @override
-  String get descriptionHint => 'Detalles de la actividad, temas a evaluar o materiales requeridos...';
+  String get descriptionHint =>
+      'Detalles de la actividad, temas a evaluar o materiales requeridos...';
 
   @override
   String get extraEmailsLabel => 'Correos adicionales de tutores (opcional)';
@@ -989,11 +998,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventTitleRequired => 'El título del evento es obligatorio.';
 
   @override
-  String get eventDescriptionRequired => 'Por favor ingresa una descripción para el evento.';
+  String get eventDescriptionRequired =>
+      'Por favor ingresa una descripción para el evento.';
 
   @override
   String eventSaved(String title) {
-    return 'Evento "$title" registrado en el calendario';
+    return 'Evento \"$title\" registrado en el calendario';
   }
 
   @override
@@ -1020,7 +1030,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get openMail => 'Abrir Correo';
 
   @override
-  String get noMailClient => 'No se encontró cliente de correo instalado. Mensaje copiado.';
+  String get noMailClient =>
+      'No se encontró cliente de correo instalado. Mensaje copiado.';
 
   @override
   String get calendarClassesTitle => 'Calendario de Clases y Eventos';
@@ -1033,7 +1044,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noSchoolEventsDesc =>
-      'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón "+ Nuevo Evento".';
+      'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".';
 
   @override
   String get createEvent => '+ Crear Evento';
@@ -1045,7 +1056,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noDueDatesToday => 'Sin vencimientos de cuotas hoy';
 
   @override
-  String get noDueDatesDesc => 'No hay pagos con fecha límite programada para este día.';
+  String get noDueDatesDesc =>
+      'No hay pagos con fecha límite programada para este día.';
 
   @override
   String get scheduledClasses => 'Clases Programadas';
@@ -1106,7 +1118,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String schoolNoticeBody(String title, String date, String schedule, String location, String description, String teacher) {
+  String schoolNoticeBody(String title, String date, String schedule,
+      String location, String description, String teacher) {
     return 'Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: $title\n• Fecha: $date\n• Horario: $schedule$location\n• Descripción: $description\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n$teacher\nDocentia - Plataforma Académica';
   }
 

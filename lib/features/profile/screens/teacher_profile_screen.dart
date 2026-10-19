@@ -448,6 +448,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 30),
           ],
         ),
       ),

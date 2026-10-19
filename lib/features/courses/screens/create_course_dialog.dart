@@ -36,25 +36,25 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   static const List<int> _dayNumbers = [1, 2, 3, 4, 5, 6, 7];
 
   String getWeekdayName(int day, AppLocalizations? l10n) {
-      switch (day) {
-        case 1:
-          return l10n?.weekdayMonday ?? 'Lunes';
-        case 2:
-          return l10n?.weekdayTuesday ?? 'Martes';
-        case 3:
-          return l10n?.weekdayWednesday ?? 'Miércoles';
-        case 4:
-          return l10n?.weekdayThursday ?? 'Jueves';
-        case 5:
-          return l10n?.weekdayFriday ?? 'Viernes';
-        case 6:
-          return l10n?.weekdaySaturday ?? 'Sábado';
-        case 7:
-          return l10n?.weekdaySunday ?? 'Domingo';
-        default:
-          return '';
-      }
+    switch (day) {
+      case 1:
+        return l10n?.weekdayMonday ?? 'Lunes';
+      case 2:
+        return l10n?.weekdayTuesday ?? 'Martes';
+      case 3:
+        return l10n?.weekdayWednesday ?? 'Miércoles';
+      case 4:
+        return l10n?.weekdayThursday ?? 'Jueves';
+      case 5:
+        return l10n?.weekdayFriday ?? 'Viernes';
+      case 6:
+        return l10n?.weekdaySaturday ?? 'Sábado';
+      case 7:
+        return l10n?.weekdaySunday ?? 'Domingo';
+      default:
+        return '';
     }
+  }
 
   @override
   void initState() {
@@ -366,28 +366,28 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                   const SizedBox(height: 14),
 
                   // Duración (Sesiones) y Capacidad
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildField(
-                          label: l10n?.sessionsLabel ?? 'Total de Sesiones *',
-                          controller: _sessionsController,
-                          hint: '32',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _buildField(
-                          label: l10n?.maxCapacityLabel ?? 'Capacidad Máxima *',
-                          controller: _capacityController,
-                          hint: '30',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: _buildField(
+                  //         label: l10n?.sessionsLabel ?? 'Total de Sesiones *',
+                  //         controller: _sessionsController,
+                  //         hint: '32',
+                  //         keyboardType: TextInputType.number,
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 10),
+                  //     Expanded(
+                  //       child: _buildField(
+                  //         label: l10n?.maxCapacityLabel ?? 'Capacidad Máxima *',
+                  //         controller: _capacityController,
+                  //         hint: '30',
+                  //         keyboardType: TextInputType.number,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 16),
 
                   // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
                   Text(
@@ -600,51 +600,41 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                       children: kCourseIconCategories.map((cat) {
                         final isSelected =
                             _selectedIconKey.toLowerCase() == cat.key.toLowerCase();
-                        return InkWell(
-                          onTap: () {
-                            setState(() => _selectedIconKey = cat.key);
-                          },
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                            decoration: BoxDecoration(
-                              color: isSelected ? primaryColor : Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: isSelected
-                                    ? primaryColor
-                                    : AppColors.surfaceContainerHigh,
-                                width: isSelected ? 1.5 : 1,
-                              ),
-                              boxShadow: isSelected
-                                  ? [
-                                BoxShadow(
-                                  color: primaryColor.withValues(alpha: 0.2),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
+                        return Tooltip(
+                          message: cat.name,
+                          child: InkWell(
+                            onTap: () {
+                              setState(() => _selectedIconKey = cat.key);
+                            },
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              width: 46,
+                              height: 46,
+                              decoration: BoxDecoration(
+                                color: isSelected ? primaryColor : Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? primaryColor
+                                      : AppColors.surfaceContainerHigh,
+                                  width: isSelected ? 1.5 : 1,
                                 ),
-                              ]
-                                  : null,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
+                                boxShadow: isSelected
+                                    ? [
+                                  BoxShadow(
+                                    color: primaryColor.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ] : null,
+                              ),
+                              child: Center(
+                                child: Icon(
                                   cat.icon,
-                                  size: 16,
+                                  size: 24,
                                   color: isSelected ? Colors.white : primaryColor,
                                 ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  cat.name,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight:
-                                    isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? Colors.white : AppColors.onSurface,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         );
@@ -654,10 +644,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                   const SizedBox(height: 22),
 
                   // Botones
-                  Row(
-                    mainAxisAlignment: isEditing
-                        ? MainAxisAlignment.spaceBetween
-                        : MainAxisAlignment.end,
+                  Column(
                     children: [
                       if (isEditing)
                         TextButton.icon(
@@ -679,7 +666,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                           ),
                         ),
                       Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: isEditing
+                            ? MainAxisAlignment.spaceBetween
+                            : MainAxisAlignment.end,
                         children: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),

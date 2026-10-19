@@ -1019,19 +1019,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  if (cHasClasses)
-                                    Container(
-                                      width: 4,
-                                      height: 4,
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 1),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: isSelected
-                                            ? Colors.white
-                                            : const Color(0xFF3B82F6),
-                                      ),
-                                    ),
                                   if (cHasEvents)
                                     Container(
                                       width: 4,
@@ -1077,9 +1064,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               child: Row(
                 children: [
                   _buildTabChip('all', l10n.filterAll, isDark, primaryColor),
-                  const SizedBox(width: 8),
-                  _buildTabChip('classes', l10n.classesTabCount(dayCourses.length),
-                      isDark, primaryColor),
                   const SizedBox(width: 8),
                   _buildTabChip('events', l10n.eventsTabCount(dayEvents.length),
                       isDark, primaryColor),
@@ -1137,7 +1121,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 )
               else
-                ...dayEvents.map((evt) => _buildEventCard(evt, isDark, primaryColor)),
+                ...dayEvents.map((evt) => _buildEventCard(evt, isDark, primaryColor, l10n)),
               const SizedBox(height: 18),
             ],
 
@@ -1194,41 +1178,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               ],
               const SizedBox(height: 18),
             ],
-
-            // SECCIÓN: CLASES DEL DÍA
-            if (_activeTab == 'all' || _activeTab == 'classes') ...[
-              Row(
-                children: [
-                  Icon(Icons.school_outlined, color: primaryColor, size: 20),
-                  const SizedBox(width: 6),
-                  Text(
-                    l10n.scheduledClasses,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? const Color(0xFFF8FAFC)
-                          : const Color(0xFF00174D),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              if (dayCourses.isEmpty)
-                _buildEmptyCard(
-                  icon: Icons.calendar_today_outlined,
-                  title: l10n.noClassesThisDay,
-                  subtitle: l10n.noClassesThisDayDesc,
-                  isDark: isDark,
-                )
-              else
-                ...dayCourses.map((course) => _buildCourseCard(
-                  course: course,
-                  isDark: isDark,
-                  primaryColor: primaryColor,
-                )),
-              const SizedBox(height: 24),
-            ],
           ],
         ),
       ),
@@ -1242,7 +1191,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       onTap: () => setState(() => _activeTab = key),
       borderRadius: BorderRadius.circular(100),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
         decoration: BoxDecoration(
           color: isSel
               ? primaryColor
@@ -1257,7 +1206,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 13,
             fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
             color: isSel
                 ? Colors.white
@@ -1269,7 +1218,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   Widget _buildEventCard(
-      CalendarEvent event, bool isDark, Color primaryColor) {
+      CalendarEvent event, bool isDark, Color primaryColor, l10n) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
@@ -1301,13 +1250,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               IconButton(
                 icon: const Icon(Icons.delete_outline,
                     color: Color(0xFFD32F2F), size: 18),
-                tooltip: l10n.deleteEvent,
+                tooltip: l10n.deleteEvent.toString(),
                 onPressed: () {
                   ref
                       .read(calendarEventsProvider.notifier)
                       .deleteEvent(event.id);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.eventDeleted)),
+                    SnackBar(content: Text(l10n.eventDeleted.toString())),
                   );
                 },
               ),
@@ -1356,7 +1305,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               FilledButton.tonalIcon(
                 onPressed: () => _openShareEventDialog(context, event),
                 icon: const Icon(Icons.mail_outline, size: 16),
-                label: Text(l10n.notifyParents,
+                label: Text(l10n.notifyParents.toString(),
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                 style: FilledButton.styleFrom(
                   backgroundColor: const Color(0xFFE0F2FE),
@@ -1536,93 +1485,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCourseCard({
-    required Course course,
-    required bool isDark,
-    required Color primaryColor,
-  }) {
-    final iconData = getCourseIcon(course.iconKey);
-    final l10n = AppLocalizations.of(context)!;
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF151D2E) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1E2E4E) : const Color(0xFFE3EDFF),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(iconData, size: 24, color: primaryColor),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  course.name,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: isDark
-                        ? const Color(0xFFF8FAFC)
-                        : const Color(0xFF00174D),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.schedule,
-                        size: 13, color: Color(0xFF757682)),
-                    const SizedBox(width: 4),
-                    Text(
-                      course.startTime.isNotEmpty && course.endTime.isNotEmpty
-                          ? '${course.startTime} - ${course.endTime}'
-                          : course.schedule,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: isDark
-                            ? const Color(0xFF94A3B8)
-                            : const Color(0xFF5F6368),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          FilledButton.tonal(
-            onPressed: () {
-              ref.read(selectedCourseIdProvider.notifier).state = course.id;
-              context.push('/course-detail/${course.id}');
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: isDark
-                  ? const Color(0xFF1E2E4E)
-                  : const Color(0xFFE3EDFF),
-              foregroundColor: primaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              shape: const StadiumBorder(),
-            ),
-            child: Text(l10n.attendanceAction,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

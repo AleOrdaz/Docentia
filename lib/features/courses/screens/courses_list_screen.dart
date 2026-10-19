@@ -302,45 +302,46 @@ class CoursesListScreen extends ConsumerWidget {
             const SizedBox(height: 14),
 
             // Barra de progreso y capacidad
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '$studentsCount ${l10n.ofTotal(course.capacity)} ${l10n.studentPlural} ${l10n.enrolledWord}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: isDark
-                        ? const Color(0xFFCBD5E1)
-                        : const Color(0xFF43474E),
-                  ),
-                ),
-                Text(
-                  '$fillPct%',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF00897B),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(100),
-              child: LinearProgressIndicator(
-                value: course.capacity > 0
-                    ? (studentsCount / course.capacity).clamp(0.0, 1.0)
-                    : 0.0,
-                minHeight: 6,
-                backgroundColor: isDark
-                    ? const Color(0xFF1E293B)
-                    : const Color(0xFFEEF2F6),
-                valueColor:
-                const AlwaysStoppedAnimation<Color>(Color(0xFF00897B)),
-              ),
-            ),
-            const SizedBox(height: 14),
+            // Se comenta para que no se muestre la barra de progreso y el porcentaje de llenado del curso
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       '$studentsCount ${l10n.ofTotal(course.capacity)} ${l10n.studentPlural} ${l10n.enrolledWord}',
+            //       style: TextStyle(
+            //         fontSize: 12,
+            //         fontWeight: FontWeight.w500,
+            //         color: isDark
+            //             ? const Color(0xFFCBD5E1)
+            //             : const Color(0xFF43474E),
+            //       ),
+            //     ),
+            //     Text(
+            //       '$fillPct%',
+            //       style: const TextStyle(
+            //         fontSize: 12,
+            //         fontWeight: FontWeight.w700,
+            //         color: Color(0xFF00897B),
+            //       ),
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(height: 6),
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(100),
+            //   child: LinearProgressIndicator(
+            //     value: course.capacity > 0
+            //         ? (studentsCount / course.capacity).clamp(0.0, 1.0)
+            //         : 0.0,
+            //     minHeight: 6,
+            //     backgroundColor: isDark
+            //         ? const Color(0xFF1E293B)
+            //         : const Color(0xFFEEF2F6),
+            //     valueColor:
+            //     const AlwaysStoppedAnimation<Color>(Color(0xFF00897B)),
+            //   ),
+            // ),
+            // const SizedBox(height: 14),
 
             // Línea inferior: Cuota del curso + Periodo de vencimiento
             Row(
@@ -364,7 +365,7 @@ class CoursesListScreen extends ConsumerWidget {
                         color: Color(0xFFD97706),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -411,11 +412,10 @@ class CoursesListScreen extends ConsumerWidget {
                             ? const Color(0xFFD8B4FE)
                             : const Color(0xFF6B21A8),
                       ),
-                      const SizedBox(width: 4),
                       Text(
                         '${l10n.duePrefix}: ${course.paymentSchedule.getLocalizedName(context)}',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 10.5,
                           fontWeight: FontWeight.w600,
                           color: isDark
                               ? const Color(0xFFD8B4FE)
