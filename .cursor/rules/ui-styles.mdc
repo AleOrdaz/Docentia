@@ -1,0 +1,14 @@
+---
+description: Reutilizar los componentes de la página de estilos de Docentia
+globs: lib/**/*.dart
+alwaysApply: false
+---
+
+# Estilos de interfaz
+
+Antes de crear un control nuevo, revisa `lib/features/design/screens/style_guide_screen.dart` y `lib/app/widgets/app_form_styles.dart`. Si el componente ya existe, úsalo tal cual.
+
+- Etiquetas de campo: `AppFieldLabel` o `appInputLabelStyle`.
+- Campos: `AppTextField`.
+- Acción principal: `AppPrimaryButton`, relleno con el color primario y texto blanco.
+- No repitas un signo más en el texto si el botón ya lleva icono.

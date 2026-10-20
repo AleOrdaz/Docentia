@@ -64,7 +64,7 @@ class CoursesListScreen extends ConsumerWidget {
               ),
               icon: const Icon(Icons.add, size: 16),
               label: Text(
-                l10n.newCourseBtn.replaceAll('+', '').trim(),
+                l10n.newCourseBtn,
                 style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ),
@@ -85,19 +85,23 @@ class CoursesListScreen extends ConsumerWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(20),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFE8EFFF),
+                      decoration: BoxDecoration(
+                        color: isDark
+                            ? primaryColor.withValues(alpha: 0.2)
+                            : const Color(0xFFE8EFFF),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.school_outlined,
-                          size: 48, color: Color(0xFF00236F)),
+                      child: Icon(Icons.school_outlined,
+                          size: 48, color: primaryColor),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       l10n.noCoursesYet,
                       style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF00174D),
+                        color: isDark
+                            ? const Color(0xFFF8FAFC)
+                            : const Color(0xFF00174D),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -105,21 +109,23 @@ class CoursesListScreen extends ConsumerWidget {
                       l10n.noCoursesManageDesc,
                       textAlign: TextAlign.center,
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: const Color(0xFF5F6368),
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : const Color(0xFF5F6368),
                       ),
                     ),
                     const SizedBox(height: 20),
                     FilledButton.icon(
                       onPressed: () => _openCreateCourseDialog(context),
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFF00236F),
+                        backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
                         shape: const StadiumBorder(),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 24, vertical: 12),
                       ),
                       icon: const Icon(Icons.add, size: 18),
-                      label: Text(l10n.newCourseBtn.replaceAll('+', '').trim()),
+                      label: Text(l10n.newCourseBtn),
                     ),
                   ],
                 ),

@@ -107,7 +107,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todaysCoursesTitle => 'Today\'s Courses';
 
   @override
-  String get newCourseBtn => '+ New Course';
+  String get newCourseBtn => 'New Course';
 
   @override
   String get noCoursesTodayTitle => 'No classes scheduled for today';
@@ -272,6 +272,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get endTimeLabel => 'End Time *';
 
   @override
+  String get classScheduleLabel => 'Class schedule';
+
+  @override
   String get monthlyCostLabel => 'Monthly Fee (\$) *';
 
   @override
@@ -432,7 +435,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upcomingStatus => 'Due soon';
 
   @override
+  String get paymentUpToDate => 'Up to date';
+
+  @override
+  String get noFeeStatus => 'No fee';
+
+  @override
+  String get allStudentsCurrent => 'All students are up to date';
+
+  @override
   String get presentStatus => 'Present';
+
+  @override
+  String get lateStatus => 'Late';
 
   @override
   String get absentStatus => 'Absent';
@@ -462,7 +477,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appVersion => 'Docentia v1.0.0';
 
   @override
-  String get loginShortSubtitle => 'Academic management and attendance tracking for educators.';
+  String get loginShortSubtitle =>
+      'Academic management and attendance tracking for educators.';
 
   @override
   String get continueWithGoogleShort => 'Continue with Google';
@@ -503,12 +519,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String courseUpdatedSuccess(String name) {
-    return 'Course "$name" updated successfully';
+    return 'Course \"$name\" updated successfully';
   }
 
   @override
   String courseCreatedSuccess(String name) {
-    return 'Course "$name" created successfully';
+    return 'Course \"$name\" created successfully';
   }
 
   @override
@@ -516,7 +532,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String deleteCourseConfirmBody(String name) {
-    return 'You are about to delete the course "$name". The course will be deactivated and this cannot be undone.';
+    return 'You are about to delete the course \"$name\". The course will be deactivated and this cannot be undone.';
   }
 
   @override
@@ -524,7 +540,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String courseDeletedSuccess(String name) {
-    return 'Course "$name" deleted.';
+    return 'Course \"$name\" deleted.';
   }
 
   @override
@@ -534,7 +550,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courseNameRequired => 'Name is required';
 
   @override
-  String get cannotSaveAttendanceNotClassDay => 'Attendance cannot be saved: today is not a class day for this course.';
+  String get cannotSaveAttendanceNotClassDay =>
+      'Attendance cannot be saved: today is not a class day for this course.';
 
   @override
   String attendanceSaved(int count) {
@@ -545,19 +562,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courseOptions => 'Course options';
 
   @override
-  String get notClassDayBanner => 'No class today. Attendance is only available on class days.';
+  String get notClassDayBanner =>
+      'No class today. Attendance is only available on class days.';
 
   @override
-  String get addStudentShort => '+ Add student';
+  String get addStudentShort => 'Add student';
 
   @override
   String get attendanceLog => 'Attendance log';
 
   @override
-  String get allStudentsMarkedToday => 'Every student already has attendance for today';
+  String attendanceStudentOf(int current, int total) {
+    return '$current of $total';
+  }
 
   @override
-  String get noStudentsInCourse => 'No students are enrolled in this course yet';
+  String get noStudentsForAttendance => 'Add students to take attendance.';
+
+  @override
+  String get attendanceRollComplete => 'Attendance taken successfully';
+
+  @override
+  String get attendanceDaySummary => 'Daily summary';
+
+  @override
+  String get allStudentsMarkedToday =>
+      'Every student already has attendance for today';
+
+  @override
+  String get noStudentsInCourse =>
+      'No students are enrolled in this course yet';
 
   @override
   String sessionOf(int current, int total) {
@@ -575,6 +609,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get presentsLabel => 'Present';
+
+  @override
+  String get latesLabel => 'Late';
 
   @override
   String get absencesLabel => 'Absences';
@@ -663,7 +700,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newMonthlyFee => 'New Monthly Fee';
 
   @override
-  String get feeConfigHelp => 'Set the period and due date. Only one fee is allowed per month:';
+  String get feeConfigHelp =>
+      'Set the period and due date. Only one fee is allowed per month:';
 
   @override
   String get monthAndYear => 'Month and year:';
@@ -858,6 +896,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String latesCount(int count) {
+    return 'Late: $count';
+  }
+
+  @override
   String absencesCount(int count) {
     return 'Absences: $count';
   }
@@ -975,7 +1018,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get descriptionInstructionsLabel => 'Description / Instructions *';
 
   @override
-  String get descriptionHint => 'Activity details, topics to assess, or required materials...';
+  String get descriptionHint =>
+      'Activity details, topics to assess, or required materials...';
 
   @override
   String get extraEmailsLabel => 'Additional guardian emails (optional)';
@@ -987,11 +1031,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get eventTitleRequired => 'The event title is required.';
 
   @override
-  String get eventDescriptionRequired => 'Please enter a description for the event.';
+  String get eventDescriptionRequired =>
+      'Please enter a description for the event.';
 
   @override
   String eventSaved(String title) {
-    return 'Event "$title" added to the calendar';
+    return 'Event \"$title\" added to the calendar';
   }
 
   @override
@@ -1031,7 +1076,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSchoolEventsDesc =>
-      'You can add exams, parent meetings, or activities with the "+ New event" button.';
+      'You can add exams, parent meetings, or activities with the \"+ New event\" button.';
 
   @override
   String get createEvent => '+ Create event';
@@ -1043,7 +1088,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noDueDatesToday => 'No fees due today';
 
   @override
-  String get noDueDatesDesc => 'There are no payments with a due date on this day.';
+  String get noDueDatesDesc =>
+      'There are no payments with a due date on this day.';
 
   @override
   String get scheduledClasses => 'Scheduled classes';
@@ -1052,7 +1098,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noClassesThisDay => 'No classes scheduled for this day';
 
   @override
-  String get noClassesThisDayDesc => 'Select another day in the weekly calendar to see the schedule.';
+  String get noClassesThisDayDesc =>
+      'Select another day in the weekly calendar to see the schedule.';
 
   @override
   String get deleteEvent => 'Delete event';
@@ -1103,7 +1150,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String schoolNoticeBody(String title, String date, String schedule, String location, String description, String teacher) {
+  String schoolNoticeBody(String title, String date, String schedule,
+      String location, String description, String teacher) {
     return 'Dear parents and guardians:\n\nThis school notice is to inform you of the following activity scheduled in Docentia:\n• Event: $title\n• Date: $date\n• Time: $schedule$location\n• Description: $description\n\nThank you for your support and punctual attendance.\n\nSincerely,\n$teacher\nDocentia - Academic Platform';
   }
 

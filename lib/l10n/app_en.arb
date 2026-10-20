@@ -32,7 +32,7 @@
   "studentsCard": "Students",
   "monthlyIncomeCard": "Monthly Income",
   "todaysCoursesTitle": "Today's Courses",
-  "newCourseBtn": "+ New Course",
+  "newCourseBtn": "New Course",
   "noCoursesTodayTitle": "No classes scheduled for today",
   "noCoursesTodayDesc": "Take this time to prepare teaching materials or review pending student evaluations.",
   "createFirstCourseBtn": "Create my first course",
@@ -86,6 +86,7 @@
   "classDaysLabel": "Class Days (at least 1) *",
   "startTimeLabel": "Start Time *",
   "endTimeLabel": "End Time *",
+  "classScheduleLabel": "Class schedule",
   "monthlyCostLabel": "Monthly Fee ($) *",
   "paymentScheduleLabel": "Billing Schedule",
   "scheduleFirstHalf": "First Half (Day 1-15)",
@@ -148,7 +149,11 @@
   "overdueStatus": "Overdue",
   "pendingStatus": "Pending",
   "upcomingStatus": "Due soon",
+  "paymentUpToDate": "Up to date",
+  "noFeeStatus": "No fee",
+  "allStudentsCurrent": "All students are up to date",
   "presentStatus": "Present",
+  "lateStatus": "Late",
   "absentStatus": "Absent",
   "excusedStatus": "Excused",
   "excusedNoteFallback": "Excused",
@@ -198,8 +203,18 @@
   },
   "courseOptions": "Course options",
   "notClassDayBanner": "No class today. Attendance is only available on class days.",
-  "addStudentShort": "+ Add student",
+  "addStudentShort": "Add student",
   "attendanceLog": "Attendance log",
+  "attendanceStudentOf": "{current} of {total}",
+  "@attendanceStudentOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "noStudentsForAttendance": "Add students to take attendance.",
+  "attendanceRollComplete": "Attendance taken successfully",
+  "attendanceDaySummary": "Daily summary",
   "allStudentsMarkedToday": "Every student already has attendance for today",
   "noStudentsInCourse": "No students are enrolled in this course yet",
   "sessionOf": "Session {current} of {total}",
@@ -213,6 +228,7 @@
   "enrolledLabel": "Enrolled",
   "activeLabel": "Active",
   "presentsLabel": "Present",
+  "latesLabel": "Late",
   "absencesLabel": "Absences",
   "spotsLabel": "Seats",
   "ofCapacity": "Of {capacity}",
@@ -338,6 +354,10 @@
   },
   "presentsCount": "Present: {count}",
   "@presentsCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "latesCount": "Late: {count}",
+  "@latesCount": {
     "placeholders": { "count": { "type": "int" } }
   },
   "absencesCount": "Absences: {count}",

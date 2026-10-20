@@ -1,7 +1,21 @@
 enum AttendanceStatus {
   present,
+  late,
   absent,
   excused,
+}
+
+AttendanceStatus parseAttendanceStatus(String? statusStr) {
+  switch (statusStr) {
+    case 'late':
+      return AttendanceStatus.late;
+    case 'absent':
+      return AttendanceStatus.absent;
+    case 'excused':
+      return AttendanceStatus.excused;
+    default:
+      return AttendanceStatus.present;
+  }
 }
 
 class Attendance {
@@ -53,17 +67,12 @@ class Attendance {
   Map<String, dynamic> toJson() => toMap();
 
   factory Attendance.fromMap(Map<String, dynamic> map) {
-    AttendanceStatus parsedStatus = AttendanceStatus.present;
-    final statusStr = map['status'] as String?;
-    if (statusStr == 'absent') parsedStatus = AttendanceStatus.absent;
-    if (statusStr == 'excused') parsedStatus = AttendanceStatus.excused;
-
     return Attendance(
       id: (map['id'] as String?) ?? '',
       studentId: (map['studentId'] as String?) ?? '',
       courseId: (map['courseId'] as String?) ?? '',
       date: (map['date'] as String?) ?? '',
-      status: parsedStatus,
+      status: parseAttendanceStatus(map['status'] as String?),
       note: map['note'] as String?,
     );
   }
@@ -95,15 +104,10 @@ class StudentAttendanceItem {
   }
 
   factory StudentAttendanceItem.fromMap(Map<String, dynamic> map) {
-    AttendanceStatus parsedStatus = AttendanceStatus.present;
-    final statusStr = map['status'] as String?;
-    if (statusStr == 'absent') parsedStatus = AttendanceStatus.absent;
-    if (statusStr == 'excused') parsedStatus = AttendanceStatus.excused;
-
     return StudentAttendanceItem(
       studentId: (map['studentId'] as String?) ?? '',
       studentName: (map['studentName'] as String?) ?? '',
-      status: parsedStatus,
+      status: parseAttendanceStatus(map['status'] as String?),
       note: map['note'] as String?,
     );
   }
@@ -135,11 +139,14 @@ class ClassAttendanceSession {
   int get presentCount =>
       students.where((s) => s.status == AttendanceStatus.present).length;
 
+  int get lateCount =>
+      students.where((s) => s.status == AttendanceStatus.late).length;
+
   int get absentCount =>
       students.where((s) => s.status == AttendanceStatus.absent || s.status == AttendanceStatus.excused).length;
 
   List<StudentAttendanceItem> get presentStudents =>
-      students.where((s) => s.status == AttendanceStatus.present).toList();
+      students.where((s) => s.status == AttendanceStatus.present || s.status == AttendanceStatus.late).toList();
 
   List<StudentAttendanceItem> get absentStudents =>
       students.where((s) => s.status == AttendanceStatus.absent || s.status == AttendanceStatus.excused).toList();

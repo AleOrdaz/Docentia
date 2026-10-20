@@ -94,8 +94,8 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('es'),
-    Locale('en')
+    Locale('en'),
+    Locale('es')
   ];
 
   /// No description provided for @appName.
@@ -293,7 +293,7 @@ abstract class AppLocalizations {
   /// No description provided for @newCourseBtn.
   ///
   /// In es, this message translates to:
-  /// **'+ Nuevo curso'**
+  /// **'Nuevo curso'**
   String get newCourseBtn;
 
   /// No description provided for @noCoursesTodayTitle.
@@ -569,19 +569,19 @@ abstract class AppLocalizations {
   /// No description provided for @editCourseTitle.
   ///
   /// In es, this message translates to:
-  /// **'Editar Curso'**
+  /// **'Editar curso'**
   String get editCourseTitle;
 
   /// No description provided for @createCourseTitle.
   ///
   /// In es, this message translates to:
-  /// **'Crear Nuevo Curso'**
+  /// **'Crear nuevo curso'**
   String get createCourseTitle;
 
   /// No description provided for @courseNameLabel.
   ///
   /// In es, this message translates to:
-  /// **'Nombre del Curso *'**
+  /// **'Nombre del curso *'**
   String get courseNameLabel;
 
   /// No description provided for @sessionsLabel.
@@ -599,55 +599,61 @@ abstract class AppLocalizations {
   /// No description provided for @classDaysLabel.
   ///
   /// In es, this message translates to:
-  /// **'Días de Clase (al menos 1) *'**
+  /// **'Días de clase (al menos 1) *'**
   String get classDaysLabel;
 
   /// No description provided for @startTimeLabel.
   ///
   /// In es, this message translates to:
-  /// **'Hora de Inicio *'**
+  /// **'Hora de inicio *'**
   String get startTimeLabel;
 
   /// No description provided for @endTimeLabel.
   ///
   /// In es, this message translates to:
-  /// **'Hora de Fin *'**
+  /// **'Hora de fin *'**
   String get endTimeLabel;
+
+  /// No description provided for @classScheduleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario de clase'**
+  String get classScheduleLabel;
 
   /// No description provided for @monthlyCostLabel.
   ///
   /// In es, this message translates to:
-  /// **'Costo Mensual ($) *'**
+  /// **'Costo mensual (\$) *'**
   String get monthlyCostLabel;
 
   /// No description provided for @paymentScheduleLabel.
   ///
   /// In es, this message translates to:
-  /// **'Esquema de Cobro Mensual'**
+  /// **'Esquema de cobro mensual'**
   String get paymentScheduleLabel;
 
   /// No description provided for @scheduleFirstHalf.
   ///
   /// In es, this message translates to:
-  /// **'Primera quincena (Día 1-15)'**
+  /// **'Primera quincena (día 1-15)'**
   String get scheduleFirstHalf;
 
   /// No description provided for @scheduleEndOfMonth.
   ///
   /// In es, this message translates to:
-  /// **'Fin de mes (Día 25-30)'**
+  /// **'Fin de mes (día 25-30)'**
   String get scheduleEndOfMonth;
 
   /// No description provided for @chooseIconLabel.
   ///
   /// In es, this message translates to:
-  /// **'Seleccionar Icono Representativo'**
+  /// **'Seleccionar icono representativo'**
   String get chooseIconLabel;
 
   /// No description provided for @deleteCourseBtn.
   ///
   /// In es, this message translates to:
-  /// **'Eliminar Curso'**
+  /// **'Eliminar curso'**
   String get deleteCourseBtn;
 
   /// No description provided for @studentDetailTitle.
@@ -920,11 +926,35 @@ abstract class AppLocalizations {
   /// **'Próximo a vencer'**
   String get upcomingStatus;
 
+  /// No description provided for @paymentUpToDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Al corriente'**
+  String get paymentUpToDate;
+
+  /// No description provided for @noFeeStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin cuota'**
+  String get noFeeStatus;
+
+  /// No description provided for @allStudentsCurrent.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los alumnos están al corriente'**
+  String get allStudentsCurrent;
+
   /// No description provided for @presentStatus.
   ///
   /// In es, this message translates to:
   /// **'Presente'**
   String get presentStatus;
+
+  /// No description provided for @lateStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Retardo'**
+  String get lateStatus;
 
   /// No description provided for @absentStatus.
   ///
@@ -1025,7 +1055,7 @@ abstract class AppLocalizations {
   /// No description provided for @myCourses.
   ///
   /// In es, this message translates to:
-  /// **'Mis Cursos'**
+  /// **'Mis cursos'**
   String get myCourses;
 
   /// No description provided for @courseFee.
@@ -1061,13 +1091,13 @@ abstract class AppLocalizations {
   /// No description provided for @courseUpdatedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Curso "{name}" actualizado con éxito'**
+  /// **'Curso \"{name}\" actualizado con éxito'**
   String courseUpdatedSuccess(String name);
 
   /// No description provided for @courseCreatedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Curso "{name}" creado con éxito'**
+  /// **'Curso \"{name}\" creado con éxito'**
   String courseCreatedSuccess(String name);
 
   /// No description provided for @deleteCourseConfirmTitle.
@@ -1079,7 +1109,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteCourseConfirmBody.
   ///
   /// In es, this message translates to:
-  /// **'Estás a punto de eliminar el curso "{name}". Esta acción dará de baja el curso y no podrá deshacerse.'**
+  /// **'Estás a punto de eliminar el curso \"{name}\". Esta acción dará de baja el curso y no podrá deshacerse.'**
   String deleteCourseConfirmBody(String name);
 
   /// No description provided for @yesDeleteCourse.
@@ -1091,13 +1121,13 @@ abstract class AppLocalizations {
   /// No description provided for @courseDeletedSuccess.
   ///
   /// In es, this message translates to:
-  /// **'Curso "{name}" eliminado correctamente.'**
+  /// **'Curso \"{name}\" eliminado correctamente.'**
   String courseDeletedSuccess(String name);
 
   /// No description provided for @courseNameHint.
   ///
   /// In es, this message translates to:
-  /// **'Ej. Inglés Avanzado B2'**
+  /// **'Ej. Inglés avanzado B2'**
   String get courseNameHint;
 
   /// No description provided for @courseNameRequired.
@@ -1133,7 +1163,7 @@ abstract class AppLocalizations {
   /// No description provided for @addStudentShort.
   ///
   /// In es, this message translates to:
-  /// **'+ Agregar alumno'**
+  /// **'Agregar alumno'**
   String get addStudentShort;
 
   /// No description provided for @attendanceLog.
@@ -1141,6 +1171,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Registro de asistencia'**
   String get attendanceLog;
+
+  /// No description provided for @attendanceStudentOf.
+  ///
+  /// In es, this message translates to:
+  /// **'{current} de {total}'**
+  String attendanceStudentOf(int current, int total);
+
+  /// No description provided for @noStudentsForAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega alumnos para tomar asistencia.'**
+  String get noStudentsForAttendance;
+
+  /// No description provided for @attendanceRollComplete.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista tomada correctamente'**
+  String get attendanceRollComplete;
+
+  /// No description provided for @attendanceDaySummary.
+  ///
+  /// In es, this message translates to:
+  /// **'Resumen del día'**
+  String get attendanceDaySummary;
 
   /// No description provided for @allStudentsMarkedToday.
   ///
@@ -1184,6 +1238,12 @@ abstract class AppLocalizations {
   /// **'Presentes'**
   String get presentsLabel;
 
+  /// No description provided for @latesLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Retardos'**
+  String get latesLabel;
+
   /// No description provided for @absencesLabel.
   ///
   /// In es, this message translates to:
@@ -1211,7 +1271,7 @@ abstract class AppLocalizations {
   /// No description provided for @addStudentTitle.
   ///
   /// In es, this message translates to:
-  /// **'Agregar Alumno'**
+  /// **'Agregar alumno'**
   String get addStudentTitle;
 
   /// No description provided for @addStudentDesc.
@@ -1694,6 +1754,12 @@ abstract class AppLocalizations {
   /// **'Presentes: {count}'**
   String presentsCount(int count);
 
+  /// No description provided for @latesCount.
+  ///
+  /// In es, this message translates to:
+  /// **'Retardos: {count}'**
+  String latesCount(int count);
+
   /// No description provided for @absencesCount.
   ///
   /// In es, this message translates to:
@@ -1775,7 +1841,7 @@ abstract class AppLocalizations {
   /// No description provided for @amountDollarLabel.
   ///
   /// In es, this message translates to:
-  /// **'Monto ($)'**
+  /// **'Monto (\$)'**
   String get amountDollarLabel;
 
   /// No description provided for @categoryMaterials.
@@ -1937,7 +2003,7 @@ abstract class AppLocalizations {
   /// No description provided for @eventSaved.
   ///
   /// In es, this message translates to:
-  /// **'Evento "{title}" registrado en el calendario'**
+  /// **'Evento \"{title}\" registrado en el calendario'**
   String eventSaved(String title);
 
   /// No description provided for @saveEvent.
@@ -2009,7 +2075,7 @@ abstract class AppLocalizations {
   /// No description provided for @noSchoolEventsDesc.
   ///
   /// In es, this message translates to:
-  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón "+ Nuevo Evento".'**
+  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".'**
   String get noSchoolEventsDesc;
 
   /// No description provided for @createEvent.
@@ -2130,7 +2196,8 @@ abstract class AppLocalizations {
   ///
   /// In es, this message translates to:
   /// **'Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma Académica'**
-  String schoolNoticeBody(String title, String date, String schedule, String location, String description, String teacher);
+  String schoolNoticeBody(String title, String date, String schedule,
+      String location, String description, String teacher);
 
   /// No description provided for @principalTeacher.
   ///

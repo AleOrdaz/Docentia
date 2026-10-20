@@ -9,12 +9,11 @@ import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../../courses/screens/create_course_dialog.dart';
+import '../../payments/models/payment_model.dart';
+import '../../payments/providers/payments_provider.dart';
+import '../../students/models/student_model.dart';
 import '../../students/providers/students_provider.dart';
 import '../../students/screens/add_student_modal.dart';
-import '../models/attendance_model.dart';
-import '../providers/attendance_provider.dart';
-import '../widgets/attendance_stat_card.dart';
-import '../widgets/student_attendance_tile.dart';
 
 class CourseDetailScreen extends ConsumerStatefulWidget {
   final String courseId;
@@ -30,11 +29,6 @@ class CourseDetailScreen extends ConsumerStatefulWidget {
 
 class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
   bool _filterPendingOnly = false;
-
-  String get _todayDateStr {
-    final now = DateTime.now();
-    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-  }
 
   void _openAddStudentModal(String courseName) {
     showModalBottomSheet(
@@ -56,84 +50,12 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     );
   }
 
-  Future<void> _saveAttendance() async {
-    final course = ref.read(selectedCourseProvider);
-    final now = DateTime.now();
-
-    // Validación de negocio estricta: No permitir registrar si hoy no corresponde a clase
-    if (course != null && !course.isClassDay(now)) {
-      if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10n.cannotSaveAttendanceNotClassDay),
-            backgroundColor: AppColors.error,
-          ),
-        );
-      }
-      return;
-    }
-
-    final todayStr = _todayDateStr;
-    final param = AttendanceDateParam(courseId: widget.courseId, date: todayStr);
-    final studentsAsync = ref.read(studentsForCourseProvider(widget.courseId));
-    final students = studentsAsync.value ?? [];
-    final attendanceList = ref.read(attendanceForDateProvider(param)).value ?? [];
-
-    // Guardar los nombres de los alumnos de forma permanente en la sesión histórica
-    final List<StudentAttendanceItem> studentItems = students.map((student) {
-      final record = attendanceList.where((a) => a.studentId == student.id).firstOrNull;
-      final status = record?.status ?? AttendanceStatus.present;
-      return StudentAttendanceItem(
-        studentId: student.id,
-        studentName: student.fullName,
-        status: status,
-        note: record?.note,
-      );
-    }).toList();
-
-    final session = ClassAttendanceSession(
-      id: 'session-${widget.courseId}-$todayStr',
-      courseId: widget.courseId,
-      date: todayStr,
-      startTime: course?.startTime ?? '17:00',
-      endTime: course?.endTime ?? '18:30',
-      students: studentItems,
-      createdAt: DateTime.now(),
-    );
-
-    // Guardar sesión en el repositorio de historial
-    await ref.read(courseSessionsProvider(widget.courseId).notifier).saveSession(session);
-
-    // Persistir registros individuales para estadísticas de alumnos
-    await ref.read(attendanceForDateProvider(param).notifier).persistAttendance();
-
-    if (mounted) {
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
-              const SizedBox(width: 8),
-              Expanded(child: Text(l10n.attendanceSaved(session.presentCount))),
-            ],
-          ),
-          backgroundColor: AppColors.inverseSurface,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final teacher = ref.watch(authProvider).teacher;
     final course = ref.watch(selectedCourseProvider);
     final studentsAsync = ref.watch(studentsForCourseProvider(widget.courseId));
-    final attendanceParam = AttendanceDateParam(courseId: widget.courseId, date: _todayDateStr);
-    final attendanceAsync = ref.watch(attendanceForDateProvider(attendanceParam));
+    final payments = ref.watch(paymentsForCourseProvider(widget.courseId)).value ?? [];
 
     final l10n = AppLocalizations.of(context)!;
     final courseName = course?.name ?? l10n.courseFallback;
@@ -210,18 +132,12 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
       ),
       body: studentsAsync.when(
         data: (students) {
-          final todayRecords = attendanceAsync.value ?? [];
-
-          final presentCount =
-              todayRecords.where((a) => a.status == AttendanceStatus.present).length;
-          final absentRecords =
-          todayRecords.where((a) => a.status == AttendanceStatus.absent).toList();
-          final absentCount = absentRecords.length;
-          final excusedCount = absentRecords.where((a) => a.note != null).length;
-
-          final displayedStudents = _filterPendingOnly
-              ? students.where((s) => !todayRecords.any((a) => a.studentId == s.id)).toList()
-              : students;
+          final pendingStudents = students.where((student) {
+            final studentPayments =
+                payments.where((payment) => payment.studentId == student.id).toList();
+            return !_isPaymentCurrent(studentPayments);
+          }).toList();
+          final displayedStudents = _filterPendingOnly ? pendingStudents : students;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -336,11 +252,11 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 SizedBox(
                   width: double.infinity,
                   height: 48,
-                  child: FilledButton.tonalIcon(
+                  child: FilledButton.icon(
                     onPressed: () => _openAddStudentModal(courseName),
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.surfaceHigh(context),
-                      foregroundColor: primaryColor,
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white,
                       shape: const StadiumBorder(),
                     ),
                     icon: const Icon(Icons.person_add, size: 20),
@@ -359,7 +275,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   height: 48,
                   child: OutlinedButton.icon(
                     onPressed: () =>
-                        context.push('/course-detail/${widget.courseId}/history'),
+                        context.push('/course-detail/${widget.courseId}/attendance'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: primaryColor,
                       side: BorderSide(color: primaryColor.withValues(alpha: 0.4)),
@@ -409,7 +325,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                             fontWeight: FontWeight.w600,
                             fontSize: 11,
                           ),
-                          label: Text(l10n.notRecorded),
+                          label: Text('${l10n.filterPending} (${pendingStudents.length})'),
                           onSelected: (val) => setState(() => _filterPendingOnly = true),
                         ),
                       ],
@@ -425,7 +341,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 32),
                       child: Text(
                         _filterPendingOnly
-                            ? l10n.allStudentsMarkedToday
+                            ? l10n.allStudentsCurrent
                             : l10n.noStudentsInCourse,
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: AppColors.outlineAdaptive(context),
@@ -442,43 +358,16 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (ctx, index) {
                       final student = displayedStudents[index];
-                      final record = todayRecords
-                          .where((a) => a.studentId == student.id)
-                          .firstOrNull;
+                      final studentPayments = payments
+                          .where((payment) => payment.studentId == student.id)
+                          .toList();
 
-                      final status = record?.status;
-
-                      return StudentAttendanceTile(
+                      return _buildStudentPaymentTile(
+                        context,
                         student: student,
-                        name: student.fullName,
-                        age: student.age,
-                        status: status,
-                        isPending: record == null,
-                        note: record?.note,
-                        isEditable: isClassDay,
-                        onStatusChanged: isClassDay
-                            ? (newStatus) async {
-                          final notifier = ref
-                              .read(attendanceForDateProvider(attendanceParam).notifier);
-                          notifier.setStudentStatus(student.id, newStatus);
-                          await notifier.persistAttendance();
-                        }
-                            : null,
-                        onNoteChanged: isClassDay
-                            ? (newNote) async {
-                          final notifier = ref
-                              .read(attendanceForDateProvider(attendanceParam).notifier);
-                          notifier.setStudentStatus(
-                            student.id,
-                            status ?? AttendanceStatus.absent,
-                            note: newNote,
-                          );
-                          await notifier.persistAttendance();
-                        }
-                            : null,
-                        onTap: () {
-                          context.push('/student-detail/${student.id}');
-                        },
+                        payments: studentPayments,
+                        l10n: l10n,
+                        onTap: () => context.push('/student-detail/${student.id}'),
                       );
                     },
                   ),
@@ -494,6 +383,150 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
           ),
         ),
         error: (err, _) => Center(child: Text(l10n.errorWithDetail('$err'))),
+      ),
+    );
+  }
+
+  bool _isPaymentCurrent(List<Payment> payments) {
+    if (payments.isEmpty) return false;
+    return payments.every((payment) =>
+        payment.status == PaymentStatus.paid ||
+        payment.status == PaymentStatus.upcoming);
+  }
+
+  String _paymentLabel(AppLocalizations l10n, List<Payment> payments) {
+    if (payments.isEmpty) return l10n.noFeeStatus;
+    if (payments.any((payment) => payment.status == PaymentStatus.overdue)) {
+      return l10n.overdueStatus;
+    }
+    if (payments.any((payment) => payment.status == PaymentStatus.pending)) {
+      return l10n.pendingStatus;
+    }
+    if (payments.any((payment) => payment.status == PaymentStatus.upcoming)) {
+      return l10n.upcomingStatus;
+    }
+    return l10n.paymentUpToDate;
+  }
+
+  Widget _buildStudentPaymentTile(
+    BuildContext context, {
+    required Student student,
+    required List<Payment> payments,
+    required AppLocalizations l10n,
+    required VoidCallback onTap,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+    final label = _paymentLabel(l10n, payments);
+    final isCurrent = _isPaymentCurrent(payments);
+    final isOverdue = payments.any((payment) => payment.status == PaymentStatus.overdue);
+    final isPending = payments.any((payment) => payment.status == PaymentStatus.pending);
+
+    final Color badgeBg;
+    final Color badgeFg;
+    final IconData badgeIcon;
+    if (payments.isEmpty) {
+      badgeBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9);
+      badgeFg = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+      badgeIcon = Icons.remove_circle_outline;
+    } else if (isOverdue) {
+      badgeBg = isDark ? const Color(0xFF3B171A) : const Color(0xFFFDE8E8);
+      badgeFg = isDark ? const Color(0xFFFCA5A5) : const Color(0xFFBA1A1A);
+      badgeIcon = Icons.cancel_rounded;
+    } else if (isPending) {
+      badgeBg = isDark ? const Color(0xFF452205) : const Color(0xFFFFF4DE);
+      badgeFg = isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309);
+      badgeIcon = Icons.schedule;
+    } else if (isCurrent && payments.any((payment) => payment.status == PaymentStatus.upcoming)) {
+      badgeBg = isDark ? const Color(0xFF3B1D5A) : const Color(0xFFF3EDFD);
+      badgeFg = isDark ? const Color(0xFFD8B4FE) : const Color(0xFF6B21A8);
+      badgeIcon = Icons.event_outlined;
+    } else {
+      badgeBg = isDark ? const Color(0xFF064E3B) : const Color(0xFFD8F3DC);
+      badgeFg = isDark ? const Color(0xFF6EE7B7) : const Color(0xFF00796B);
+      badgeIcon = Icons.check_circle_rounded;
+    }
+
+    return Material(
+      color: isDark ? const Color(0xFF151D2E) : Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E2E4E) : const Color(0xFFE3EDFF),
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  student.initials,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      student.fullName,
+                      style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (student.age > 0) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.yearsOld(student.age),
+                        style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: badgeBg,
+                  borderRadius: BorderRadius.circular(100),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(badgeIcon, size: 14, color: badgeFg),
+                    const SizedBox(width: 4),
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: badgeFg,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

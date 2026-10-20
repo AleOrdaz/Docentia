@@ -97,7 +97,11 @@ class LocalAttendanceRepository implements AttendanceRepository {
     }
 
     final total = studentRecords.length;
-    final presents = studentRecords.where((a) => a.status == AttendanceStatus.present).length;
+    final presents = studentRecords
+        .where((a) =>
+            a.status == AttendanceStatus.present ||
+            a.status == AttendanceStatus.late)
+        .length;
     final absences = studentRecords.where((a) => a.status == AttendanceStatus.absent).length;
     final excused = studentRecords
         .where((a) => a.status == AttendanceStatus.excused || (a.status == AttendanceStatus.absent && a.note != null))

@@ -85,7 +85,7 @@ class Course {
     if (sorted.isEmpty) return 'Sin días asignados';
     if (sorted.length == 1) return shortNames[sorted.first] ?? 'Día';
     final prefix = sorted.sublist(0, sorted.length - 1).map((d) => shortNames[d] ?? '').join(', ');
-    return '$prefix & ${shortNames[sorted.last] ?? ''}';
+    return '$prefix y ${shortNames[sorted.last] ?? ''}';
   }
 
   String getLocalizedFormattedDays(BuildContext context) {
@@ -97,7 +97,8 @@ class Course {
     if (sorted.isEmpty) return isEn ? 'No days assigned' : 'Sin días asignados';
     if (sorted.length == 1) return shortNames[sorted.first] ?? (isEn ? 'Day' : 'Día');
     final prefix = sorted.sublist(0, sorted.length - 1).map((d) => shortNames[d] ?? '').join(', ');
-    return '$prefix & ${shortNames[sorted.last] ?? ''}';
+    final conjunction = isEn ? '&' : 'y';
+    return '$prefix $conjunction ${shortNames[sorted.last] ?? ''}';
   }
 
   /// Horario formateado estructurado: Días + Horas

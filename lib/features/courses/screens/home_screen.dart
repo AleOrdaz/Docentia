@@ -7,7 +7,6 @@ import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../../finance/providers/finance_provider.dart';
 import '../../students/providers/students_provider.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
@@ -37,7 +36,6 @@ class HomeScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final teacher = ref.watch(authProvider).teacher;
     final coursesAsync = ref.watch(coursesProvider);
-    final financeSummary = ref.watch(financeSummaryProvider);
     final allStudentsAsync = ref.watch(allActiveStudentsProvider);
 
     final teacherFirstName =
@@ -60,18 +58,13 @@ class HomeScreen extends ConsumerWidget {
         titleSpacing: 16,
         title: Row(
           children: [
-            // Logo de la aplicación (birrete estilizado)
-            Container(
-              width: 34,
-              height: 34,
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.school_rounded,
-                color: Colors.white,
-                size: 20,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                'assets/images/logo.jpeg',
+                width: 34,
+                height: 34,
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(width: 10),
@@ -119,7 +112,6 @@ class HomeScreen extends ConsumerWidget {
           final now = DateTime.now();
           final todayCourses = activeCourses.where((c) => c.isClassDay(now)).toList();
           final totalStudentsCount = allStudentsAsync.value?.length ?? 0;
-          final totalMonthlyIncome = financeSummary.totalIncome;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -223,52 +215,39 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 18),
 
-                // 3. Resumen general (3 tarjetas horizontales compactas)
+                // 3. Resumen general (cursos activos y alumnos)
                 Row(
                   children: [
-                    // Tarjeta 1: Cursos activos
                     Expanded(
                       child: _buildSummaryCard(
                         context: context,
                         icon: Icons.school_rounded,
-                        iconBgColor: const Color(0xFFE3EDFF),
-                        iconColor: const Color(0xFF00236F),
+                        lightIconColor: const Color(0xFF1D4ED8),
+                        darkIconColor: const Color(0xFF93C5FD),
+                        lightIconBg: const Color(0xFFDBEAFE),
+                        darkIconBg: const Color(0xFF1E3A5F),
                         value: '${activeCourses.length}',
                         label: l10n?.summaryCardActiveCourses ?? 'Cursos activos',
                       ),
                     ),
-                    const SizedBox(width: 10),
-
-                    // Tarjeta 2: Alumnos
+                    const SizedBox(width: 12),
                     Expanded(
                       child: _buildSummaryCard(
                         context: context,
                         icon: Icons.group_rounded,
-                        iconBgColor: const Color(0xFFD8F3DC),
-                        iconColor: const Color(0xFF00796B),
+                        lightIconColor: const Color(0xFF047857),
+                        darkIconColor: const Color(0xFF6EE7B7),
+                        lightIconBg: const Color(0xFFD1FAE5),
+                        darkIconBg: const Color(0xFF064E3B),
                         value: '$totalStudentsCount',
                         label: l10n?.summaryCardStudents ?? 'Alumnos',
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-
-                    // Tarjeta 3: Ingresos del mes
-                    Expanded(
-                      child: _buildSummaryCard(
-                        context: context,
-                        icon: Icons.bar_chart_rounded,
-                        iconBgColor: const Color(0xFFFFF4DE),
-                        iconColor: const Color(0xFFD97706),
-                        value: formatCurrency(totalMonthlyIncome),
-                        label: l10n?.summaryCardIncome ?? 'Ingresos del mes',
-                        onTap: () {},
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 18),
 
-                // 4. Sección "Cursos de hoy" + Botón "+ Nuevo curso"
+                // 4. Sección "Cursos de hoy" y botón "Nuevo curso"
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -392,19 +371,6 @@ class HomeScreen extends ConsumerWidget {
                                 : const Color(0xFF5F6368),
                           ),
                         ),
-                        const SizedBox(height: 18),
-                        FilledButton.icon(
-                          onPressed: () => _openCreateCourseDialog(context),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            shape: const StadiumBorder(),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                          ),
-                          icon: const Icon(Icons.add, size: 16),
-                          label: Text(l10n?.create ?? 'Crear curso'),
-                        ),
                       ],
                     ),
                   )
@@ -471,84 +437,19 @@ class HomeScreen extends ConsumerWidget {
                             height: 1.35,
                           ),
                         ),
-                        const SizedBox(height: 18),
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            OutlinedButton.icon(
-                              onPressed: () => context.push('/finance'),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFF00236F),
-                                side: const BorderSide(color: Color(0xFFCBD9F5)),
-                                shape: const StadiumBorder(),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 9),
-                              ),
-                              icon: const Icon(Icons.bar_chart_outlined, size: 16),
-                              label: Text(
-                                l10n?.navFinance ?? 'Revisar avances del mes',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            FilledButton.tonalIcon(
-                              onPressed: () => context.push('/courses'),
-                              style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFFE3EDFF),
-                                foregroundColor: const Color(0xFF00236F),
-                                shape: const StadiumBorder(),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 9),
-                              ),
-                              icon: const Icon(Icons.school_outlined, size: 16),
-                              label: Text(
-                                '${l10n?.viewAllCourses ?? "Ver todos los cursos"} (${activeCourses.length})',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   )
                 else
-                  Column(
-                    children: [
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: todayCourses.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 14),
-                        itemBuilder: (ctx, index) {
-                          final course = todayCourses[index];
-                          return _buildCourseCard(context, ref, course, l10n);
-                        },
-                      ),
-                      if (activeCourses.length > todayCourses.length) ...[
-                        const SizedBox(height: 14),
-                        Center(
-                          child: TextButton.icon(
-                            onPressed: () => context.push('/courses'),
-                            icon: const Icon(Icons.visibility_outlined, size: 16, color: Color(0xFF00236F)),
-                            label: Text(
-                              '${l10n?.viewAllCourses ?? "Ver todos los cursos"} (${activeCourses.length})',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF00236F),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: todayCourses.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 14),
+                    itemBuilder: (ctx, index) {
+                      final course = todayCourses[index];
+                      return _buildCourseCard(context, ref, course, l10n);
+                    },
                   ),
                 const SizedBox(height: 28),
               ],
@@ -566,79 +467,88 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  // Tarjeta de resumen (Cursos activos, Alumnos, Ingresos)
+  // Tarjeta de resumen: icono y número en fila, descripción debajo
   Widget _buildSummaryCard({
     required BuildContext context,
     required IconData icon,
-    required Color iconBgColor,
-    required Color iconColor,
+    required Color lightIconColor,
+    required Color darkIconColor,
+    required Color lightIconBg,
+    required Color darkIconBg,
     required String value,
     required String label,
-    VoidCallback? onTap,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColor = isDark ? darkIconColor : lightIconColor;
+    final iconBg = isDark ? darkIconBg : lightIconBg;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF151D2E) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF151D2E) : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.3)
+                : const Color.fromRGBO(0, 35, 111, 0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: isDark
-                  ? Colors.black.withValues(alpha: 0.3)
-                  : const Color.fromRGBO(0, 35, 111, 0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: isDark ? iconColor.withValues(alpha: 0.25) : iconBgColor,
-                borderRadius: BorderRadius.circular(10),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: iconBg,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  size: 22,
+                  color: iconColor,
+                ),
               ),
-              child: Icon(
-                icon,
-                size: 20,
-                color: iconColor,
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    color: isDark
+                        ? const Color(0xFFF8FAFC)
+                        : const Color(0xFF00174D),
+                    letterSpacing: -0.4,
+                    height: 1,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF757682),
             ),
-            const SizedBox(height: 4),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
-                letterSpacing: -0.4,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF757682),
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }

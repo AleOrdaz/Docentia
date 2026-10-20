@@ -8,9 +8,11 @@ import '../../features/courses/screens/courses_list_screen.dart';
 import '../../features/attendance/screens/calendar_screen.dart';
 import '../../features/attendance/screens/course_detail_screen.dart';
 import '../../features/attendance/screens/attendance_history_screen.dart';
+import '../../features/attendance/screens/take_attendance_screen.dart';
 import '../../features/students/screens/student_detail_screen.dart';
 import '../../features/profile/screens/teacher_profile_screen.dart';
 import '../../features/finance/screens/finance_screen.dart';
+import '../../features/design/screens/style_guide_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   // Notifica al router solo cuando cambia la sesión (no isLoading, error, etc.)
@@ -58,6 +60,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/course-detail/:courseId/attendance',
+        builder: (context, state) {
+          final courseId = (state.pathParameters['courseId'] as String?) ?? '';
+          return TakeAttendanceScreen(courseId: courseId);
+        },
+      ),
+      GoRoute(
         path: '/course-detail/:courseId/history',
         builder: (context, state) {
           final courseId = (state.pathParameters['courseId'] as String?) ?? 'course-1';
@@ -78,6 +87,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/finance',
         builder: (context, state) => const FinanceScreen(),
+      ),
+      GoRoute(
+        path: '/estilos',
+        builder: (context, state) => const StyleGuideScreen(),
       ),
     ],
   );

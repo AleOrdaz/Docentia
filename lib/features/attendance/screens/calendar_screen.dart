@@ -1270,6 +1270,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   Widget _buildEventCard(
       CalendarEvent event, bool isDark, Color primaryColor) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),

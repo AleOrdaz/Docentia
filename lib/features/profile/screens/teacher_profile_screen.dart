@@ -448,6 +448,23 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => context.push('/estilos'),
+                icon: Icon(Icons.palette_outlined, color: primaryColor),
+                label: Text(
+                  'Estilos',
+                  style: TextStyle(color: textPrimary, fontWeight: FontWeight.w600),
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: cardBorder),
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
@@ -22,9 +24,7 @@ class CreateCourseDialog extends ConsumerStatefulWidget {
 class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _nameController;
-  late final TextEditingController _sessionsController;
   late final TextEditingController _costController;
-  late final TextEditingController _capacityController;
 
   late PaymentSchedule _paymentSchedule;
   late List<int> _selectedDays;
@@ -62,12 +62,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     final edit = widget.courseToEdit;
 
     _nameController = TextEditingController(text: edit?.name ?? '');
-    _sessionsController =
-        TextEditingController(text: edit != null ? edit.totalSessions.toString() : '32');
-    _costController =
-        TextEditingController(text: edit != null ? edit.cost.toStringAsFixed(0) : '45000');
-    _capacityController =
-        TextEditingController(text: edit != null ? edit.capacity.toString() : '30');
+    _costController = TextEditingController(
+      text: _formatCost(edit?.cost ?? 45000),
+    );
 
     _paymentSchedule = edit?.paymentSchedule ?? PaymentSchedule.firstHalf;
     _selectedDays = edit != null ? List<int>.from(edit.classDays) : [1, 3]; // Default Lun & Mié
@@ -111,9 +108,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   @override
   void dispose() {
     _nameController.dispose();
-    _sessionsController.dispose();
     _costController.dispose();
-    _capacityController.dispose();
     super.dispose();
   }
 
@@ -161,9 +156,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
     try {
       final name = _nameController.text.trim();
-      final totalSessions = int.tryParse(_sessionsController.text) ?? 32;
-      final cost = double.tryParse(_costController.text) ?? 45000.0;
-      final capacity = int.tryParse(_capacityController.text) ?? 30;
+      final cost = double.tryParse(
+            _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
+          ) ??
+          45000.0;
       final startTimeStr = _formatTime12(_startTime);
       final endTimeStr = _formatTime12(_endTime);
 
@@ -174,10 +170,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
           classDays: _selectedDays,
           startTime: startTimeStr,
           endTime: endTimeStr,
-          totalSessions: totalSessions,
-          duration: '$totalSessions sesiones',
           cost: cost,
-          capacity: capacity,
           paymentSchedule: _paymentSchedule,
           iconKey: _selectedIconKey,
         );
@@ -201,9 +194,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
           classDays: _selectedDays,
           startTime: startTimeStr,
           endTime: endTimeStr,
-          totalSessions: totalSessions,
+          totalSessions: 32,
           cost: cost,
-          capacity: capacity,
+          capacity: 30,
           paymentSchedule: _paymentSchedule,
           iconKey: _selectedIconKey,
         );
@@ -315,6 +308,11 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = theme.colorScheme.primary;
     final isEditing = widget.courseToEdit != null;
+    final titleColor = isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D);
+    final labelColor = isDark ? const Color(0xFFE2E8F0) : AppColors.onSurface;
+    final mutedColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final panelColor = isDark ? const Color(0xFF0F172A) : AppColors.surfaceContainerLow;
+    final panelBorder = isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
 
     return Dialog(
       backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
@@ -341,14 +339,14 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                           const SizedBox(width: 8),
                           Text(
                             isEditing
-                                ? (l10n?.editCourseTitle ?? 'Editar Curso')
-                                : (l10n?.createCourseTitle ?? 'Crear Curso'),
-                            style: AppTextStyles.titleLarge,
+                                ? (l10n?.editCourseTitle ?? 'Editar curso')
+                                : (l10n?.createCourseTitle ?? 'Crear curso'),
+                            style: AppTextStyles.titleLarge.copyWith(color: titleColor),
                           ),
                         ],
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: AppColors.onSurfaceVariant),
+                        icon: Icon(Icons.close, color: mutedColor),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ],
@@ -357,52 +355,25 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
                   // Nombre del curso
                   _buildField(
-                    label: l10n?.courseNameLabel ?? 'Nombre del Curso *',
+                    label: l10n?.courseNameLabel ?? 'Nombre del curso *',
                     controller: _nameController,
-                    hint: l10n?.courseNameHint ?? 'Ej. Inglés Avanzado B2',
+                    hint: l10n?.courseNameHint ?? 'Ej. Inglés avanzado B2',
                     validator: (v) =>
                     (v == null || v.trim().isEmpty) ? (l10n?.courseNameRequired ?? 'Nombre obligatorio') : null,
                   ),
                   const SizedBox(height: 14),
 
-                  // Duración (Sesiones) y Capacidad
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildField(
-                          label: l10n?.sessionsLabel ?? 'Total de Sesiones *',
-                          controller: _sessionsController,
-                          hint: '32',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: _buildField(
-                          label: l10n?.maxCapacityLabel ?? 'Capacidad Máxima *',
-                          controller: _capacityController,
-                          hint: '30',
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
                   // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
                   Text(
-                    l10n?.classDaysLabel ?? 'Días de Clase (al menos 1) *',
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
-                    ),
+                    l10n?.classDaysLabel ?? 'Días de clase (al menos 1) *',
+                    style: _inputLabelStyle,
                   ),
                   const SizedBox(height: 8),
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
+                      color: panelColor,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.surfaceContainer),
+                      border: Border.all(color: panelBorder),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     child: Column(
@@ -436,11 +407,8 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
                   // SECCIÓN: Horario de clase (Inicio y Fin independientes)
                   Text(
-                    '${l10n?.startTimeLabel ?? "Horario"} & ${l10n?.endTimeLabel ?? ""}'.replaceAll('*', '').trim(),
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
-                    ),
+                    l10n?.classScheduleLabel ?? 'Horario de clase',
+                    style: _inputLabelStyle,
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -453,9 +421,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerLow,
+                              color: panelColor,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.surfaceContainer),
+                              border: Border.all(color: panelBorder),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,7 +432,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                                   children: [
                                     Icon(Icons.schedule, size: 14, color: primaryColor),
                                     const SizedBox(width: 4),
-                                    Text(l10n?.startTimeLabel?.replaceAll('*', '')?.trim() ?? 'Inicio', style: AppTextStyles.labelSmall),
+                                    Text(
+                                      (l10n?.startTimeLabel ?? 'Inicio').replaceAll('*', '').trim(),
+                                      style: _inputLabelStyle,
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
@@ -489,9 +460,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                             decoration: BoxDecoration(
-                              color: AppColors.surfaceContainerLow,
+                              color: panelColor,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.surfaceContainer),
+                              border: Border.all(color: panelBorder),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,7 +471,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                                   children: [
                                     Icon(Icons.timer_outlined, size: 14, color: primaryColor),
                                     const SizedBox(width: 4),
-                                    Text(l10n?.endTimeLabel?.replaceAll('*', '')?.trim() ?? 'Fin', style: AppTextStyles.labelSmall),
+                                    Text(
+                                      (l10n?.endTimeLabel ?? 'Fin').replaceAll('*', '').trim(),
+                                      style: _inputLabelStyle,
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
@@ -524,25 +498,31 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                   _buildField(
                     label: l10n?.monthlyCostLabel ?? 'Costo mensual (\$)',
                     controller: _costController,
-                    hint: '45000',
+                    hint: '45,000',
                     keyboardType: TextInputType.number,
+                    inputFormatters: const [_ThousandsSeparatorInputFormatter()],
                   ),
                   const SizedBox(height: 14),
 
                   // Vencimiento de cuota
-                  Text(l10n?.paymentScheduleLabel ?? 'Esquema de Cobro Mensual', style: AppTextStyles.labelMedium),
+                  Text(
+                    l10n?.paymentScheduleLabel ?? 'Esquema de cobro mensual',
+                    style: _inputLabelStyle,
+                  ),
                   const SizedBox(height: 6),
                   Row(
                     children: [
                       Expanded(
                         child: ChoiceChip(
-                          label: Text(l10n?.scheduleFirstHalf ?? '1ra Quincena (Día 15)'),
+                          label: Text(l10n?.scheduleFirstHalf ?? 'Primera quincena (día 1-15)'),
                           selected: _paymentSchedule == PaymentSchedule.firstHalf,
                           selectedColor: primaryColor,
+                          backgroundColor: panelColor,
+                          side: BorderSide(color: panelBorder),
                           labelStyle: TextStyle(
                             color: _paymentSchedule == PaymentSchedule.firstHalf
                                 ? Colors.white
-                                : AppColors.onSurfaceVariant,
+                                : labelColor,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
@@ -556,13 +536,15 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: ChoiceChip(
-                          label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de Mes (Día 30)'),
+                          label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (día 25-30)'),
                           selected: _paymentSchedule == PaymentSchedule.endOfMonth,
                           selectedColor: primaryColor,
+                          backgroundColor: panelColor,
+                          side: BorderSide(color: panelBorder),
                           labelStyle: TextStyle(
                             color: _paymentSchedule == PaymentSchedule.endOfMonth
                                 ? Colors.white
-                                : AppColors.onSurfaceVariant,
+                                : labelColor,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
@@ -579,19 +561,16 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
                   // SECCIÓN: Icono del curso
                   Text(
-                    l10n?.chooseIconLabel ?? 'Seleccionar Icono Representativo',
-                    style: AppTextStyles.labelMedium.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.onSurface,
-                    ),
+                    l10n?.chooseIconLabel ?? 'Seleccionar icono representativo',
+                    style: _inputLabelStyle,
                   ),
                   const SizedBox(height: 8),
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
+                      color: panelColor,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.surfaceContainer),
+                      border: Border.all(color: panelBorder),
                     ),
                     padding: const EdgeInsets.all(10),
                     child: Wrap(
@@ -604,47 +583,29 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                           onTap: () {
                             setState(() => _selectedIconKey = cat.key);
                           },
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(12),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                            width: 44,
+                            height: 44,
+                            alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: isSelected ? primaryColor : Colors.white,
-                              borderRadius: BorderRadius.circular(10),
+                              color: isSelected
+                                  ? primaryColor
+                                  : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: isSelected
                                     ? primaryColor
-                                    : AppColors.surfaceContainerHigh,
+                                    : (isDark
+                                        ? const Color(0xFF334155)
+                                        : AppColors.surfaceContainerHigh),
                                 width: isSelected ? 1.5 : 1,
                               ),
-                              boxShadow: isSelected
-                                  ? [
-                                BoxShadow(
-                                  color: primaryColor.withValues(alpha: 0.2),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ]
-                                  : null,
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  cat.icon,
-                                  size: 16,
-                                  color: isSelected ? Colors.white : primaryColor,
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  cat.name,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight:
-                                    isSelected ? FontWeight.bold : FontWeight.w500,
-                                    color: isSelected ? Colors.white : AppColors.onSurface,
-                                  ),
-                                ),
-                              ],
+                            child: Icon(
+                              cat.icon,
+                              size: 22,
+                              color: isSelected ? Colors.white : primaryColor,
                             ),
                           ),
                         );
@@ -665,7 +626,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                           icon: const Icon(Icons.delete_outline,
                               color: Color(0xFFD32F2F), size: 18),
                           label: Text(
-                            l10n?.deleteCourseBtn ?? 'Eliminar Curso',
+                            l10n?.deleteCourseBtn ?? 'Eliminar curso',
                             style: const TextStyle(
                               color: Color(0xFFD32F2F),
                               fontWeight: FontWeight.w600,
@@ -768,7 +729,11 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
               dayName,
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                color: isSelected ? primaryColor : AppColors.onSurface,
+                color: isSelected
+                    ? primaryColor
+                    : (Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFFE2E8F0)
+                        : AppColors.onSurface),
               ),
             ),
           ],
@@ -777,11 +742,20 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     );
   }
 
+  TextStyle get _inputLabelStyle => appInputLabelStyle(context);
+
+  String _formatCost(num amount) {
+    return _ThousandsSeparatorInputFormatter.formatDigits(
+      amount.toStringAsFixed(0),
+    );
+  }
+
   Widget _buildField({
     required String label,
     required TextEditingController controller,
     String? hint,
     TextInputType? keyboardType,
+    List<TextInputFormatter>? inputFormatters,
     String? Function(String?)? validator,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -790,14 +764,13 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
       children: [
         Text(
           label,
-          style: AppTextStyles.labelSmall.copyWith(
-            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF43474E),
-          ),
+          style: _inputLabelStyle,
         ),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
           validator: validator,
           style: AppTextStyles.bodyMedium.copyWith(
             color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
@@ -828,6 +801,51 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ThousandsSeparatorInputFormatter extends TextInputFormatter {
+  const _ThousandsSeparatorInputFormatter();
+
+  static String formatDigits(String digits) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < digits.length; i++) {
+      if (i > 0 && (digits.length - i) % 3 == 0) {
+        buffer.write(',');
+      }
+      buffer.write(digits[i]);
+    }
+    return buffer.toString();
+  }
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      return const TextEditingValue(text: '');
+    }
+
+    final formatted = formatDigits(digits);
+    final selectionEnd = newValue.selection.end.clamp(0, newValue.text.length);
+    final digitsBeforeCursor = newValue.text
+        .substring(0, selectionEnd)
+        .replaceAll(RegExp(r'[^0-9]'), '')
+        .length;
+
+    var cursor = 0;
+    var seen = 0;
+    while (cursor < formatted.length && seen < digitsBeforeCursor) {
+      if (RegExp(r'\d').hasMatch(formatted[cursor])) seen++;
+      cursor++;
+    }
+
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: cursor),
     );
   }
 }
