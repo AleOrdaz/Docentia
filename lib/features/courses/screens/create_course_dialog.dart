@@ -621,22 +621,20 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                         : MainAxisAlignment.end,
                     children: [
                       if (isEditing)
-                        TextButton.icon(
+                        TextButton(
                           onPressed: _isSaving ? null : _confirmDeleteCourse,
-                          icon: const Icon(Icons.delete_outline,
-                              color: Color(0xFFD32F2F), size: 18),
-                          label: Text(
+                          style: TextButton.styleFrom(
+                            foregroundColor: const Color(0xFFD32F2F),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                          ),
+                          child: Text(
                             l10n?.deleteCourseBtn ?? 'Eliminar curso',
                             style: const TextStyle(
                               color: Color(0xFFD32F2F),
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
                             ),
-                          ),
-                          style: TextButton.styleFrom(
-                            foregroundColor: const Color(0xFFD32F2F),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
                           ),
                         ),
                       Row(
@@ -652,7 +650,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                               backgroundColor: primaryColor,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 12),
+                                  horizontal: 14, vertical: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
