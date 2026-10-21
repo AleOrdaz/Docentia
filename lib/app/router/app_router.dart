@@ -14,6 +14,7 @@ import '../../features/students/screens/student_detail_screen.dart';
 import '../../features/profile/screens/teacher_profile_screen.dart';
 import '../../features/finance/screens/finance_screen.dart';
 import '../../features/design/screens/style_guide_screen.dart';
+import '../widgets/app_shell.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier<int>(0);
@@ -54,17 +55,50 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/complete-profile',
         builder: (context, state) => const CompleteProfileScreen(),
       ),
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
-      ),
-      GoRoute(
-        path: '/courses',
-        builder: (context, state) => const CoursesListScreen(),
-      ),
-      GoRoute(
-        path: '/calendar',
-        builder: (context, state) => const CalendarScreen(),
+      StatefulShellRoute(
+        builder: (context, state, navigationShell) {
+          return AppShell(navigationShell: navigationShell);
+        },
+        navigatorContainerBuilder: (context, navigationShell, children) {
+          return SlidingNavigationContainer(
+            currentIndex: navigationShell.currentIndex,
+            children: children,
+          );
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/courses',
+                builder: (context, state) => const CoursesListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/calendar',
+                builder: (context, state) => const CalendarScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/finance',
+                builder: (context, state) => const FinanceScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: '/course-detail/:courseId',
@@ -97,10 +131,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const TeacherProfileScreen(),
-      ),
-      GoRoute(
-        path: '/finance',
-        builder: (context, state) => const FinanceScreen(),
       ),
       GoRoute(
         path: '/estilos',

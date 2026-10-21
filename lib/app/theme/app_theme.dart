@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
@@ -9,6 +10,7 @@ class AppTheme {
   static ThemeData getTheme([Color primaryColor = AppColors.primary]) {
     return ThemeData(
       useMaterial3: true,
+      fontFamily: GoogleFonts.inter().fontFamily,
       scaffoldBackgroundColor: AppColors.surface,
       colorScheme: ColorScheme(
         brightness: Brightness.light,
@@ -99,6 +101,7 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: GoogleFonts.inter().fontFamily,
       scaffoldBackgroundColor: darkBg,
       colorScheme: ColorScheme(
         brightness: Brightness.dark,
@@ -134,12 +137,12 @@ class AppTheme {
         labelMedium: AppTextStyles.labelMedium.copyWith(color: onDark),
         labelSmall: AppTextStyles.labelSmall.copyWith(color: onDarkVariant),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: darkBg,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: onDark),
-        iconTheme: IconThemeData(color: onDark),
+        titleTextStyle: AppTextStyles.titleMedium.copyWith(color: onDark),
+        iconTheme: const IconThemeData(color: onDark),
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

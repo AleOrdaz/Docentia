@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
-import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/finance_provider.dart';
@@ -130,7 +129,6 @@ class FinanceScreen extends ConsumerWidget {
           ),
         ),
       ),
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 3),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(

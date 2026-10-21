@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
-import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -875,7 +874,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(

@@ -86,6 +86,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'By continuing, you agree to Docentia\'s Terms of Service and Privacy Policy.';
 
   @override
+  String homeGreeting(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
   String get greetingSubtitle => 'Welcome to your educator dashboard';
 
   @override
@@ -371,6 +376,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studentPlural => 'students';
 
   @override
+  String get pendingPaymentSingular => 'pending payment';
+
+  @override
+  String get pendingPaymentPlural => 'pending payments';
+
+  @override
   String get summaryCardStudents => 'Students';
 
   @override
@@ -606,6 +617,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activeLabel => 'Active';
+
+  @override
+  String get courseActiveBadge => 'Active';
 
   @override
   String get presentsLabel => 'Present';
@@ -1215,4 +1229,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get completeProfileCamera => 'Take a photo';
+
+  @override
+  String get loginWelcomeTagline => 'Welcome to Docentia — we do the real work';
+
+  @override
+  String get loginEmailLabel => 'Email';
+
+  @override
+  String get loginPasswordLabel => 'Password';
+
+  @override
+  String get loginForgotPassword => 'Forgot your password?';
+
+  @override
+  String get loginSignIn => 'Sign in';
+
+  @override
+  String get loginOrSeparator => 'or';
+
+  @override
+  String get loginEmailRequired => 'Enter your email';
+
+  @override
+  String get loginEmailInvalid => 'Enter a valid email';
+
+  @override
+  String get loginPasswordRequired => 'Enter your password';
+
+  @override
+  String get loginPasswordTooShort => 'Use at least 6 characters';
+
+  @override
+  String get loginResetEmailRequired => 'Enter your email to reset it';
+
+  @override
+  String get loginResetPasswordSent =>
+      'We sent you an email to reset your password.';
 }
