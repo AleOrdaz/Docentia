@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../auth/widgets/teacher_avatar.dart';
 import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
@@ -70,9 +71,6 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     final now = DateTime.now();
     final isClassDay = course?.isClassDay(now) ?? true;
 
-    final teacherPhotoUrl = teacher?.photoUrl ??
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav';
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -121,9 +119,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   shape: BoxShape.circle,
                   color: primaryColor.withValues(alpha: 0.2),
                 ),
-                child: CircleAvatar(
+                child: TeacherAvatar(
                   radius: 16,
-                  backgroundImage: NetworkImage(teacherPhotoUrl),
+                  photoUrl: teacher?.photoUrl,
+                  name: teacher?.name,
                 ),
               ),
             ),

@@ -7,6 +7,7 @@ import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../auth/widgets/teacher_avatar.dart';
 import '../../students/providers/students_provider.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
@@ -40,8 +41,6 @@ class HomeScreen extends ConsumerWidget {
 
     final teacherFirstName =
         teacher?.name.trim().split(' ').first ?? 'Antonio';
-    final teacherPhotoUrl = teacher?.photoUrl ??
-        'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav';
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -89,9 +88,10 @@ class HomeScreen extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircleAvatar(
+                  TeacherAvatar(
                     radius: 18,
-                    backgroundImage: NetworkImage(teacherPhotoUrl),
+                    photoUrl: teacher?.photoUrl,
+                    name: teacher?.name,
                   ),
                   const SizedBox(width: 4),
                   const Icon(

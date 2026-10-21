@@ -41,6 +41,9 @@ class AppTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
+  final int maxLines;
+  final TextCapitalization textCapitalization;
+  final ValueChanged<String>? onChanged;
 
   const AppTextField({
     super.key,
@@ -51,6 +54,9 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.validator,
     this.inputFormatters,
+    this.maxLines = 1,
+    this.textCapitalization = TextCapitalization.none,
+    this.onChanged,
   });
 
   @override
@@ -67,6 +73,9 @@ class AppTextField extends StatelessWidget {
           keyboardType: keyboardType,
           validator: validator,
           inputFormatters: inputFormatters,
+          maxLines: maxLines,
+          textCapitalization: textCapitalization,
+          onChanged: onChanged,
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
           decoration: InputDecoration(
             hintText: hint,

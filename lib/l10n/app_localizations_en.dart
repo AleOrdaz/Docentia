@@ -1172,4 +1172,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String excusedCompact(int count) {
     return '$count exc.';
   }
+
+  @override
+  String get completeProfileTitle => 'Personalize your account';
+
+  @override
+  String get completeProfileSubtitle =>
+      'Your account does not include a name. Complete your profile to continue.';
+
+  @override
+  String get completeProfileNameLabel => 'Name *';
+
+  @override
+  String get completeProfileNameHint => 'E.g. Ana García';
+
+  @override
+  String get completeProfilePhoneLabel => 'Phone / WhatsApp';
+
+  @override
+  String get completeProfilePhoneHint => '+1 555 123 4567';
+
+  @override
+  String get completeProfileBioLabel => 'Biography';
+
+  @override
+  String get completeProfileBioHint => 'Tell us about your teaching work';
+
+  @override
+  String get completeProfileContinue => 'Continue';
+
+  @override
+  String get completeProfilePhotoHint => 'Add photo';
+
+  @override
+  String get completeProfileNameRequired => 'Enter your name';
+
+  @override
+  String get completeProfileNameInvalid => 'Use your name, not an email';
+
+  @override
+  String get completeProfileGallery => 'Choose from gallery';
+
+  @override
+  String get completeProfileCamera => 'Take a photo';
 }

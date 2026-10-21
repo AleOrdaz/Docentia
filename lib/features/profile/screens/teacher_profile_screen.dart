@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/theme/theme_provider.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../auth/models/teacher_model.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../auth/utils/teacher_photo.dart';
+import '../../auth/widgets/teacher_avatar.dart';
 import '../../courses/providers/courses_provider.dart';
 
 class TeacherProfileScreen extends ConsumerWidget {
@@ -75,6 +79,52 @@ class TeacherProfileScreen extends ConsumerWidget {
     );
   }
 
+  Future<void> _pickProfilePhoto(
+    BuildContext context,
+    WidgetRef ref,
+    Teacher teacher,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: Text(l10n.completeProfileGallery),
+                onTap: () => Navigator.pop(ctx, ImageSource.gallery),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_camera_outlined),
+                title: Text(l10n.completeProfileCamera),
+                onTap: () => Navigator.pop(ctx, ImageSource.camera),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+    if (source == null) return;
+
+    final file = await ImagePicker().pickImage(
+      source: source,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
+    );
+    if (file == null || !context.mounted) return;
+
+    final savedPath = await persistTeacherPhoto(
+      sourcePath: file.path,
+      teacherId: teacher.id,
+    );
+    if (!context.mounted) return;
+    await ref.read(authProvider.notifier).updateProfile(photoUrl: savedPath);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -118,12 +168,13 @@ class TeacherProfileScreen extends ConsumerWidget {
                 children: [
                   Stack(
                     children: [
-                      CircleAvatar(
+                      TeacherAvatar(
                         radius: 46,
-                        backgroundImage: NetworkImage(
-                          teacher?.photoUrl ??
-                              'https://lh3.googleusercontent.com/aida-public/AB6AXuAq9Pvt1-c4_DUZSEdXdpOvNpYKqM7LG2oVztITe-6wiQKFFoh4-H4sQdDlNWqA_9Id0qaAvcj3Npis5rwFXKgrKhHc3QkdI4L6n4p-kcXLZI-bQWLPtS_UbwgMQDxNMsAnF1QJ6LBspB_FqcsoUhlyRstSkoQN7kUtQcOQ6P1Lu4w5NPnMshS0eicJ185YYRhVTjrhbQqGstpKPgo6AubEJakMHGGmjJpMMel095xfBra2EdOFYNav',
-                        ),
+                        photoUrl: teacher?.photoUrl,
+                        name: teacher?.name,
+                        onTap: teacher == null
+                            ? null
+                            : () => _pickProfilePhoto(context, ref, teacher),
                       ),
                       Positioned(
                         bottom: 0,

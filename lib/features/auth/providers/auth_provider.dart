@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/services/storage_service.dart';
 import '../models/teacher_model.dart';
+import '../utils/teacher_name.dart';
 
 class AuthState {
   final Teacher? teacher;
@@ -11,10 +13,13 @@ class AuthState {
 
   const AuthState({
     this.teacher,
-    this.isAuthenticated = false, // ← antes era true
+    this.isAuthenticated = false,
     this.isLoading = false,
     this.error,
   });
+
+  bool get needsProfileSetup =>
+      isAuthenticated && !isLoading && teacherNeedsProfileSetup(teacher);
 
   AuthState copyWith({
     Teacher? teacher,
@@ -39,51 +44,78 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   StreamSubscription<User?>? _sub;
 
-  // Se dispara al abrir la app (sesión persistida), al loguear y al salir
   void _onUserChanged(User? user) {
     if (user == null) {
       state = const AuthState(isAuthenticated: false);
       return;
     }
+    final alreadyIn = state.isAuthenticated && state.teacher?.id == user.uid;
+    if (!alreadyIn) {
+      state = state.copyWith(isLoading: true);
+    }
+    unawaited(_hydrateTeacher(user));
+  }
+
+  Future<void> _hydrateTeacher(User user) async {
+    final saved = await StorageService.getTeacher(user.uid);
+    if (_auth.currentUser?.uid != user.uid) return;
+
     state = AuthState(
       isAuthenticated: true,
-      teacher: _teacherFromUser(user, previous: state.teacher),
+      teacher: _teacherFromUser(
+        user,
+        previous: saved ?? state.teacher,
+      ),
     );
   }
 
   Teacher _teacherFromUser(User user, {Teacher? previous}) {
-    final providerId =
-    user.providerData.isNotEmpty ? user.providerData.first.providerId : '';
     final email = user.email ?? '';
+    String providerId = '';
+    String? providerDisplayName;
+    for (final info in user.providerData) {
+      if (providerId.isEmpty) providerId = info.providerId;
+      providerDisplayName ??= info.displayName;
+    }
+
     return Teacher(
       id: user.uid,
-      name: user.displayName ??
-          previous?.name ??
-          (email.isNotEmpty ? email.split('@').first : 'Docente'),
+      name: resolveTeacherName(
+        displayName: user.displayName,
+        providerDisplayName: providerDisplayName,
+        previousName: previous?.name,
+        email: email,
+      ),
       email: email,
-      photoUrl: user.photoURL ?? '',
+      photoUrl: (previous?.photoUrl.isNotEmpty == true)
+          ? previous!.photoUrl
+          : (user.photoURL ?? ''),
       provider: providerId == 'apple.com' ? 'apple' : 'google',
       bio: previous?.bio,
       phone: previous?.phone ?? user.phoneNumber,
-      createdAt: user.metadata.creationTime ?? DateTime.now(),
+      createdAt: previous?.createdAt ?? user.metadata.creationTime ?? DateTime.now(),
     );
   }
 
   Future<void> signInWithGoogle() => _signIn(GoogleAuthProvider());
 
   Future<void> signInWithApple() => _signIn(
-    AppleAuthProvider()..addScope('email')..addScope('name'),
-  );
+        AppleAuthProvider()
+          ..addScope('email')
+          ..addScope('name'),
+      );
 
   Future<void> _signIn(AuthProvider provider) async {
     state = state.copyWith(isLoading: true);
     try {
       await _auth.signInWithProvider(provider);
-      // _onUserChanged actualiza el estado solo
     } on FirebaseAuthException catch (e) {
       state = state.copyWith(isLoading: false, error: _friendlyError(e));
     } catch (_) {
-      state = state.copyWith(isLoading: false, error: 'No se pudo iniciar sesión.');
+      state = state.copyWith(
+        isLoading: false,
+        error: 'No se pudo iniciar sesión.',
+      );
     }
   }
 
@@ -91,7 +123,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     switch (e.code) {
       case 'canceled':
       case 'web-context-canceled':
-        return null; // el usuario cerró la ventana, no mostrar error
+        return null;
       case 'network-request-failed':
         return 'Sin conexión. Revisa tu internet.';
       default:
@@ -101,12 +133,29 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> signOut() => _auth.signOut();
 
-  void updateProfile({String? name, String? phone, String? bio}) {
-    if (state.teacher != null) {
-      state = state.copyWith(
-        teacher: state.teacher!.copyWith(name: name, phone: phone, bio: bio),
-      );
-      // TODO: guardar en Firestore (ver nota al final)
+  Future<void> updateProfile({
+    String? name,
+    String? phone,
+    String? bio,
+    String? photoUrl,
+  }) async {
+    final current = state.teacher;
+    if (current == null) return;
+
+    final updated = current.copyWith(
+      name: name?.trim(),
+      phone: phone?.trim(),
+      bio: bio?.trim(),
+      photoUrl: photoUrl,
+    );
+    state = state.copyWith(teacher: updated);
+    await StorageService.saveTeacher(updated);
+
+    final displayName = updated.name.trim();
+    if (displayName.isNotEmpty && displayName != kFallbackTeacherName) {
+      try {
+        await _auth.currentUser?.updateDisplayName(displayName);
+      } catch (_) {}
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/auth/screens/complete_profile_screen.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/courses/screens/home_screen.dart';
 import '../../features/courses/screens/courses_list_screen.dart';
@@ -15,12 +16,13 @@ import '../../features/finance/screens/finance_screen.dart';
 import '../../features/design/screens/style_guide_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  // Notifica al router solo cuando cambia la sesión (no isLoading, error, etc.)
-  final refresh = ValueNotifier<bool>(ref.read(authProvider).isAuthenticated);
+  final refresh = ValueNotifier<int>(0);
 
-  ref.listen<bool>(
-    authProvider.select((s) => s.isAuthenticated),
-        (_, next) => refresh.value = next,
+  ref.listen(
+    authProvider.select(
+      (s) => (s.isAuthenticated, s.needsProfileSetup, s.isLoading),
+    ),
+    (_, __) => refresh.value++,
   );
   ref.onDispose(refresh.dispose);
 
@@ -28,17 +30,29 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: '/login',
     refreshListenable: refresh,
     redirect: (context, state) {
-      final loggedIn = ref.read(authProvider).isAuthenticated;
-      final isLoggingIn = state.matchedLocation == '/login';
+      final auth = ref.read(authProvider);
+      final loc = state.matchedLocation;
+      final isLoggingIn = loc == '/login';
+      final isCompletingProfile = loc == '/complete-profile';
 
-      if (!loggedIn && !isLoggingIn) return '/login';
-      if (loggedIn && isLoggingIn) return '/home';
+      if (!auth.isAuthenticated) {
+        return isLoggingIn ? null : '/login';
+      }
+      if (auth.isLoading) return null;
+      if (auth.needsProfileSetup) {
+        return isCompletingProfile ? null : '/complete-profile';
+      }
+      if (isLoggingIn || isCompletingProfile) return '/home';
       return null;
     },
     routes: [
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/complete-profile',
+        builder: (context, state) => const CompleteProfileScreen(),
       ),
       GoRoute(
         path: '/home',

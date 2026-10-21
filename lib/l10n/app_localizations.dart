@@ -94,8 +94,8 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
-    Locale('en'),
-    Locale('es')
+    Locale('es'),
+    Locale('en')
   ];
 
   /// No description provided for @appName.
@@ -2222,6 +2222,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{count} just.'**
   String excusedCompact(int count);
+
+  /// No description provided for @completeProfileTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Personaliza tu cuenta'**
+  String get completeProfileTitle;
+
+  /// No description provided for @completeProfileSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta no incluye un nombre. Completa tu perfil para continuar.'**
+  String get completeProfileSubtitle;
+
+  /// No description provided for @completeProfileNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre *'**
+  String get completeProfileNameLabel;
+
+  /// No description provided for @completeProfileNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej. Ana García'**
+  String get completeProfileNameHint;
+
+  /// No description provided for @completeProfilePhoneLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono / WhatsApp'**
+  String get completeProfilePhoneLabel;
+
+  /// No description provided for @completeProfilePhoneHint.
+  ///
+  /// In es, this message translates to:
+  /// **'+52 55 1234 5678'**
+  String get completeProfilePhoneHint;
+
+  /// No description provided for @completeProfileBioLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Biografía'**
+  String get completeProfileBioLabel;
+
+  /// No description provided for @completeProfileBioHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuéntanos sobre tu labor docente'**
+  String get completeProfileBioHint;
+
+  /// No description provided for @completeProfileContinue.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get completeProfileContinue;
+
+  /// No description provided for @completeProfilePhotoHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar foto'**
+  String get completeProfilePhotoHint;
+
+  /// No description provided for @completeProfileNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu nombre'**
+  String get completeProfileNameRequired;
+
+  /// No description provided for @completeProfileNameInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa tu nombre, no un correo'**
+  String get completeProfileNameInvalid;
+
+  /// No description provided for @completeProfileGallery.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir de la galería'**
+  String get completeProfileGallery;
+
+  /// No description provided for @completeProfileCamera.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar foto'**
+  String get completeProfileCamera;
 }
 
 class _AppLocalizationsDelegate

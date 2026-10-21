@@ -6,6 +6,7 @@ import '../../features/attendance/models/attendance_model.dart';
 import '../../features/payments/models/payment_model.dart';
 import '../../features/finance/models/expense_model.dart';
 import '../../features/attendance/models/calendar_event_model.dart';
+import '../../features/auth/models/teacher_model.dart';
 
 class StorageService {
   static const String _keyCourses = 'docentia_courses';
@@ -18,6 +19,7 @@ class StorageService {
   static const String _keyThemeMode = 'docentia_theme_mode';
   static const String _keyCalendarEvents = 'docentia_calendar_events';
   static const String _keyLanguage = 'docentia_language';
+  static const String _keyTeacherPrefix = 'docentia_teacher_';
 
   static SharedPreferences? _prefs;
 
@@ -235,6 +237,30 @@ class StorageService {
       final prefs = await _instance;
       final raw = jsonEncode(events.map((e) => e.toMap()).toList());
       await prefs.setString(_keyCalendarEvents, raw);
+    } catch (_) {}
+  }
+
+  // --- Teacher profile ---
+  static Future<Teacher?> getTeacher(String id) async {
+    if (id.isEmpty) return null;
+    try {
+      final prefs = await _instance;
+      final raw = prefs.getString('$_keyTeacherPrefix$id');
+      if (raw == null || raw.isEmpty) return null;
+      return Teacher.fromMap(jsonDecode(raw) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<void> saveTeacher(Teacher teacher) async {
+    if (teacher.id.isEmpty) return;
+    try {
+      final prefs = await _instance;
+      await prefs.setString(
+        '$_keyTeacherPrefix${teacher.id}',
+        jsonEncode(teacher.toMap()),
+      );
     } catch (_) {}
   }
 }

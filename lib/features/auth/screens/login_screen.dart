@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
@@ -16,6 +15,8 @@ class LoginScreen extends ConsumerWidget {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final textPrimary = AppColors.textPrimary(context);
     final textSecondary = AppColors.textSecondary(context);
+    final auth = ref.watch(authProvider);
+    final isBusy = auth.isLoading;
 
     return Scaffold(
       body: SafeArea(
@@ -84,14 +85,24 @@ class LoginScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 32),
 
+                  if (auth.error != null) ...[
+                    Text(
+                      auth.error!,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.error,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: OutlinedButton(
-                      onPressed: () async {
-                        await ref.read(authProvider.notifier).signInWithGoogle();
-                        if (context.mounted) context.go('/home');
-                      },
+                      onPressed: isBusy
+                          ? null
+                          : () => ref.read(authProvider.notifier).signInWithGoogle(),
                       style: OutlinedButton.styleFrom(
                         shape: const StadiumBorder(),
                         side: BorderSide(color: AppColors.outlineVariantAdaptive(context)),
@@ -135,10 +146,9 @@ class LoginScreen extends ConsumerWidget {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () async {
-                        await ref.read(authProvider.notifier).signInWithApple();
-                        if (context.mounted) context.go('/home');
-                      },
+                      onPressed: isBusy
+                          ? null
+                          : () => ref.read(authProvider.notifier).signInWithApple(),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isDark ? Colors.white : Colors.black,
                         foregroundColor: isDark ? Colors.black : Colors.white,

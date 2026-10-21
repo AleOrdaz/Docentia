@@ -503,5 +503,19 @@
   "excusedCompact": "{count} exc.",
   "@excusedCompact": {
     "placeholders": { "count": { "type": "int" } }
-  }
+  },
+  "completeProfileTitle": "Personalize your account",
+  "completeProfileSubtitle": "Your account does not include a name. Complete your profile to continue.",
+  "completeProfileNameLabel": "Name *",
+  "completeProfileNameHint": "E.g. Ana García",
+  "completeProfilePhoneLabel": "Phone / WhatsApp",
+  "completeProfilePhoneHint": "+1 555 123 4567",
+  "completeProfileBioLabel": "Biography",
+  "completeProfileBioHint": "Tell us about your teaching work",
+  "completeProfileContinue": "Continue",
+  "completeProfilePhotoHint": "Add photo",
+  "completeProfileNameRequired": "Enter your name",
+  "completeProfileNameInvalid": "Use your name, not an email",
+  "completeProfileGallery": "Choose from gallery",
+  "completeProfileCamera": "Take a photo"
 }
