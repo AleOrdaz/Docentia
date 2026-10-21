@@ -6,6 +6,7 @@ import '../../l10n/app_localizations.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
+  final ValueChanged<int>? onDestinationSelected;
 
   static const double _barHeight = 62;
 
@@ -17,6 +18,7 @@ class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({
     super.key,
     required this.currentIndex,
+    this.onDestinationSelected,
   });
 
   @override
@@ -29,25 +31,25 @@ class AppBottomNavBar extends StatelessWidget {
     final navItems = [
       (
       icon: Icons.home_outlined,
-      activeIcon: Icons.home_rounded,
+      activeIcon: Icons.home,
       label: l10n?.navHome ?? 'Inicio',
       route: '/home',
       ),
       (
-      icon: Icons.menu_book_outlined,
-      activeIcon: Icons.menu_book_rounded,
+      icon: Icons.auto_stories_outlined,
+      activeIcon: Icons.auto_stories,
       label: l10n?.navCourses ?? 'Cursos',
       route: '/courses',
       ),
       (
       icon: Icons.calendar_month_outlined,
-      activeIcon: Icons.calendar_month_rounded,
+      activeIcon: Icons.calendar_month,
       label: l10n?.navCalendar ?? 'Calendario',
       route: '/calendar',
       ),
       (
-      icon: Icons.bar_chart_outlined,
-      activeIcon: Icons.bar_chart_rounded,
+      icon: Icons.insert_chart_outlined,
+      activeIcon: Icons.insert_chart,
       label: l10n?.navFinance ?? 'Finanzas',
       route: '/finance',
       ),
@@ -108,6 +110,10 @@ class AppBottomNavBar extends StatelessWidget {
                     return Expanded(
                       child: InkWell(
                         onTap: () {
+                          if (onDestinationSelected != null) {
+                            onDestinationSelected!(index);
+                            return;
+                          }
                           if (currentIndex != index) {
                             context.go(item.route);
                           }

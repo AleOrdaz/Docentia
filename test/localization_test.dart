@@ -25,6 +25,11 @@ void main() {
       expect(l10nEs.themeModeTitle, 'Tema Visual');
       expect(l10nEs.lightMode, 'Claro');
       expect(l10nEs.darkMode, 'Oscuro');
+      expect(l10nEs.loginSignIn, 'Iniciar sesión');
+      expect(l10nEs.loginForgotPassword, '¿Olvidaste tu contraseña?');
+      expect(l10nEs.homeGreeting('Antonio'), 'Hola, Antonio');
+      expect(l10nEs.pendingPaymentSingular, 'pago pendiente');
+      expect(l10nEs.pendingPaymentPlural, 'pagos pendientes');
     });
 
     test('English translations are valid and properly mapped', () {
@@ -40,6 +45,11 @@ void main() {
       expect(l10nEn.themeModeTitle, 'Visual Theme');
       expect(l10nEn.lightMode, 'Light');
       expect(l10nEn.darkMode, 'Dark');
+      expect(l10nEn.loginSignIn, 'Sign in');
+      expect(l10nEn.loginForgotPassword, 'Forgot your password?');
+      expect(l10nEn.homeGreeting('Antonio'), 'Hello, Antonio');
+      expect(l10nEn.pendingPaymentSingular, 'pending payment');
+      expect(l10nEn.pendingPaymentPlural, 'pending payments');
     });
 
     test('Delegate supports Spanish and English only', () {

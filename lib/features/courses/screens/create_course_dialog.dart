@@ -9,6 +9,92 @@ import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
 import '../providers/courses_provider.dart';
 
+Future<void> showDeleteCourseConfirmation({
+  required BuildContext context,
+  required WidgetRef ref,
+  required Course course,
+  bool closeParent = false,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (ctx) {
+      final l10n = AppLocalizations.of(ctx)!;
+      final isDark = Theme.of(ctx).brightness == Brightness.dark;
+      return AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF3B171A) : const Color(0xFFFFEBEE),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.warning_amber_rounded,
+                  color: Color(0xFFD32F2F), size: 24),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                l10n.deleteCourseConfirmTitle,
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          l10n.deleteCourseConfirmBody(course.name),
+          style: TextStyle(
+            fontSize: 13,
+            color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF43474E),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(
+              l10n.cancel,
+              style: TextStyle(
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+              ),
+            ),
+          ),
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD32F2F),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              if (closeParent && context.mounted) {
+                Navigator.of(context).pop();
+              }
+              await ref.read(coursesProvider.notifier).deleteCourse(course.id);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.courseDeletedSuccess(course.name)),
+                    backgroundColor: const Color(0xFFD32F2F),
+                  ),
+                );
+              }
+            },
+            icon: const Icon(Icons.delete_forever, size: 18),
+            label: Text(l10n.yesDeleteCourse),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 class CreateCourseDialog extends ConsumerStatefulWidget {
   final Course? courseToEdit;
 
@@ -222,82 +308,11 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   void _confirmDeleteCourse() {
     final course = widget.courseToEdit;
     if (course == null) return;
-
-    showDialog(
+    showDeleteCourseConfirmation(
       context: context,
-      builder: (ctx) {
-        final l10n = AppLocalizations.of(ctx)!;
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        return AlertDialog(
-          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF3B171A) : const Color(0xFFFFEBEE),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.warning_amber_rounded,
-                    color: Color(0xFFD32F2F), size: 24),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  l10n.deleteCourseConfirmTitle,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          content: Text(
-            l10n.deleteCourseConfirmBody(course.name),
-            style: TextStyle(
-              fontSize: 13,
-              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF43474E),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(
-                l10n.cancel,
-                style: TextStyle(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                ),
-              ),
-            ),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFD32F2F),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              onPressed: () async {
-                Navigator.of(ctx).pop();
-                Navigator.of(context).pop();
-                await ref.read(coursesProvider.notifier).deleteCourse(course.id);
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(l10n.courseDeletedSuccess(course.name)),
-                      backgroundColor: const Color(0xFFD32F2F),
-                    ),
-                  );
-                }
-              },
-              icon: const Icon(Icons.delete_forever, size: 18),
-              label: Text(l10n.yesDeleteCourse),
-            ),
-          ],
-        );
-      },
+      ref: ref,
+      course: course,
+      closeParent: true,
     );
   }
 

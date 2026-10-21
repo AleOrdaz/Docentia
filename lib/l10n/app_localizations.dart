@@ -248,6 +248,12 @@ abstract class AppLocalizations {
   /// **'Al continuar aceptas los Términos de Servicio y Política de Privacidad de Docentia.'**
   String get termsNotice;
 
+  /// No description provided for @homeGreeting.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola, {name}'**
+  String homeGreeting(String name);
+
   /// No description provided for @greetingSubtitle.
   ///
   /// In es, this message translates to:
@@ -287,7 +293,7 @@ abstract class AppLocalizations {
   /// No description provided for @todaysCoursesTitle.
   ///
   /// In es, this message translates to:
-  /// **'Cursos de Hoy'**
+  /// **'Cursos de hoy'**
   String get todaysCoursesTitle;
 
   /// No description provided for @newCourseBtn.
@@ -335,7 +341,7 @@ abstract class AppLocalizations {
   /// No description provided for @allPeriodTab.
   ///
   /// In es, this message translates to:
-  /// **'Todo el Periodo'**
+  /// **'Todo el período'**
   String get allPeriodTab;
 
   /// No description provided for @collectedIncome.
@@ -413,7 +419,7 @@ abstract class AppLocalizations {
   /// No description provided for @noExpensesPeriod.
   ///
   /// In es, this message translates to:
-  /// **'No hay gastos registrados en este periodo.'**
+  /// **'No hay gastos registrados en este período.'**
   String get noExpensesPeriod;
 
   /// No description provided for @registerExpenseTitle.
@@ -811,6 +817,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'alumnos'**
   String get studentPlural;
+
+  /// No description provided for @pendingPaymentSingular.
+  ///
+  /// In es, this message translates to:
+  /// **'pago pendiente'**
+  String get pendingPaymentSingular;
+
+  /// No description provided for @pendingPaymentPlural.
+  ///
+  /// In es, this message translates to:
+  /// **'pagos pendientes'**
+  String get pendingPaymentPlural;
 
   /// No description provided for @summaryCardStudents.
   ///
@@ -1232,6 +1250,12 @@ abstract class AppLocalizations {
   /// **'Activos'**
   String get activeLabel;
 
+  /// No description provided for @courseActiveBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get courseActiveBadge;
+
   /// No description provided for @presentsLabel.
   ///
   /// In es, this message translates to:
@@ -1403,7 +1427,7 @@ abstract class AppLocalizations {
   /// No description provided for @feeConfigHelp.
   ///
   /// In es, this message translates to:
-  /// **'Configura el periodo y la fecha de vencimiento. Solo se permite una cuota por mes:'**
+  /// **'Configura el período y la fecha de vencimiento. Solo se permite una cuota por mes:'**
   String get feeConfigHelp;
 
   /// No description provided for @monthAndYear.
@@ -2306,6 +2330,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tomar foto'**
   String get completeProfileCamera;
+
+  /// No description provided for @loginWelcomeTagline.
+  ///
+  /// In es, this message translates to:
+  /// **'Bienvenido a Docentia. El verdadero trabajo lo realizamos nosotros.'**
+  String get loginWelcomeTagline;
+
+  /// No description provided for @loginEmailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get loginEmailLabel;
+
+  /// No description provided for @loginPasswordLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get loginPasswordLabel;
+
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get loginForgotPassword;
+
+  /// No description provided for @loginSignIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get loginSignIn;
+
+  /// No description provided for @loginOrSeparator.
+  ///
+  /// In es, this message translates to:
+  /// **'o'**
+  String get loginOrSeparator;
+
+  /// No description provided for @loginEmailRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu correo'**
+  String get loginEmailRequired;
+
+  /// No description provided for @loginEmailInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El correo no es válido'**
+  String get loginEmailInvalid;
+
+  /// No description provided for @loginPasswordRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu contraseña'**
+  String get loginPasswordRequired;
+
+  /// No description provided for @loginPasswordTooShort.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa al menos 6 caracteres'**
+  String get loginPasswordTooShort;
+
+  /// No description provided for @loginResetEmailRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu correo para recuperarla'**
+  String get loginResetEmailRequired;
+
+  /// No description provided for @loginResetPasswordSent.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un correo para restablecer tu contraseña.'**
+  String get loginResetPasswordSent;
 }
 
 class _AppLocalizationsDelegate

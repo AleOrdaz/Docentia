@@ -86,6 +86,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Al continuar aceptas los Términos de Servicio y Política de Privacidad de Docentia.';
 
   @override
+  String homeGreeting(String name) {
+    return 'Hola, $name';
+  }
+
+  @override
   String get greetingSubtitle => 'Bienvenido a tu panel de control docente';
 
   @override
@@ -104,7 +109,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get monthlyIncomeCard => 'Ingresos del Mes';
 
   @override
-  String get todaysCoursesTitle => 'Cursos de Hoy';
+  String get todaysCoursesTitle => 'Cursos de hoy';
 
   @override
   String get newCourseBtn => 'Nuevo curso';
@@ -129,7 +134,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get previousMonthTab => 'Mes Anterior';
 
   @override
-  String get allPeriodTab => 'Todo el Periodo';
+  String get allPeriodTab => 'Todo el período';
 
   @override
   String get collectedIncome => 'Ingresos Cobrados';
@@ -168,7 +173,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get addExpenseBtn => 'Registrar Gasto';
 
   @override
-  String get noExpensesPeriod => 'No hay gastos registrados en este periodo.';
+  String get noExpensesPeriod => 'No hay gastos registrados en este período.';
 
   @override
   String get registerExpenseTitle => 'Registrar Gasto del Docente';
@@ -370,6 +375,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get studentPlural => 'alumnos';
+
+  @override
+  String get pendingPaymentSingular => 'pago pendiente';
+
+  @override
+  String get pendingPaymentPlural => 'pagos pendientes';
 
   @override
   String get summaryCardStudents => 'Alumnos';
@@ -609,6 +620,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get activeLabel => 'Activos';
 
   @override
+  String get courseActiveBadge => 'Activo';
+
+  @override
   String get presentsLabel => 'Presentes';
 
   @override
@@ -703,7 +717,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feeConfigHelp =>
-      'Configura el periodo y la fecha de vencimiento. Solo se permite una cuota por mes:';
+      'Configura el período y la fecha de vencimiento. Solo se permite una cuota por mes:';
 
   @override
   String get monthAndYear => 'Mes y Año:';
@@ -1220,4 +1234,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get completeProfileCamera => 'Tomar foto';
+
+  @override
+  String get loginWelcomeTagline =>
+      'Bienvenido a Docentia. El verdadero trabajo lo realizamos nosotros.';
+
+  @override
+  String get loginEmailLabel => 'Correo';
+
+  @override
+  String get loginPasswordLabel => 'Contraseña';
+
+  @override
+  String get loginForgotPassword => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get loginSignIn => 'Iniciar sesión';
+
+  @override
+  String get loginOrSeparator => 'o';
+
+  @override
+  String get loginEmailRequired => 'Ingresa tu correo';
+
+  @override
+  String get loginEmailInvalid => 'El correo no es válido';
+
+  @override
+  String get loginPasswordRequired => 'Ingresa tu contraseña';
+
+  @override
+  String get loginPasswordTooShort => 'Usa al menos 6 caracteres';
+
+  @override
+  String get loginResetEmailRequired => 'Escribe tu correo para recuperarla';
+
+  @override
+  String get loginResetPasswordSent =>
+      'Te enviamos un correo para restablecer tu contraseña.';
 }
