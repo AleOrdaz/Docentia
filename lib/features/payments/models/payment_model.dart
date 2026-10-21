@@ -17,7 +17,7 @@ extension PaymentStatusExtension on PaymentStatus {
       case PaymentStatus.upcoming:
         return 'Próximo a vencer';
       case PaymentStatus.overdue:
-        return 'Vencido';
+        return 'Atrasado';
     }
   }
 }
@@ -51,6 +51,7 @@ class Payment {
   final PaymentStatus status;
   final DateTime? paidAt;
   final double? paidAmount;
+  final bool isProrated;
 
   const Payment({
     required this.id,
@@ -65,6 +66,7 @@ class Payment {
     required this.status,
     this.paidAt,
     this.paidAmount,
+    this.isProrated = false,
   });
 
   /// Clave única de negocio por Alumno + Curso + Año + Mes
@@ -105,6 +107,7 @@ class Payment {
     PaymentStatus? status,
     DateTime? paidAt,
     double? paidAmount,
+    bool? isProrated,
   }) {
     return Payment(
       id: id ?? this.id,
@@ -119,6 +122,7 @@ class Payment {
       status: status ?? this.status,
       paidAt: paidAt ?? this.paidAt,
       paidAmount: paidAmount ?? this.paidAmount,
+      isProrated: isProrated ?? this.isProrated,
     );
   }
 
@@ -136,6 +140,7 @@ class Payment {
       'status': status.name,
       'paidAt': paidAt?.toIso8601String(),
       'paidAmount': paidAmount,
+      'isProrated': isProrated,
     };
   }
 
@@ -183,6 +188,7 @@ class Payment {
       status: parsedStatus,
       paidAt: paidAtRaw != null ? DateTime.tryParse(paidAtRaw) : null,
       paidAmount: (map['paidAmount'] as num?)?.toDouble(),
+      isProrated: (map['isProrated'] as bool?) ?? false,
     );
   }
 

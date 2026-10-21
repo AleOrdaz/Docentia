@@ -7,10 +7,16 @@ import '../../../core/services/whatsapp_service.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../attendance/providers/attendance_provider.dart';
+import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../../payments/models/payment_model.dart';
 import '../../payments/providers/payments_provider.dart';
+import '../../payments/services/fee_generation_service.dart';
+import '../models/student_model.dart';
 import '../providers/students_provider.dart';
+import 'edit_emergency_contact_modal.dart';
+import 'edit_student_modal.dart';
+import 'edit_tutor_modal.dart';
 
 class StudentDetailScreen extends ConsumerStatefulWidget {
   final String studentId;
@@ -86,246 +92,241 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     );
   }
 
-  void _showGenerateFeeDialog({
+  void _showGenerateFeeSheet({
     required BuildContext context,
     required String studentId,
     required String courseId,
     required double courseCost,
-    required dynamic courseSchedule,
+    required PaymentSchedule courseSchedule,
   }) {
     final l10n = AppLocalizations.of(context)!;
-    final now = DateTime.now();
-    int selectedYear = now.year;
-    int selectedMonth = now.month;
-    DueDateOption selectedOption = DueDateOption.endOfMonth;
+    DateTime returnDate = FeeCycle.dateOnly(DateTime.now());
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
-    final locale = Localizations.localeOf(context).toString();
-
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) {
         return StatefulBuilder(
-          builder: (dialogCtx, setDialogState) {
-            final calculatedDueDate = Payment.calculateDueDate(selectedYear, selectedMonth, selectedOption);
-            final parts = calculatedDueDate.split('-');
-            final formattedDueDate = '${parts[2]}/${parts[1]}/${parts[0]}';
+          builder: (sheetCtx, setSheetState) {
+            final remaining = FeeCycle.remainingDays(courseSchedule, returnDate);
+            final cycle = FeeCycle.cycleDays(courseSchedule, returnDate);
+            final nextBilling = FeeCycle.nextBillingDate(courseSchedule, returnDate);
+            final amount = FeeCycle.proratedAmount(
+              monthlyCost: courseCost,
+              schedule: courseSchedule,
+              from: returnDate,
+            );
+            final canCreate = remaining > 0;
+            final textPrimary = AppColors.textPrimary(sheetCtx);
+            final textSecondary = AppColors.textSecondary(sheetCtx);
 
-            return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: Row(
-                children: [
-                  Icon(Icons.add_card_outlined, color: Theme.of(context).colorScheme.primary, size: 24),
-                  const SizedBox(width: 8),
-                  Text(l10n.newMonthlyFee),
-                ],
+            return Container(
+              decoration: BoxDecoration(
+                color: AppColors.surfaceLowest(sheetCtx),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
               ),
-              content: SingleChildScrollView(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 12,
+                bottom: MediaQuery.of(sheetCtx).viewInsets.bottom + 24,
+              ),
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      l10n.feeConfigHelp,
-                      style: AppTextStyles.bodySmall,
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.outlineVariantAdaptive(sheetCtx),
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 16),
-
-                    // Selector de Periodo: Mes y Año
-                    Text(l10n.monthAndYear, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 6),
                     Row(
                       children: [
-                        Expanded(
-                          flex: 3,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceLow(dialogCtx),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<int>(
-                                value: selectedMonth,
-                                isExpanded: true,
-                                items: List.generate(12, (i) {
-                                  return DropdownMenuItem<int>(
-                                    value: i + 1,
-                                    child: Text(
-                                      Payment.formatPeriodName(selectedYear, i + 1, locale).split(' ').first,
-                                      style: AppTextStyles.bodyMedium,
-                                    ),
-                                  );
-                                }),
-                                onChanged: (val) {
-                                  if (val != null) {
-                                    setDialogState(() => selectedMonth = val);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
+                        Icon(Icons.add_card_outlined, color: primaryColor, size: 24),
                         const SizedBox(width: 8),
                         Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            decoration: BoxDecoration(
-                              color: AppColors.surfaceLow(dialogCtx),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<int>(
-                                value: selectedYear,
-                                isExpanded: true,
-                                items: [now.year, now.year + 1].map((yr) {
-                                  return DropdownMenuItem<int>(
-                                    value: yr,
-                                    child: Text('$yr', style: AppTextStyles.bodyMedium),
-                                  );
-                                }).toList(),
-                                onChanged: (val) {
-                                  if (val != null) {
-                                    setDialogState(() => selectedYear = val);
-                                  }
-                                },
-                              ),
-                            ),
+                          child: Text(
+                            l10n.newMonthlyFee,
+                            style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
                           ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close, color: textSecondary),
+                          onPressed: () => Navigator.of(ctx).pop(),
                         ),
                       ],
                     ),
-
+                    Text(
+                      l10n.feeConfigHelp,
+                      style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                    ),
                     const SizedBox(height: 16),
-
-                    // Selector de Vencimiento: Inicio de mes vs Fin de mes
-                    Text(l10n.dueDateField, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                    Text(l10n.returnDateLabel, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 6),
-
-                    Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceLow(dialogCtx),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        children: [
-                          RadioListTile<DueDateOption>(
-                            value: DueDateOption.startOfMonth,
-                            groupValue: selectedOption,
-                            title: Text(l10n.monthStart, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                            subtitle: Text(l10n.monthStartDay1, style: AppTextStyles.bodySmall),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                            onChanged: (val) {
-                              if (val != null) setDialogState(() => selectedOption = val);
-                            },
-                          ),
-                          const Divider(height: 1),
-                          RadioListTile<DueDateOption>(
-                            value: DueDateOption.endOfMonth,
-                            groupValue: selectedOption,
-                            title: Text(l10n.monthEnd, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                            subtitle: Text(l10n.monthEndLastDay, style: AppTextStyles.bodySmall),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                            onChanged: (val) {
-                              if (val != null) setDialogState(() => selectedOption = val);
-                            },
-                          ),
-                        ],
+                    InkWell(
+                      onTap: () async {
+                        final picked = await showDatePicker(
+                          context: sheetCtx,
+                          initialDate: returnDate,
+                          firstDate: DateTime(returnDate.year - 1),
+                          lastDate: DateTime(returnDate.year + 1, 12, 31),
+                        );
+                        if (picked != null) {
+                          setSheetState(() => returnDate = FeeCycle.dateOnly(picked));
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceLow(sheetCtx),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.event, size: 20, color: primaryColor),
+                            const SizedBox(width: 10),
+                            Text(
+                              FeeCycle.formatDisplayDate(returnDate),
+                              style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-
                     const SizedBox(height: 14),
-
-                    // Resumen informativo
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceLowest(dialogCtx),
+                        color: AppColors.surfaceLow(sheetCtx),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.cardBorder(dialogCtx)),
+                        border: Border.all(color: AppColors.cardBorder(sheetCtx)),
                       ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(l10n.calculatedDate, style: AppTextStyles.bodySmall),
-                              Text(formattedDueDate, style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(l10n.amountToCharge, style: AppTextStyles.bodySmall),
-                              Text(
-                                formatCurrency(courseCost),
-                                style: AppTextStyles.titleSmall.copyWith(
-                                  color: AppColors.secondary,
-                                  fontWeight: FontWeight.bold,
+                      child: canCreate
+                          ? Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(l10n.nextChargeDate, style: AppTextStyles.bodySmall),
+                                    Text(
+                                      FeeCycle.formatDisplayDate(nextBilling),
+                                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 6),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(l10n.remainingDaysCount(remaining), style: AppTextStyles.bodySmall),
+                                    Text(
+                                      l10n.proratedBreakdown(remaining, cycle),
+                                      style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(l10n.amountToCharge, style: AppTextStyles.bodySmall),
+                                    Text(
+                                      formatCurrency(amount),
+                                      style: AppTextStyles.titleSmall.copyWith(
+                                        color: AppColors.secondary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : Text(
+                              l10n.proratedOnBillingDay,
+                              style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                            ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(ctx).pop(),
+                          style: TextButton.styleFrom(
+                            foregroundColor: textPrimary,
+                            backgroundColor: AppColors.surfaceMid(sheetCtx),
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                           ),
-                        ],
-                      ),
+                          child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: AppColors.onPrimary,
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          onPressed: !canCreate
+                              ? null
+                              : () async {
+                                  Navigator.of(ctx).pop();
+                                  final result = await ref
+                                      .read(paymentsForCourseProvider(courseId).notifier)
+                                      .generateProratedFeeForStudent(
+                                    studentId: studentId,
+                                    cost: courseCost,
+                                    schedule: courseSchedule,
+                                    returnDate: returnDate,
+                                  );
+
+                                  if (!context.mounted) return;
+                                  ref.read(paymentsRevisionProvider.notifier).state++;
+
+                                  final message = result.success
+                                      ? l10n.proratedFeeCreated(result.remainingDays)
+                                      : result.message == 'alreadyExists'
+                                          ? l10n.proratedAlreadyExists
+                                          : l10n.proratedOnBillingDay;
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        children: [
+                                          Icon(
+                                            result.success ? Icons.check_circle : Icons.warning_amber_rounded,
+                                            color: result.success ? AppColors.secondaryFixed : Colors.amber,
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(child: Text(message)),
+                                        ],
+                                      ),
+                                      backgroundColor: AppColors.inverseSurface,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                                    ),
+                                  );
+                                },
+                          child: Text(l10n.createProratedFee, style: const TextStyle(fontWeight: FontWeight.w600)),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: Text(l10n.cancel),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                  ),
-                  onPressed: () async {
-                    Navigator.of(ctx).pop();
-                    final result = await ref
-                        .read(paymentsForCourseProvider(courseId).notifier)
-                        .generateFeeForStudent(
-                      studentId: studentId,
-                      cost: courseCost,
-                      year: selectedYear,
-                      month: selectedMonth,
-                      dueOption: selectedOption,
-                    );
-
-                    if (!context.mounted) return;
-
-                    final periodName = Payment.formatPeriodName(selectedYear, selectedMonth, locale);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Row(
-                          children: [
-                            Icon(
-                              result.success ? Icons.check_circle : Icons.warning_amber_rounded,
-                              color: result.success ? AppColors.secondaryFixed : Colors.amber,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Text(
-                                result.success
-                                    ? l10n.feeCreated(periodName)
-                                    : l10n.feeAlreadyExists,
-                              ),
-                            ),
-                          ],
-                        ),
-                        backgroundColor: AppColors.inverseSurface,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-                      ),
-                    );
-                  },
-                  child: Text(l10n.createFee),
-                ),
-              ],
             );
           },
         );
@@ -450,12 +451,17 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     required String studentName,
     required String courseName,
     required String courseId,
+    required double courseCost,
   }) {
     final now = DateTime.now();
     final todayFormatted = '${now.day.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}/${now.year}';
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
-    final periodName = Payment.formatPeriodName(payment.periodYear, payment.periodMonth, locale);
+    final periodName = payment.isProrated
+        ? payment.period
+        : Payment.formatPeriodName(payment.periodYear, payment.periodMonth, locale);
+    final concept = payment.isProrated ? l10n.proratedBadge : l10n.monthlyFeeConcept;
+    final amountDue = payment.amount;
 
     showDialog(
       context: context,
@@ -486,7 +492,16 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                   const SizedBox(height: 6),
                   _buildPaymentSummaryRow(ctx, l10n.courseColon, courseName),
                   const SizedBox(height: 6),
-                  _buildPaymentSummaryRow(ctx, l10n.monthlyFeeColon, periodName),
+                  _buildPaymentSummaryRow(ctx, l10n.feeConceptLabel, concept),
+                  const SizedBox(height: 6),
+                  _buildPaymentSummaryRow(ctx, l10n.periodLabel, periodName),
+                  if (payment.isProrated) ...[
+                    const SizedBox(height: 6),
+                    _buildPaymentSummaryRow(ctx, l10n.courseMonthlyFee, formatCurrency(courseCost)),
+                  ] else ...[
+                    const SizedBox(height: 6),
+                    _buildPaymentSummaryRow(ctx, l10n.monthlyFeeColon, formatCurrency(amountDue)),
+                  ],
                   const SizedBox(height: 6),
                   _buildPaymentSummaryRow(ctx, l10n.paymentDateColon, todayFormatted),
                   const Divider(height: 16),
@@ -495,7 +510,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                     children: [
                       Text(l10n.amountToPay, style: AppTextStyles.titleSmall),
                       Text(
-                        formatCurrency(payment.amount),
+                        formatCurrency(amountDue),
                         style: AppTextStyles.titleLarge.copyWith(
                           color: AppColors.secondary,
                           fontWeight: FontWeight.bold,
@@ -522,7 +537,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
               Navigator.of(ctx).pop();
               await ref
                   .read(paymentsForCourseProvider(courseId).notifier)
-                  .confirmPayment(payment.id, paidAmount: payment.amount, paidDate: now);
+                  .confirmPayment(payment.id, paidAmount: amountDue, paidDate: now);
 
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -533,7 +548,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            l10n.paymentConfirmed(formatCurrency(payment.amount), studentName),
+                            l10n.paymentConfirmed(formatCurrency(amountDue), studentName),
                           ),
                         ),
                       ],
@@ -550,6 +565,17 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
         ],
       ),
     );
+  }
+
+  String _relationshipLabel(AppLocalizations l10n, TutorRelationship relationship) {
+    switch (relationship) {
+      case TutorRelationship.mother:
+        return l10n.relationshipMother;
+      case TutorRelationship.father:
+        return l10n.relationshipFather;
+      case TutorRelationship.tutor:
+        return l10n.relationshipTutor;
+    }
   }
 
   String _paymentStatusLabel(AppLocalizations l10n, PaymentStatus status) {
@@ -643,6 +669,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                 border: Border.all(color: cardBorder),
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (student.avatarUrl != null && student.avatarUrl!.isNotEmpty)
                     ClipRRect(
@@ -706,6 +733,24 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => EditStudentModal(student: student),
+                      );
+                    },
+                    child: Text(
+                      l10n.editTutorBtn,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -822,21 +867,108 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.family_restroom, color: primaryColor, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        l10n.tutorDataTitle,
-                        style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                      Row(
+                        children: [
+                          Icon(Icons.family_restroom, color: primaryColor, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.tutorDataTitle,
+                            style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => EditTutorModal(student: student),
+                          );
+                        },
+                        child: Text(
+                          l10n.editTutorBtn,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
+                  _buildTutorField(context, l10n.relationshipLabel, _relationshipLabel(l10n, student.tutorRelationship)),
                   _buildTutorField(context, l10n.nameLabel, student.tutorName),
                   _buildTutorField(context, l10n.mobilePhone, student.tutorPhone),
                   _buildTutorField(context, l10n.emailLabel, student.tutorEmail),
                   if (student.secondaryPhone != null && student.secondaryPhone!.isNotEmpty)
                     _buildTutorField(context, l10n.secondaryPhone, student.secondaryPhone!),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cardBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.emergency_outlined, color: primaryColor, size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            l10n.emergencyContactTitle,
+                            style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (_) => EditEmergencyContactModal(student: student),
+                          );
+                        },
+                        child: Text(
+                          l10n.editTutorBtn,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  if (student.emergencyName.isEmpty && student.emergencyPhone.isEmpty)
+                    Text(
+                      l10n.noEmergencyContact,
+                      style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                    )
+                  else ...[
+                    _buildTutorField(context, l10n.nameLabel, student.emergencyName),
+                    _buildTutorField(
+                      context,
+                      l10n.relationshipLabel,
+                      _relationshipLabel(l10n, student.emergencyRelationship),
+                    ),
+                    _buildTutorField(context, l10n.mobilePhone, student.emergencyPhone),
+                  ],
                 ],
               ),
             ),
@@ -869,7 +1001,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                       if (course != null)
                         InkWell(
                           onTap: () {
-                            _showGenerateFeeDialog(
+                            _showGenerateFeeSheet(
                               context: context,
                               studentId: student.id,
                               courseId: courseId,
@@ -878,7 +1010,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                             );
                           },
                           child: Text(
-                            '+ Nueva Cuota',
+                            l10n.addProratedFee,
                             style: TextStyle(
                               fontSize: 12,
                               color: primaryColor,
@@ -906,7 +1038,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                               if (course != null)
                                 OutlinedButton.icon(
                                   onPressed: () {
-                                    _showGenerateFeeDialog(
+                                    _showGenerateFeeSheet(
                                       context: context,
                                       studentId: student.id,
                                       courseId: courseId,
@@ -915,7 +1047,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                     );
                                   },
                                   icon: const Icon(Icons.add, size: 16),
-                                  label: Text(l10n.generateMonthly),
+                                  label: Text(l10n.addProratedFee),
                                 ),
                             ],
                           ),
@@ -929,10 +1061,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
                           Color badgeBg;
                           Color badgeFg;
-                          if (isPaid) {
-                            badgeBg = AppColors.secondaryFixed;
-                            badgeFg = AppColors.onSecondaryContainer;
-                          } else if (isUpcoming) {
+                          if (isUpcoming) {
                             badgeBg = AppColors.warningContainer;
                             badgeFg = AppColors.onWarningContainer;
                           } else if (isOverdue) {
@@ -967,9 +1096,33 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          Payment.formatPeriodName(p.periodYear, p.periodMonth, locale),
-                                          style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              p.isProrated
+                                                  ? p.period
+                                                  : Payment.formatPeriodName(p.periodYear, p.periodMonth, locale),
+                                              style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                                            ),
+                                            if (p.isProrated) ...[
+                                              const SizedBox(width: 6),
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: primaryColor.withValues(alpha: 0.12),
+                                                  borderRadius: BorderRadius.circular(100),
+                                                ),
+                                                child: Text(
+                                                  l10n.proratedBadge,
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w700,
+                                                    color: primaryColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ],
                                         ),
                                         const SizedBox(height: 2),
                                         Row(
@@ -978,7 +1131,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                               l10n.dueOn(p.dueDate),
                                               style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                                             ),
-                                            if (!isPaid) ...[
+                                            if (!isPaid && !p.isProrated) ...[
                                               const SizedBox(width: 6),
                                               InkWell(
                                                 onTap: () {
@@ -1015,21 +1168,22 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                         ),
                                       ],
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: badgeBg,
-                                        borderRadius: BorderRadius.circular(100),
-                                      ),
-                                      child: Text(
-                                        _paymentStatusLabel(l10n, p.status),
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: badgeFg,
+                                    if (!isPaid)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: badgeBg,
+                                          borderRadius: BorderRadius.circular(100),
+                                        ),
+                                        child: Text(
+                                          _paymentStatusLabel(l10n, p.status),
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: badgeFg,
+                                          ),
                                         ),
                                       ),
-                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 8),
@@ -1052,6 +1206,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                             studentName: student.fullName,
                                             courseName: course?.name ?? l10n.courseFallback,
                                             courseId: courseId,
+                                            courseCost: course?.cost ?? p.amount,
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -1074,6 +1229,19 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                               color: AppColors.secondary,
                                               fontWeight: FontWeight.bold,
                                             ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          OutlinedButton(
+                                            onPressed: () {},
+                                            style: OutlinedButton.styleFrom(
+                                              foregroundColor: primaryColor,
+                                              side: BorderSide(color: primaryColor),
+                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                              minimumSize: Size.zero,
+                                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                            ),
+                                            child: Text(l10n.sendFeeBtn),
                                           ),
                                         ],
                                       ),

@@ -1,11 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../courses/models/course_model.dart';
+import '../../courses/providers/courses_provider.dart';
+import '../../students/providers/students_provider.dart';
 import '../models/payment_model.dart';
 import '../repositories/payments_repository.dart';
+import '../services/fee_generation_service.dart';
 
 final paymentsRepositoryProvider = Provider<PaymentsRepository>((ref) {
   return LocalPaymentsRepository();
 });
+
+final paymentsRevisionProvider = StateProvider<int>((ref) => 0);
 
 class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
   final PaymentsRepository _repository;
@@ -117,6 +122,80 @@ class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
     }
   }
 
+  Future<({bool success, String message, Payment? payment, int remainingDays})>
+      generateProratedFeeForStudent({
+    required String studentId,
+    required double cost,
+    required PaymentSchedule schedule,
+    DateTime? returnDate,
+  }) async {
+    final now = DateTime.now();
+    final from = FeeCycle.dateOnly(returnDate ?? now);
+    final remaining = FeeCycle.remainingDays(schedule, from);
+
+    if (remaining <= 0) {
+      return (
+        success: false,
+        message: 'billingDay',
+        payment: null,
+        remainingDays: 0,
+      );
+    }
+
+    final exists = await _repository.hasProratedFeeForPeriod(
+      studentId: studentId,
+      courseId: _courseId,
+      year: from.year,
+      month: from.month,
+    );
+    if (exists) {
+      return (
+        success: false,
+        message: 'alreadyExists',
+        payment: null,
+        remainingDays: remaining,
+      );
+    }
+
+    final amount = FeeCycle.proratedAmount(
+      monthlyCost: cost,
+      schedule: schedule,
+      from: from,
+    );
+    final newPayment = Payment(
+      id: 'pay-${now.microsecondsSinceEpoch}',
+      studentId: studentId,
+      courseId: _courseId,
+      period: Payment.formatPeriodName(from.year, from.month),
+      periodMonth: from.month,
+      periodYear: from.year,
+      amount: amount,
+      dueDate: FeeCycle.formatDate(from),
+      dueOption: FeeCycle.dueOptionFor(schedule),
+      status: FeeCycle.statusForDueDate(now, from),
+      isProrated: true,
+    );
+
+    try {
+      await _repository.addPayment(newPayment);
+      final updated = await _repository.getPaymentsByCourse(_courseId);
+      state = AsyncValue.data(updated);
+      return (
+        success: true,
+        message: 'created',
+        payment: newPayment,
+        remainingDays: remaining,
+      );
+    } on DuplicateFeeException {
+      return (
+        success: false,
+        message: 'alreadyExists',
+        payment: null,
+        remainingDays: remaining,
+      );
+    }
+  }
+
   Future<void> updatePaymentDueDate(String paymentId, DueDateOption newOption) async {
     await _repository.updatePaymentDueDate(paymentId, newOption);
     final updated = await _repository.getPaymentsByCourse(_courseId);
@@ -126,6 +205,7 @@ class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
 
 final paymentsForCourseProvider = StateNotifierProvider.family<
     PaymentsNotifier, AsyncValue<List<Payment>>, String>((ref, courseId) {
+  ref.watch(paymentsRevisionProvider);
   final repo = ref.watch(paymentsRepositoryProvider);
   return PaymentsNotifier(repo, courseId);
 });
@@ -141,6 +221,23 @@ FutureProvider.family<List<Payment>, ({String studentId, String courseId})>(
 );
 
 final allPaymentsProvider = FutureProvider<List<Payment>>((ref) async {
+  ref.watch(paymentsRevisionProvider);
   final repo = ref.watch(paymentsRepositoryProvider);
   return repo.getAllPayments();
+});
+
+final autoGenerateFeesProvider = FutureProvider<int>((ref) async {
+  ref.watch(studentsRevisionProvider);
+  final courses = await ref.watch(coursesRepositoryProvider).getCourses();
+  final students = await ref.watch(studentsRepositoryProvider).getAllStudents();
+  final payments = ref.watch(paymentsRepositoryProvider);
+  final created = await AutoFeeGenerator.generate(
+    courses: courses,
+    students: students,
+    payments: payments,
+  );
+  if (created > 0) {
+    ref.read(paymentsRevisionProvider.notifier).state++;
+  }
+  return created;
 });

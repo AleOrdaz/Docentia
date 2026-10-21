@@ -521,25 +521,25 @@ abstract class AppLocalizations {
   /// No description provided for @courseDetailTitle.
   ///
   /// In es, this message translates to:
-  /// **'Detalle del Curso'**
+  /// **'Detalle del curso'**
   String get courseDetailTitle;
 
   /// No description provided for @addStudentBtn.
   ///
   /// In es, this message translates to:
-  /// **'+ Agregar Alumno'**
+  /// **'+ Agregar alumno'**
   String get addStudentBtn;
 
   /// No description provided for @attendanceRecordBtn.
   ///
   /// In es, this message translates to:
-  /// **'Historial de Asistencia'**
+  /// **'Historial de asistencia'**
   String get attendanceRecordBtn;
 
   /// No description provided for @studentListTitle.
   ///
   /// In es, this message translates to:
-  /// **'Lista de Alumnos'**
+  /// **'Lista de alumnos'**
   String get studentListTitle;
 
   /// No description provided for @filterAll.
@@ -593,13 +593,13 @@ abstract class AppLocalizations {
   /// No description provided for @sessionsLabel.
   ///
   /// In es, this message translates to:
-  /// **'Total de Sesiones *'**
+  /// **'Total de sesiones *'**
   String get sessionsLabel;
 
   /// No description provided for @maxCapacityLabel.
   ///
   /// In es, this message translates to:
-  /// **'Capacidad Máxima *'**
+  /// **'Capacidad máxima *'**
   String get maxCapacityLabel;
 
   /// No description provided for @classDaysLabel.
@@ -665,43 +665,43 @@ abstract class AppLocalizations {
   /// No description provided for @studentDetailTitle.
   ///
   /// In es, this message translates to:
-  /// **'Ficha del Alumno'**
+  /// **'Ficha del alumno'**
   String get studentDetailTitle;
 
   /// No description provided for @tutorInfoTitle.
   ///
   /// In es, this message translates to:
-  /// **'Información del Tutor / Apoderado'**
+  /// **'Información del tutor'**
   String get tutorInfoTitle;
 
   /// No description provided for @sendWhatsAppBtn.
   ///
   /// In es, this message translates to:
-  /// **'Enviar WhatsApp al Tutor'**
+  /// **'Enviar WhatsApp al tutor'**
   String get sendWhatsAppBtn;
 
   /// No description provided for @attendanceSummaryTitle.
   ///
   /// In es, this message translates to:
-  /// **'Resumen de Asistencia'**
+  /// **'Resumen de asistencia'**
   String get attendanceSummaryTitle;
 
   /// No description provided for @monthlyFeesTitle.
   ///
   /// In es, this message translates to:
-  /// **'Cuotas y Mensualidades'**
+  /// **'Cuotas y mensualidades'**
   String get monthlyFeesTitle;
 
   /// No description provided for @addFeeBtn.
   ///
   /// In es, this message translates to:
-  /// **'+ Generar Cuota'**
+  /// **'+ Generar cuota'**
   String get addFeeBtn;
 
   /// No description provided for @deactivateStudentBtn.
   ///
   /// In es, this message translates to:
-  /// **'Dar de Baja al Alumno'**
+  /// **'Dar de baja al alumno'**
   String get deactivateStudentBtn;
 
   /// No description provided for @calendarTitle.
@@ -1334,10 +1334,34 @@ abstract class AppLocalizations {
   /// **'Edad'**
   String get ageLabel;
 
+  /// No description provided for @relationshipLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Parentesco'**
+  String get relationshipLabel;
+
+  /// No description provided for @relationshipMother.
+  ///
+  /// In es, this message translates to:
+  /// **'Madre'**
+  String get relationshipMother;
+
+  /// No description provided for @relationshipFather.
+  ///
+  /// In es, this message translates to:
+  /// **'Padre'**
+  String get relationshipFather;
+
+  /// No description provided for @relationshipTutor.
+  ///
+  /// In es, this message translates to:
+  /// **'Tutor'**
+  String get relationshipTutor;
+
   /// No description provided for @tutorNameLabel.
   ///
   /// In es, this message translates to:
-  /// **'Nombre del Tutor / Apoderado'**
+  /// **'Nombre del tutor'**
   String get tutorNameLabel;
 
   /// No description provided for @tutorNameHint.
@@ -1349,7 +1373,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorPhoneRequiredLabel.
   ///
   /// In es, this message translates to:
-  /// **'Teléfono Móvil (WhatsApp) *'**
+  /// **'Teléfono móvil (WhatsApp) *'**
   String get tutorPhoneRequiredLabel;
 
   /// No description provided for @phoneRequiredWhatsapp.
@@ -1361,7 +1385,7 @@ abstract class AppLocalizations {
   /// No description provided for @emailLabel.
   ///
   /// In es, this message translates to:
-  /// **'Correo Electrónico'**
+  /// **'Correo electrónico'**
   String get emailLabel;
 
   /// No description provided for @emailHint.
@@ -1385,7 +1409,7 @@ abstract class AppLocalizations {
   /// No description provided for @whatsappProgressMessage.
   ///
   /// In es, this message translates to:
-  /// **'Hola {tutor}, le escribo desde Docentia para informarle sobre el progreso de su tutorado/a {student}.'**
+  /// **'Hola, {tutor}. Le escribo desde Docentia para informarle sobre el progreso de {student}.'**
   String whatsappProgressMessage(String tutor, String student);
 
   /// No description provided for @whatsappOpenError.
@@ -1415,25 +1439,85 @@ abstract class AppLocalizations {
   /// No description provided for @confirmDeactivate.
   ///
   /// In es, this message translates to:
-  /// **'Confirmar Baja'**
+  /// **'Confirmar baja'**
   String get confirmDeactivate;
 
   /// No description provided for @newMonthlyFee.
   ///
   /// In es, this message translates to:
-  /// **'Nueva Cuota Mensual'**
+  /// **'Cuota proporcional'**
   String get newMonthlyFee;
 
   /// No description provided for @feeConfigHelp.
   ///
   /// In es, this message translates to:
-  /// **'Configura el período y la fecha de vencimiento. Solo se permite una cuota por mes:'**
+  /// **'Para alumnos que regresan a mitad de ciclo. Se cobra solo los días que faltan hasta el próximo cobro automático.'**
   String get feeConfigHelp;
+
+  /// No description provided for @returnDateLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de reingreso'**
+  String get returnDateLabel;
+
+  /// No description provided for @nextChargeDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo cobro automático'**
+  String get nextChargeDate;
+
+  /// No description provided for @remainingDaysCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{days} días restantes'**
+  String remainingDaysCount(int days);
+
+  /// No description provided for @proratedBreakdown.
+  ///
+  /// In es, this message translates to:
+  /// **'{remaining} de {cycle} días del ciclo'**
+  String proratedBreakdown(int remaining, int cycle);
+
+  /// No description provided for @proratedBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Proporcional'**
+  String get proratedBadge;
+
+  /// No description provided for @proratedOnBillingDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy es el día de cobro de este curso. La cuota mensual se genera sola.'**
+  String get proratedOnBillingDay;
+
+  /// No description provided for @proratedFeeCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota proporcional creada por {days} días.'**
+  String proratedFeeCreated(int days);
+
+  /// No description provided for @proratedAlreadyExists.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya hay una cuota proporcional hasta el próximo cobro.'**
+  String get proratedAlreadyExists;
+
+  /// No description provided for @createProratedFee.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear proporcional'**
+  String get createProratedFee;
+
+  /// No description provided for @addProratedFee.
+  ///
+  /// In es, this message translates to:
+  /// **'+ Proporcional'**
+  String get addProratedFee;
 
   /// No description provided for @monthAndYear.
   ///
   /// In es, this message translates to:
-  /// **'Mes y Año:'**
+  /// **'Mes y año:'**
   String get monthAndYear;
 
   /// No description provided for @dueDateField.
@@ -1481,7 +1565,7 @@ abstract class AppLocalizations {
   /// No description provided for @createFee.
   ///
   /// In es, this message translates to:
-  /// **'Crear Cuota'**
+  /// **'Crear cuota'**
   String get createFee;
 
   /// No description provided for @feeCreated.
@@ -1499,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @modifyDueDate.
   ///
   /// In es, this message translates to:
-  /// **'Modificar Vencimiento'**
+  /// **'Modificar vencimiento'**
   String get modifyDueDate;
 
   /// No description provided for @changeDueOption.
@@ -1541,7 +1625,7 @@ abstract class AppLocalizations {
   /// No description provided for @confirmPayment.
   ///
   /// In es, this message translates to:
-  /// **'Confirmar Pago'**
+  /// **'Confirmar pago'**
   String get confirmPayment;
 
   /// No description provided for @reviewPaymentData.
@@ -1567,6 +1651,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mensualidad:'**
   String get monthlyFeeColon;
+
+  /// No description provided for @feeConceptLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Concepto'**
+  String get feeConceptLabel;
+
+  /// No description provided for @monthlyFeeConcept.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensualidad'**
+  String get monthlyFeeConcept;
+
+  /// No description provided for @courseMonthlyFee.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensualidad del curso'**
+  String get courseMonthlyFee;
+
+  /// No description provided for @periodLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Periodo'**
+  String get periodLabel;
 
   /// No description provided for @paymentDateColon.
   ///
@@ -1595,25 +1703,25 @@ abstract class AppLocalizations {
   /// No description provided for @regularStudent.
   ///
   /// In es, this message translates to:
-  /// **'Alumno Regular'**
+  /// **'Alumno regular'**
   String get regularStudent;
 
   /// No description provided for @deactivatedStudent.
   ///
   /// In es, this message translates to:
-  /// **'Dado de Baja'**
+  /// **'Dado de baja'**
   String get deactivatedStudent;
 
   /// No description provided for @whatsappTutor.
   ///
   /// In es, this message translates to:
-  /// **'WhatsApp Tutor'**
+  /// **'WhatsApp al tutor'**
   String get whatsappTutor;
 
   /// No description provided for @studentAttendance.
   ///
   /// In es, this message translates to:
-  /// **'Asistencia del Alumno'**
+  /// **'Asistencia del alumno'**
   String get studentAttendance;
 
   /// No description provided for @realtimeRecord.
@@ -1643,14 +1751,68 @@ abstract class AppLocalizations {
   /// No description provided for @metricsError.
   ///
   /// In es, this message translates to:
-  /// **'Error calculando métricas'**
+  /// **'Error al calcular las métricas'**
   String get metricsError;
 
   /// No description provided for @tutorDataTitle.
   ///
   /// In es, this message translates to:
-  /// **'Datos del Tutor / Apoderado'**
+  /// **'Datos del tutor'**
   String get tutorDataTitle;
+
+  /// No description provided for @editTutorBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar'**
+  String get editTutorBtn;
+
+  /// No description provided for @editTutorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar datos del tutor'**
+  String get editTutorTitle;
+
+  /// No description provided for @tutorUpdatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos del tutor actualizados'**
+  String get tutorUpdatedSuccess;
+
+  /// No description provided for @editStudentTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar datos del alumno'**
+  String get editStudentTitle;
+
+  /// No description provided for @studentUpdatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos del alumno actualizados'**
+  String get studentUpdatedSuccess;
+
+  /// No description provided for @emergencyContactTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto de emergencia'**
+  String get emergencyContactTitle;
+
+  /// No description provided for @editEmergencyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar contacto de emergencia'**
+  String get editEmergencyTitle;
+
+  /// No description provided for @emergencyUpdatedSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Contacto de emergencia actualizado'**
+  String get emergencyUpdatedSuccess;
+
+  /// No description provided for @noEmergencyContact.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin contacto de emergencia'**
+  String get noEmergencyContact;
 
   /// No description provided for @nameLabel.
   ///
@@ -1661,13 +1823,13 @@ abstract class AppLocalizations {
   /// No description provided for @mobilePhone.
   ///
   /// In es, this message translates to:
-  /// **'Teléfono Móvil'**
+  /// **'Teléfono móvil'**
   String get mobilePhone;
 
   /// No description provided for @secondaryPhone.
   ///
   /// In es, this message translates to:
-  /// **'Teléfono Secundario'**
+  /// **'Teléfono secundario'**
   String get secondaryPhone;
 
   /// No description provided for @noFeesYet.
@@ -1699,6 +1861,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Confirmar pago'**
   String get confirmPaymentShort;
+
+  /// No description provided for @sendFeeBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get sendFeeBtn;
 
   /// No description provided for @paymentsLoadError.
   ///
@@ -1751,7 +1919,7 @@ abstract class AppLocalizations {
   /// No description provided for @attendanceHistoryTitle.
   ///
   /// In es, this message translates to:
-  /// **'Registro de Asistencia'**
+  /// **'Registro de asistencia'**
   String get attendanceHistoryTitle;
 
   /// No description provided for @noSessionsYet.

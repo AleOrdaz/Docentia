@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get attendanceRecordBtn => 'Attendance History';
 
   @override
-  String get studentListTitle => 'Student List';
+  String get studentListTitle => 'Student list';
 
   @override
   String get filterAll => 'All';
@@ -301,7 +301,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get studentDetailTitle => 'Student Record';
 
   @override
-  String get tutorInfoTitle => 'Guardian / Tutor Information';
+  String get tutorInfoTitle => 'Tutor information';
 
   @override
   String get sendWhatsAppBtn => 'Send WhatsApp to Tutor';
@@ -665,7 +665,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ageLabel => 'Age';
 
   @override
-  String get tutorNameLabel => 'Guardian / Tutor name';
+  String get relationshipLabel => 'Relationship';
+
+  @override
+  String get relationshipMother => 'Mother';
+
+  @override
+  String get relationshipFather => 'Father';
+
+  @override
+  String get relationshipTutor => 'Tutor';
+
+  @override
+  String get tutorNameLabel => 'Tutor name';
 
   @override
   String get tutorNameHint => 'E.g. Patricia Díaz';
@@ -711,11 +723,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get confirmDeactivate => 'Confirm deactivation';
 
   @override
-  String get newMonthlyFee => 'New Monthly Fee';
+  String get newMonthlyFee => 'Prorated fee';
 
   @override
   String get feeConfigHelp =>
-      'Set the period and due date. Only one fee is allowed per month:';
+      'For students who return mid-cycle. Only the days left until the next automatic charge are billed.';
+
+  @override
+  String get returnDateLabel => 'Return date';
+
+  @override
+  String get nextChargeDate => 'Next automatic charge';
+
+  @override
+  String remainingDaysCount(int days) {
+    return '$days days remaining';
+  }
+
+  @override
+  String proratedBreakdown(int remaining, int cycle) {
+    return '$remaining of $cycle days in the cycle';
+  }
+
+  @override
+  String get proratedBadge => 'Prorated';
+
+  @override
+  String get proratedOnBillingDay =>
+      'Today is this course\'s billing day. The monthly fee is generated automatically.';
+
+  @override
+  String proratedFeeCreated(int days) {
+    return 'Prorated fee created for $days days.';
+  }
+
+  @override
+  String get proratedAlreadyExists =>
+      'A prorated fee until the next charge already exists.';
+
+  @override
+  String get createProratedFee => 'Create prorated fee';
+
+  @override
+  String get addProratedFee => '+ Prorated';
 
   @override
   String get monthAndYear => 'Month and year:';
@@ -796,6 +846,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthlyFeeColon => 'Monthly fee:';
 
   @override
+  String get feeConceptLabel => 'Item';
+
+  @override
+  String get monthlyFeeConcept => 'Monthly fee';
+
+  @override
+  String get courseMonthlyFee => 'Course monthly fee';
+
+  @override
+  String get periodLabel => 'Period';
+
+  @override
   String get paymentDateColon => 'Payment date:';
 
   @override
@@ -837,7 +899,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get metricsError => 'Could not calculate metrics';
 
   @override
-  String get tutorDataTitle => 'Guardian / Tutor details';
+  String get tutorDataTitle => 'Tutor details';
+
+  @override
+  String get editTutorBtn => 'Edit';
+
+  @override
+  String get editTutorTitle => 'Edit tutor details';
+
+  @override
+  String get tutorUpdatedSuccess => 'Tutor details updated';
+
+  @override
+  String get editStudentTitle => 'Edit student details';
+
+  @override
+  String get studentUpdatedSuccess => 'Student details updated';
+
+  @override
+  String get emergencyContactTitle => 'Emergency contact';
+
+  @override
+  String get editEmergencyTitle => 'Edit emergency contact';
+
+  @override
+  String get emergencyUpdatedSuccess => 'Emergency contact updated';
+
+  @override
+  String get noEmergencyContact => 'No emergency contact';
 
   @override
   String get nameLabel => 'Name';
@@ -864,6 +953,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirmPaymentShort => 'Confirm payment';
+
+  @override
+  String get sendFeeBtn => 'Send';
 
   @override
   String get paymentsLoadError => 'Could not load payments';
