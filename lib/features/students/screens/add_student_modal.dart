@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../models/student_model.dart';
 import '../providers/students_provider.dart';
 
 class AddStudentModal extends ConsumerStatefulWidget {
@@ -28,7 +29,11 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
   final _tutorPhoneController = TextEditingController();
   final _tutorEmailController = TextEditingController();
   final _secondaryPhoneController = TextEditingController();
+  final _emergencyNameController = TextEditingController();
+  final _emergencyPhoneController = TextEditingController();
 
+  TutorRelationship _relationship = TutorRelationship.mother;
+  TutorRelationship _emergencyRelationship = TutorRelationship.mother;
   bool _isSubmitting = false;
 
   @override
@@ -40,6 +45,8 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
     _tutorPhoneController.dispose();
     _tutorEmailController.dispose();
     _secondaryPhoneController.dispose();
+    _emergencyNameController.dispose();
+    _emergencyPhoneController.dispose();
     super.dispose();
   }
 
@@ -56,6 +63,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
         name: _nameController.text.trim(),
         lastName: _lastNameController.text.trim(),
         age: int.tryParse(_ageController.text) ?? 16,
+        tutorRelationship: _relationship,
         tutorName: _tutorNameController.text.trim().isNotEmpty
             ? _tutorNameController.text.trim()
             : l10n.tutorFallback,
@@ -64,6 +72,9 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
             ? _tutorEmailController.text.trim()
             : l10n.emailHint,
         secondaryPhone: _secondaryPhoneController.text.trim(),
+        emergencyName: _emergencyNameController.text.trim(),
+        emergencyRelationship: _emergencyRelationship,
+        emergencyPhone: _emergencyPhoneController.text.trim(),
       );
 
       ref.read(studentsRevisionProvider.notifier).state++;
@@ -179,11 +190,26 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
               ),
               const SizedBox(height: 12),
 
-              _buildTextField(
-                label: l10n.ageLabel,
-                controller: _ageController,
-                hint: '16',
-                keyboardType: TextInputType.number,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildTextField(
+                      label: l10n.ageLabel,
+                      controller: _ageController,
+                      hint: '16',
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildRelationshipField(
+                      l10n,
+                      value: _relationship,
+                      onChanged: (value) => setState(() => _relationship = value),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
 
@@ -210,6 +236,40 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                 controller: _tutorEmailController,
                 hint: l10n.emailHint,
                 keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.emergencyContactTitle,
+                style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildTextField(
+                      label: l10n.nameLabel,
+                      controller: _emergencyNameController,
+                      hint: l10n.tutorNameHint,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildRelationshipField(
+                      l10n,
+                      value: _emergencyRelationship,
+                      onChanged: (value) => setState(() => _emergencyRelationship = value),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildTextField(
+                label: l10n.mobilePhone,
+                controller: _emergencyPhoneController,
+                hint: '+54 9 11 4522 8901',
+                keyboardType: TextInputType.phone,
+                prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
               ),
               const SizedBox(height: 20),
 
@@ -250,6 +310,55 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildRelationshipField(
+    AppLocalizations l10n, {
+    required TutorRelationship value,
+    required ValueChanged<TutorRelationship> onChanged,
+  }) {
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.relationshipLabel, style: AppTextStyles.labelMedium.copyWith(color: textSecondary)),
+        const SizedBox(height: 4),
+        DropdownButtonFormField<TutorRelationship>(
+          key: ValueKey('relationship-$value-${onChanged.hashCode}'),
+          initialValue: value,
+          isExpanded: true,
+          style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: AppColors.surfaceLow(context),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          ),
+          items: [
+            DropdownMenuItem(
+              value: TutorRelationship.mother,
+              child: Text(l10n.relationshipMother),
+            ),
+            DropdownMenuItem(
+              value: TutorRelationship.father,
+              child: Text(l10n.relationshipFather),
+            ),
+            DropdownMenuItem(
+              value: TutorRelationship.tutor,
+              child: Text(l10n.relationshipTutor),
+            ),
+          ],
+          onChanged: (selected) {
+            if (selected != null) onChanged(selected);
+          },
+        ),
+      ],
     );
   }
 

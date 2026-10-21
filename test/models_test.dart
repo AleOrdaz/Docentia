@@ -52,6 +52,7 @@ void main() {
         name: 'Camila',
         lastName: 'Morales Díaz',
         age: 16,
+        tutorRelationship: TutorRelationship.mother,
         tutorName: 'Patricia Díaz',
         tutorPhone: '+54 9 11 4522 8901',
         tutorEmail: 'tutor@ejemplo.com',
@@ -66,6 +67,9 @@ void main() {
       final fromMap = Student.fromMap(map);
       expect(fromMap.fullName, 'Camila Morales Díaz');
       expect(fromMap.active, true);
+      expect(fromMap.tutorRelationship, TutorRelationship.mother);
+      expect(fromMap.emergencyName, '');
+      expect(fromMap.emergencyPhone, '');
     });
   });
 
@@ -104,6 +108,7 @@ void main() {
       expect(payment.amount, 45000.0);
       expect(payment.status, PaymentStatus.paid);
       expect(payment.paidAt, isNotNull);
+      expect(payment.isProrated, isFalse);
     });
   });
 
