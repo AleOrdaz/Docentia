@@ -149,6 +149,7 @@ class HomeScreen extends ConsumerWidget {
                                     'Aquí tienes el resumen de tus cursos.',
                                 style: TextStyle(
                                   fontSize: 13,
+                                  fontWeight: FontWeight.w600,
                                   color: isDark
                                       ? const Color(0xFF94A3B8)
                                       : const Color(0xFF5F6368),
