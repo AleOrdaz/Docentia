@@ -226,16 +226,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get linkedWith => 'Cuenta vinculada con';
 
   @override
-  String get courseDetailTitle => 'Detalle del Curso';
+  String get courseDetailTitle => 'Detalle del curso';
 
   @override
-  String get addStudentBtn => '+ Agregar Alumno';
+  String get addStudentBtn => '+ Agregar alumno';
 
   @override
-  String get attendanceRecordBtn => 'Historial de Asistencia';
+  String get attendanceRecordBtn => 'Historial de asistencia';
 
   @override
-  String get studentListTitle => 'Lista de Alumnos';
+  String get studentListTitle => 'Lista de alumnos';
 
   @override
   String get filterAll => 'Todos';
@@ -262,10 +262,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get courseNameLabel => 'Nombre del curso *';
 
   @override
-  String get sessionsLabel => 'Total de Sesiones *';
+  String get sessionsLabel => 'Total de sesiones *';
 
   @override
-  String get maxCapacityLabel => 'Capacidad Máxima *';
+  String get maxCapacityLabel => 'Capacidad máxima *';
 
   @override
   String get classDaysLabel => 'Días de clase (al menos 1) *';
@@ -298,25 +298,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deleteCourseBtn => 'Eliminar curso';
 
   @override
-  String get studentDetailTitle => 'Ficha del Alumno';
+  String get studentDetailTitle => 'Ficha del alumno';
 
   @override
-  String get tutorInfoTitle => 'Información del Tutor / Apoderado';
+  String get tutorInfoTitle => 'Información del tutor';
 
   @override
-  String get sendWhatsAppBtn => 'Enviar WhatsApp al Tutor';
+  String get sendWhatsAppBtn => 'Enviar WhatsApp al tutor';
 
   @override
-  String get attendanceSummaryTitle => 'Resumen de Asistencia';
+  String get attendanceSummaryTitle => 'Resumen de asistencia';
 
   @override
-  String get monthlyFeesTitle => 'Cuotas y Mensualidades';
+  String get monthlyFeesTitle => 'Cuotas y mensualidades';
 
   @override
-  String get addFeeBtn => '+ Generar Cuota';
+  String get addFeeBtn => '+ Generar cuota';
 
   @override
-  String get deactivateStudentBtn => 'Dar de Baja al Alumno';
+  String get deactivateStudentBtn => 'Dar de baja al alumno';
 
   @override
   String get calendarTitle => 'Calendario de Actividades';
@@ -666,19 +666,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ageLabel => 'Edad';
 
   @override
-  String get tutorNameLabel => 'Nombre del Tutor / Apoderado';
+  String get relationshipLabel => 'Parentesco';
+
+  @override
+  String get relationshipMother => 'Madre';
+
+  @override
+  String get relationshipFather => 'Padre';
+
+  @override
+  String get relationshipTutor => 'Tutor';
+
+  @override
+  String get tutorNameLabel => 'Nombre del tutor';
 
   @override
   String get tutorNameHint => 'Ej. Patricia Díaz';
 
   @override
-  String get tutorPhoneRequiredLabel => 'Teléfono Móvil (WhatsApp) *';
+  String get tutorPhoneRequiredLabel => 'Teléfono móvil (WhatsApp) *';
 
   @override
   String get phoneRequiredWhatsapp => 'Teléfono requerido para WhatsApp';
 
   @override
-  String get emailLabel => 'Correo Electrónico';
+  String get emailLabel => 'Correo electrónico';
 
   @override
   String get emailHint => 'tutor@ejemplo.com';
@@ -691,7 +703,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String whatsappProgressMessage(String tutor, String student) {
-    return 'Hola $tutor, le escribo desde Docentia para informarle sobre el progreso de su tutorado/a $student.';
+    return 'Hola, $tutor. Le escribo desde Docentia para informarle sobre el progreso de $student.';
   }
 
   @override
@@ -710,17 +722,55 @@ class AppLocalizationsEs extends AppLocalizations {
   String get studentDeactivated => 'Alumno dado de baja. Historial conservado.';
 
   @override
-  String get confirmDeactivate => 'Confirmar Baja';
+  String get confirmDeactivate => 'Confirmar baja';
 
   @override
-  String get newMonthlyFee => 'Nueva Cuota Mensual';
+  String get newMonthlyFee => 'Cuota proporcional';
 
   @override
   String get feeConfigHelp =>
-      'Configura el período y la fecha de vencimiento. Solo se permite una cuota por mes:';
+      'Para alumnos que regresan a mitad de ciclo. Se cobra solo los días que faltan hasta el próximo cobro automático.';
 
   @override
-  String get monthAndYear => 'Mes y Año:';
+  String get returnDateLabel => 'Fecha de reingreso';
+
+  @override
+  String get nextChargeDate => 'Próximo cobro automático';
+
+  @override
+  String remainingDaysCount(int days) {
+    return '$days días restantes';
+  }
+
+  @override
+  String proratedBreakdown(int remaining, int cycle) {
+    return '$remaining de $cycle días del ciclo';
+  }
+
+  @override
+  String get proratedBadge => 'Proporcional';
+
+  @override
+  String get proratedOnBillingDay =>
+      'Hoy es el día de cobro de este curso. La cuota mensual se genera sola.';
+
+  @override
+  String proratedFeeCreated(int days) {
+    return 'Cuota proporcional creada por $days días.';
+  }
+
+  @override
+  String get proratedAlreadyExists =>
+      'Ya hay una cuota proporcional hasta el próximo cobro.';
+
+  @override
+  String get createProratedFee => 'Crear proporcional';
+
+  @override
+  String get addProratedFee => '+ Proporcional';
+
+  @override
+  String get monthAndYear => 'Mes y año:';
 
   @override
   String get dueDateField => 'Vencimiento:';
@@ -744,7 +794,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get amountToCharge => 'Monto a cobrar:';
 
   @override
-  String get createFee => 'Crear Cuota';
+  String get createFee => 'Crear cuota';
 
   @override
   String feeCreated(String period) {
@@ -756,7 +806,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'La cuota de este mes ya está registrada para este alumno y curso.';
 
   @override
-  String get modifyDueDate => 'Modificar Vencimiento';
+  String get modifyDueDate => 'Modificar vencimiento';
 
   @override
   String changeDueOption(String period) {
@@ -783,7 +833,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get update => 'Actualizar';
 
   @override
-  String get confirmPayment => 'Confirmar Pago';
+  String get confirmPayment => 'Confirmar pago';
 
   @override
   String get reviewPaymentData =>
@@ -797,6 +847,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get monthlyFeeColon => 'Mensualidad:';
+
+  @override
+  String get feeConceptLabel => 'Concepto';
+
+  @override
+  String get monthlyFeeConcept => 'Mensualidad';
+
+  @override
+  String get courseMonthlyFee => 'Mensualidad del curso';
+
+  @override
+  String get periodLabel => 'Periodo';
 
   @override
   String get paymentDateColon => 'Fecha de pago:';
@@ -813,16 +875,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get studentNotFound => 'Alumno no encontrado';
 
   @override
-  String get regularStudent => 'Alumno Regular';
+  String get regularStudent => 'Alumno regular';
 
   @override
-  String get deactivatedStudent => 'Dado de Baja';
+  String get deactivatedStudent => 'Dado de baja';
 
   @override
-  String get whatsappTutor => 'WhatsApp Tutor';
+  String get whatsappTutor => 'WhatsApp al tutor';
 
   @override
-  String get studentAttendance => 'Asistencia del Alumno';
+  String get studentAttendance => 'Asistencia del alumno';
 
   @override
   String get realtimeRecord => 'Registro en tiempo real';
@@ -837,19 +899,46 @@ class AppLocalizationsEs extends AppLocalizations {
   String get percentageLabel => 'Porcentaje';
 
   @override
-  String get metricsError => 'Error calculando métricas';
+  String get metricsError => 'Error al calcular las métricas';
 
   @override
-  String get tutorDataTitle => 'Datos del Tutor / Apoderado';
+  String get tutorDataTitle => 'Datos del tutor';
+
+  @override
+  String get editTutorBtn => 'Editar';
+
+  @override
+  String get editTutorTitle => 'Editar datos del tutor';
+
+  @override
+  String get tutorUpdatedSuccess => 'Datos del tutor actualizados';
+
+  @override
+  String get editStudentTitle => 'Editar datos del alumno';
+
+  @override
+  String get studentUpdatedSuccess => 'Datos del alumno actualizados';
+
+  @override
+  String get emergencyContactTitle => 'Contacto de emergencia';
+
+  @override
+  String get editEmergencyTitle => 'Editar contacto de emergencia';
+
+  @override
+  String get emergencyUpdatedSuccess => 'Contacto de emergencia actualizado';
+
+  @override
+  String get noEmergencyContact => 'Sin contacto de emergencia';
 
   @override
   String get nameLabel => 'Nombre';
 
   @override
-  String get mobilePhone => 'Teléfono Móvil';
+  String get mobilePhone => 'Teléfono móvil';
 
   @override
-  String get secondaryPhone => 'Teléfono Secundario';
+  String get secondaryPhone => 'Teléfono secundario';
 
   @override
   String get noFeesYet => 'Aún no hay cuotas emitidas para este alumno.';
@@ -867,6 +956,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get confirmPaymentShort => 'Confirmar pago';
+
+  @override
+  String get sendFeeBtn => 'Enviar';
 
   @override
   String get paymentsLoadError => 'Error al cargar pagos';
@@ -893,7 +985,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get viewNote => 'Ver nota';
 
   @override
-  String get attendanceHistoryTitle => 'Registro de Asistencia';
+  String get attendanceHistoryTitle => 'Registro de asistencia';
 
   @override
   String get noSessionsYet => 'Sin clases registradas aún';

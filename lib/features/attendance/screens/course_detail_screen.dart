@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../auth/providers/auth_provider.dart';
-import '../../auth/widgets/teacher_avatar.dart';
 import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
@@ -53,7 +51,6 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final teacher = ref.watch(authProvider).teacher;
     final course = ref.watch(selectedCourseProvider);
     final studentsAsync = ref.watch(studentsForCourseProvider(widget.courseId));
     final payments = ref.watch(paymentsForCourseProvider(widget.courseId)).value ?? [];
@@ -64,6 +61,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
         ? course.getLocalizedSchedule(context)
         : '';
     final primaryColor = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final iconColors = getCourseIconColors(course?.iconKey);
     final surfaceMid = AppColors.surfaceMid(context);
     final textSecondary = AppColors.textSecondary(context);
     final textPrimary = AppColors.textPrimary(context);
@@ -88,44 +87,82 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: primaryColor.withValues(alpha: 0.1),
+                color: iconColors.background(isDark),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 getCourseIcon(course?.iconKey),
                 size: 20,
-                color: primaryColor,
+                color: iconColors.icon(isDark),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
                 courseName,
-                style: AppTextStyles.titleMedium,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.4,
+                  color: textPrimary,
+                ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: InkWell(
-              onTap: () => context.push('/profile'),
-              borderRadius: BorderRadius.circular(100),
-              child: Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: primaryColor.withValues(alpha: 0.2),
-                ),
-                child: TeacherAvatar(
-                  radius: 16,
-                  photoUrl: teacher?.photoUrl,
-                  name: teacher?.name,
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, size: 22, color: textPrimary),
+            tooltip: l10n.courseOptions,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            onSelected: (value) {
+              if (value == 'edit') {
+                _openEditCourseDialog(course);
+              } else if (value == 'delete' && course != null) {
+                showDeleteCourseConfirmation(
+                  context: context,
+                  ref: ref,
+                  course: course,
+                  closeParent: true,
+                );
+              }
+            },
+            itemBuilder: (ctx) => [
+              PopupMenuItem(
+                value: 'edit',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.edit_outlined,
+                      size: 20,
+                      color: AppColors.textPrimary(ctx),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(l10n.editCourseTitle),
+                  ],
                 ),
               ),
-            ),
+              PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.delete_outline,
+                      size: 20,
+                      color: Color(0xFFD32F2F),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      l10n.deleteCourseBtn,
+                      style: const TextStyle(color: Color(0xFFD32F2F)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -143,72 +180,31 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Fila de Horario y Menú de tres puntos (⋮)
-                Row(
-                  children: [
-                    if (courseSchedule.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: surfaceMid,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.schedule,
-                              size: 14,
-                              color: textSecondary,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              courseSchedule,
-                              style: AppTextStyles.labelSmall.copyWith(
-                                color: textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    const Spacer(),
-                    // Menú de tres puntos para opciones del curso
-                    Container(
-                      decoration: BoxDecoration(
-                        color: surfaceMid,
-                        shape: BoxShape.circle,
-                      ),
-                      child: PopupMenuButton<String>(
-                        icon: Icon(Icons.more_vert, size: 20, color: textPrimary),
-                        tooltip: l10n.courseOptions,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            _openEditCourseDialog(course);
-                          }
-                        },
-                        itemBuilder: (ctx) => [
-                          PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.edit_outlined,
-                                  size: 20,
-                                  color: AppColors.textPrimary(ctx),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(l10n.editCourseTitle),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                if (courseSchedule.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: surfaceMid,
+                      borderRadius: BorderRadius.circular(100),
                     ),
-                  ],
-                ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.schedule,
+                          size: 14,
+                          color: textSecondary,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          courseSchedule,
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 const SizedBox(height: 12),
 
                 const SizedBox(height: 12),
@@ -247,45 +243,62 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
 
                 if (!isClassDay) const SizedBox(height: 10),
 
-                // Botón Agregar Alumno
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: FilledButton.icon(
-                    onPressed: () => _openAddStudentModal(courseName),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: const StadiumBorder(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: FilledButton.icon(
+                          onPressed: () => _openAddStudentModal(courseName),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            foregroundColor: Colors.white,
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          icon: const Icon(Icons.person_add, size: 18),
+                          label: Text(
+                            l10n.addStudentShort,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    icon: const Icon(Icons.person_add, size: 20),
-                    label: Text(
-                      l10n.addStudentShort,
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton.icon(
+                          onPressed: () => context.push(
+                            '/course-detail/${widget.courseId}/attendance',
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: primaryColor,
+                            side: BorderSide(
+                              color: primaryColor.withValues(alpha: 0.4),
+                            ),
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          icon: const Icon(Icons.history_edu, size: 18),
+                          label: Text(
+                            l10n.attendanceAction,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                // Nuevo Botón: Registro de Asistencia (Historial completo de clases)
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: () =>
-                        context.push('/course-detail/${widget.courseId}/attendance'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: primaryColor,
-                      side: BorderSide(color: primaryColor.withValues(alpha: 0.4)),
-                      shape: const StadiumBorder(),
-                    ),
-                    icon: const Icon(Icons.history_edu, size: 20),
-                    label: Text(
-                      l10n.attendanceLog,
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
+                  ],
                 ),
 
                 const SizedBox(height: 20),

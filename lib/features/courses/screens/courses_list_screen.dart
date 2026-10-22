@@ -35,8 +35,10 @@ class CoursesListScreen extends ConsumerWidget {
         elevation: 0,
         title: Text(
           l10n.myCourses,
-          style: AppTextStyles.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.4,
             color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
           ),
         ),

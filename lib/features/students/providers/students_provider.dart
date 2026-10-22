@@ -35,10 +35,14 @@ class StudentsNotifier extends StateNotifier<AsyncValue<List<Student>>> {
     required String lastName,
     required int age,
     String? assignedLevel,
+    TutorRelationship tutorRelationship = TutorRelationship.tutor,
     required String tutorName,
     required String tutorPhone,
     required String tutorEmail,
     String? secondaryPhone,
+    String emergencyName = '',
+    TutorRelationship emergencyRelationship = TutorRelationship.tutor,
+    String emergencyPhone = '',
   }) async {
     final student = Student(
       id: 'student-${DateTime.now().millisecondsSinceEpoch}',
@@ -47,10 +51,14 @@ class StudentsNotifier extends StateNotifier<AsyncValue<List<Student>>> {
       lastName: lastName,
       age: age,
       assignedLevel: assignedLevel,
+      tutorRelationship: tutorRelationship,
       tutorName: tutorName,
       tutorPhone: tutorPhone,
       tutorEmail: tutorEmail,
       secondaryPhone: secondaryPhone,
+      emergencyName: emergencyName,
+      emergencyRelationship: emergencyRelationship,
+      emergencyPhone: emergencyPhone,
       active: true,
       createdAt: DateTime.now(),
     );
@@ -65,6 +73,17 @@ class StudentsNotifier extends StateNotifier<AsyncValue<List<Student>>> {
       _ref!.invalidate(allActiveStudentsProvider);
     }
     return student;
+  }
+
+  Future<void> updateStudent(Student student) async {
+    await _repository.updateStudent(student);
+    final updated = await _repository.getStudentsByCourse(_courseId);
+    state = AsyncValue.data(updated);
+
+    if (_ref != null) {
+      _ref!.read(studentsRevisionProvider.notifier).state++;
+      _ref!.invalidate(allActiveStudentsProvider);
+    }
   }
 
   Future<void> deactivateStudent(String studentId) async {

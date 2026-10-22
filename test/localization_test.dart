@@ -30,6 +30,10 @@ void main() {
       expect(l10nEs.homeGreeting('Antonio'), 'Hola, Antonio');
       expect(l10nEs.pendingPaymentSingular, 'pago pendiente');
       expect(l10nEs.pendingPaymentPlural, 'pagos pendientes');
+      expect(l10nEs.relationshipLabel, 'Parentesco');
+      expect(l10nEs.relationshipMother, 'Madre');
+      expect(l10nEs.relationshipFather, 'Padre');
+      expect(l10nEs.relationshipTutor, 'Tutor');
     });
 
     test('English translations are valid and properly mapped', () {
@@ -50,6 +54,10 @@ void main() {
       expect(l10nEn.homeGreeting('Antonio'), 'Hello, Antonio');
       expect(l10nEn.pendingPaymentSingular, 'pending payment');
       expect(l10nEn.pendingPaymentPlural, 'pending payments');
+      expect(l10nEn.relationshipLabel, 'Relationship');
+      expect(l10nEn.relationshipMother, 'Mother');
+      expect(l10nEn.relationshipFather, 'Father');
+      expect(l10nEn.relationshipTutor, 'Tutor');
     });
 
     test('Delegate supports Spanish and English only', () {

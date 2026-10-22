@@ -18,6 +18,12 @@ abstract class PaymentsRepository {
     required int year,
     required int month,
   });
+  Future<bool> hasProratedFeeForPeriod({
+    required String studentId,
+    required String courseId,
+    required int year,
+    required int month,
+  });
   Future<void> confirmPayment(String paymentId, {double? paidAmount, DateTime? paidDate});
   Future<void> addPayment(Payment payment);
   Future<void> updatePaymentDueDate(String paymentId, DueDateOption option);
@@ -61,7 +67,24 @@ class LocalPaymentsRepository implements PaymentsRepository {
   }) async {
     final list = await _all();
     return list.any((p) =>
-    p.studentId == studentId &&
+    !p.isProrated &&
+        p.studentId == studentId &&
+        p.courseId == courseId &&
+        p.periodYear == year &&
+        p.periodMonth == month);
+  }
+
+  @override
+  Future<bool> hasProratedFeeForPeriod({
+    required String studentId,
+    required String courseId,
+    required int year,
+    required int month,
+  }) async {
+    final list = await _all();
+    return list.any((p) =>
+    p.isProrated &&
+        p.studentId == studentId &&
         p.courseId == courseId &&
         p.periodYear == year &&
         p.periodMonth == month);
@@ -87,9 +110,9 @@ class LocalPaymentsRepository implements PaymentsRepository {
   Future<void> addPayment(Payment payment) async {
     final list = (await _all()).toList();
 
-    // Restricción estricta de unicidad: Una sola cuota por (Alumno + Curso + Mes + Año)
     final alreadyExists = list.any((p) =>
-    p.studentId == payment.studentId &&
+    p.isProrated == payment.isProrated &&
+        p.studentId == payment.studentId &&
         p.courseId == payment.courseId &&
         p.periodYear == payment.periodYear &&
         p.periodMonth == payment.periodMonth);
