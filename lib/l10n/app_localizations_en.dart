@@ -1175,7 +1175,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noMailClient => 'No mail app was found. The message was copied.';
 
   @override
-  String get calendarClassesTitle => 'Class and event calendar';
+  String get calendarClassesTitle => 'Calendar';
 
   @override
   String get schoolEvents => 'School events';
@@ -1185,10 +1185,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSchoolEventsDesc =>
-      'You can add exams, parent meetings, or activities with the \"+ New event\" button.';
+      'You can add exams, parent meetings, or activities with the \"New event\" button.';
 
   @override
-  String get createEvent => '+ Create event';
+  String get createEvent => 'Create event';
 
   @override
   String get coursePaymentsTitle => 'Course payments and fees';
@@ -1218,6 +1218,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notifyParents => 'Notify parents';
+
+  @override
+  String get groupSingular => 'group';
+
+  @override
+  String get groupPlural => 'groups';
 
   @override
   String feeReminder(String name) {

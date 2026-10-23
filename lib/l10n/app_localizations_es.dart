@@ -322,10 +322,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get deactivateStudentBtn => 'Dar de baja al alumno';
 
   @override
-  String get calendarTitle => 'Calendario de Actividades';
+  String get calendarTitle => 'Calendario de actividades';
 
   @override
-  String get newEventBtn => '+ Nuevo Evento';
+  String get newEventBtn => '+ Nuevo evento';
 
   @override
   String get allFilter => 'Todos';
@@ -1082,17 +1082,17 @@ class AppLocalizationsEs extends AppLocalizations {
   String get categoryMisc => 'Varios';
 
   @override
-  String get newSchoolEvent => 'Nuevo Evento Escolar';
+  String get newSchoolEvent => 'Nuevo evento escolar';
 
   @override
-  String get eventTitleLabel => 'Título del Evento *';
+  String get eventTitleLabel => 'Título del evento *';
 
   @override
   String get eventTitleHint =>
-      'Ej. Primer Examen Parcial / Entrega de Proyectos';
+      'Ej. Primer examen parcial / Entrega de proyectos';
 
   @override
-  String get activityType => 'Tipo de Actividad';
+  String get activityType => 'Tipo de actividad';
 
   @override
   String get eventTypeExam => 'Examen';
@@ -1101,19 +1101,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get eventTypeProject => 'Proyecto';
 
   @override
-  String get eventTypeMeeting => 'Reunión Apoderados';
+  String get eventTypeMeeting => 'Reunión de apoderados';
 
   @override
-  String get eventTypeHoliday => 'Día Festivo';
+  String get eventTypeHoliday => 'Día festivo';
 
   @override
   String get eventTypeSpecial => 'Especial';
 
   @override
-  String get associatedCourse => 'Curso Asociado';
+  String get associatedCourse => 'Curso asociado';
 
   @override
-  String get allCoursesGeneral => 'General / Todos los Cursos';
+  String get allCoursesGeneral => 'General / Todos los cursos';
 
   @override
   String get dateLabel => 'Fecha';
@@ -1122,13 +1122,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get timeLabel => 'Horario';
 
   @override
-  String get locationLabel => 'Ubicación / Salón / Enlace (opcional)';
+  String get locationLabel => 'Ubicación / salón / enlace (opcional)';
 
   @override
   String get locationHint => 'Ej. Aula 3B, Laboratorio o Google Meet';
 
   @override
-  String get descriptionInstructionsLabel => 'Descripción / Instrucciones *';
+  String get descriptionInstructionsLabel => 'Descripción / instrucciones *';
 
   @override
   String get descriptionHint =>
@@ -1153,14 +1153,14 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get saveEvent => 'Guardar Evento';
+  String get saveEvent => 'Guardar evento';
 
   @override
-  String get sendEventToParents => 'Enviar Evento a Padres';
+  String get sendEventToParents => 'Enviar evento a padres';
 
   @override
   String bccPrivacyNotice(int count) {
-    return 'Se preparará el correo para $count tutores con copia oculta (BCC) protegiendo su privacidad.';
+    return 'Se preparará el correo para $count tutores con copia oculta (CCO) para proteger su privacidad.';
   }
 
   @override
@@ -1170,33 +1170,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noticeCopied => 'Aviso copiado al portapapeles';
 
   @override
-  String get copyText => 'Copiar Texto';
+  String get copyText => 'Copiar texto';
 
   @override
-  String get openMail => 'Abrir Correo';
+  String get openMail => 'Abrir correo';
 
   @override
   String get noMailClient =>
       'No se encontró cliente de correo instalado. Mensaje copiado.';
 
   @override
-  String get calendarClassesTitle => 'Calendario de Clases y Eventos';
+  String get calendarClassesTitle => 'Calendario';
 
   @override
-  String get schoolEvents => 'Eventos Escolares';
+  String get schoolEvents => 'Eventos escolares';
 
   @override
   String get noSchoolEvents => 'Sin eventos escolares registrados';
 
   @override
   String get noSchoolEventsDesc =>
-      'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".';
+      'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"Nuevo evento\".';
 
   @override
-  String get createEvent => '+ Crear Evento';
+  String get createEvent => 'Crear evento';
 
   @override
-  String get coursePaymentsTitle => 'Pagos y Cuotas de Cursos';
+  String get coursePaymentsTitle => 'Pagos y cuotas de cursos';
 
   @override
   String get noDueDatesToday => 'Sin vencimientos de cuotas hoy';
@@ -1206,7 +1206,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No hay pagos con fecha límite programada para este día.';
 
   @override
-  String get scheduledClasses => 'Clases Programadas';
+  String get scheduledClasses => 'Clases programadas';
 
   @override
   String get noClassesThisDay => 'No hay clases programadas para este día';
@@ -1216,17 +1216,23 @@ class AppLocalizationsEs extends AppLocalizations {
       'Selecciona otro día en el calendario semanal para consultar los horarios.';
 
   @override
-  String get deleteEvent => 'Eliminar Evento';
+  String get deleteEvent => 'Eliminar evento';
 
   @override
   String get eventDeleted => 'Evento escolar eliminado';
 
   @override
-  String get notifyParents => 'Avisar a Padres';
+  String get notifyParents => 'Avisar a padres';
+
+  @override
+  String get groupSingular => 'grupo';
+
+  @override
+  String get groupPlural => 'grupos';
 
   @override
   String feeReminder(String name) {
-    return 'Recordatorio de Cuota: $name';
+    return 'Recordatorio de cuota: $name';
   }
 
   @override
@@ -1235,10 +1241,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get monthStartRange => 'Inicio de mes (Día 1-10)';
+  String get monthStartRange => 'Inicio de mes (día 1-10)';
 
   @override
-  String get monthEndDay30 => 'Fin de mes (Día 30)';
+  String get monthEndDay30 => 'Fin de mes (día 30)';
 
   @override
   String get attendanceAction => 'Asistencia';
@@ -1260,17 +1266,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String schoolNoticeSubject(String title, String date) {
-    return '[Docentia] Aviso Escolar: $title ($date)';
+    return '[Docentia] Aviso escolar: $title ($date)';
   }
 
   @override
   String schoolNoticeBody(String title, String date, String schedule,
       String location, String description, String teacher) {
-    return 'Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: $title\n• Fecha: $date\n• Horario: $schedule$location\n• Descripción: $description\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n$teacher\nDocentia - Plataforma Académica';
+    return 'Estimados padres de familia y tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: $title\n• Fecha: $date\n• Horario: $schedule$location\n• Descripción: $description\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n$teacher\nDocentia - Plataforma académica';
   }
 
   @override
-  String get principalTeacher => 'Profesor Titular';
+  String get principalTeacher => 'Profesor titular';
 
   @override
   String locationLine(String place) {

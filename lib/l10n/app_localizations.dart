@@ -713,13 +713,13 @@ abstract class AppLocalizations {
   /// No description provided for @calendarTitle.
   ///
   /// In es, this message translates to:
-  /// **'Calendario de Actividades'**
+  /// **'Calendario de actividades'**
   String get calendarTitle;
 
   /// No description provided for @newEventBtn.
   ///
   /// In es, this message translates to:
-  /// **'+ Nuevo Evento'**
+  /// **'+ Nuevo evento'**
   String get newEventBtn;
 
   /// No description provided for @allFilter.
@@ -2075,25 +2075,25 @@ abstract class AppLocalizations {
   /// No description provided for @newSchoolEvent.
   ///
   /// In es, this message translates to:
-  /// **'Nuevo Evento Escolar'**
+  /// **'Nuevo evento escolar'**
   String get newSchoolEvent;
 
   /// No description provided for @eventTitleLabel.
   ///
   /// In es, this message translates to:
-  /// **'Título del Evento *'**
+  /// **'Título del evento *'**
   String get eventTitleLabel;
 
   /// No description provided for @eventTitleHint.
   ///
   /// In es, this message translates to:
-  /// **'Ej. Primer Examen Parcial / Entrega de Proyectos'**
+  /// **'Ej. Primer examen parcial / Entrega de proyectos'**
   String get eventTitleHint;
 
   /// No description provided for @activityType.
   ///
   /// In es, this message translates to:
-  /// **'Tipo de Actividad'**
+  /// **'Tipo de actividad'**
   String get activityType;
 
   /// No description provided for @eventTypeExam.
@@ -2111,13 +2111,13 @@ abstract class AppLocalizations {
   /// No description provided for @eventTypeMeeting.
   ///
   /// In es, this message translates to:
-  /// **'Reunión Apoderados'**
+  /// **'Reunión de apoderados'**
   String get eventTypeMeeting;
 
   /// No description provided for @eventTypeHoliday.
   ///
   /// In es, this message translates to:
-  /// **'Día Festivo'**
+  /// **'Día festivo'**
   String get eventTypeHoliday;
 
   /// No description provided for @eventTypeSpecial.
@@ -2129,13 +2129,13 @@ abstract class AppLocalizations {
   /// No description provided for @associatedCourse.
   ///
   /// In es, this message translates to:
-  /// **'Curso Asociado'**
+  /// **'Curso asociado'**
   String get associatedCourse;
 
   /// No description provided for @allCoursesGeneral.
   ///
   /// In es, this message translates to:
-  /// **'General / Todos los Cursos'**
+  /// **'General / Todos los cursos'**
   String get allCoursesGeneral;
 
   /// No description provided for @dateLabel.
@@ -2153,7 +2153,7 @@ abstract class AppLocalizations {
   /// No description provided for @locationLabel.
   ///
   /// In es, this message translates to:
-  /// **'Ubicación / Salón / Enlace (opcional)'**
+  /// **'Ubicación / salón / enlace (opcional)'**
   String get locationLabel;
 
   /// No description provided for @locationHint.
@@ -2165,7 +2165,7 @@ abstract class AppLocalizations {
   /// No description provided for @descriptionInstructionsLabel.
   ///
   /// In es, this message translates to:
-  /// **'Descripción / Instrucciones *'**
+  /// **'Descripción / instrucciones *'**
   String get descriptionInstructionsLabel;
 
   /// No description provided for @descriptionHint.
@@ -2207,19 +2207,19 @@ abstract class AppLocalizations {
   /// No description provided for @saveEvent.
   ///
   /// In es, this message translates to:
-  /// **'Guardar Evento'**
+  /// **'Guardar evento'**
   String get saveEvent;
 
   /// No description provided for @sendEventToParents.
   ///
   /// In es, this message translates to:
-  /// **'Enviar Evento a Padres'**
+  /// **'Enviar evento a padres'**
   String get sendEventToParents;
 
   /// No description provided for @bccPrivacyNotice.
   ///
   /// In es, this message translates to:
-  /// **'Se preparará el correo para {count} tutores con copia oculta (BCC) protegiendo su privacidad.'**
+  /// **'Se preparará el correo para {count} tutores con copia oculta (CCO) para proteger su privacidad.'**
   String bccPrivacyNotice(int count);
 
   /// No description provided for @subjectPrefix.
@@ -2237,13 +2237,13 @@ abstract class AppLocalizations {
   /// No description provided for @copyText.
   ///
   /// In es, this message translates to:
-  /// **'Copiar Texto'**
+  /// **'Copiar texto'**
   String get copyText;
 
   /// No description provided for @openMail.
   ///
   /// In es, this message translates to:
-  /// **'Abrir Correo'**
+  /// **'Abrir correo'**
   String get openMail;
 
   /// No description provided for @noMailClient.
@@ -2255,13 +2255,13 @@ abstract class AppLocalizations {
   /// No description provided for @calendarClassesTitle.
   ///
   /// In es, this message translates to:
-  /// **'Calendario de Clases y Eventos'**
+  /// **'Calendario'**
   String get calendarClassesTitle;
 
   /// No description provided for @schoolEvents.
   ///
   /// In es, this message translates to:
-  /// **'Eventos Escolares'**
+  /// **'Eventos escolares'**
   String get schoolEvents;
 
   /// No description provided for @noSchoolEvents.
@@ -2273,19 +2273,19 @@ abstract class AppLocalizations {
   /// No description provided for @noSchoolEventsDesc.
   ///
   /// In es, this message translates to:
-  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".'**
+  /// **'Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"Nuevo evento\".'**
   String get noSchoolEventsDesc;
 
   /// No description provided for @createEvent.
   ///
   /// In es, this message translates to:
-  /// **'+ Crear Evento'**
+  /// **'Crear evento'**
   String get createEvent;
 
   /// No description provided for @coursePaymentsTitle.
   ///
   /// In es, this message translates to:
-  /// **'Pagos y Cuotas de Cursos'**
+  /// **'Pagos y cuotas de cursos'**
   String get coursePaymentsTitle;
 
   /// No description provided for @noDueDatesToday.
@@ -2303,7 +2303,7 @@ abstract class AppLocalizations {
   /// No description provided for @scheduledClasses.
   ///
   /// In es, this message translates to:
-  /// **'Clases Programadas'**
+  /// **'Clases programadas'**
   String get scheduledClasses;
 
   /// No description provided for @noClassesThisDay.
@@ -2321,7 +2321,7 @@ abstract class AppLocalizations {
   /// No description provided for @deleteEvent.
   ///
   /// In es, this message translates to:
-  /// **'Eliminar Evento'**
+  /// **'Eliminar evento'**
   String get deleteEvent;
 
   /// No description provided for @eventDeleted.
@@ -2333,13 +2333,25 @@ abstract class AppLocalizations {
   /// No description provided for @notifyParents.
   ///
   /// In es, this message translates to:
-  /// **'Avisar a Padres'**
+  /// **'Avisar a padres'**
   String get notifyParents;
+
+  /// No description provided for @groupSingular.
+  ///
+  /// In es, this message translates to:
+  /// **'grupo'**
+  String get groupSingular;
+
+  /// No description provided for @groupPlural.
+  ///
+  /// In es, this message translates to:
+  /// **'grupos'**
+  String get groupPlural;
 
   /// No description provided for @feeReminder.
   ///
   /// In es, this message translates to:
-  /// **'Recordatorio de Cuota: {name}'**
+  /// **'Recordatorio de cuota: {name}'**
   String feeReminder(String name);
 
   /// No description provided for @feeScheduleLine.
@@ -2351,13 +2363,13 @@ abstract class AppLocalizations {
   /// No description provided for @monthStartRange.
   ///
   /// In es, this message translates to:
-  /// **'Inicio de mes (Día 1-10)'**
+  /// **'Inicio de mes (día 1-10)'**
   String get monthStartRange;
 
   /// No description provided for @monthEndDay30.
   ///
   /// In es, this message translates to:
-  /// **'Fin de mes (Día 30)'**
+  /// **'Fin de mes (día 30)'**
   String get monthEndDay30;
 
   /// No description provided for @attendanceAction.
@@ -2387,20 +2399,20 @@ abstract class AppLocalizations {
   /// No description provided for @schoolNoticeSubject.
   ///
   /// In es, this message translates to:
-  /// **'[Docentia] Aviso Escolar: {title} ({date})'**
+  /// **'[Docentia] Aviso escolar: {title} ({date})'**
   String schoolNoticeSubject(String title, String date);
 
   /// No description provided for @schoolNoticeBody.
   ///
   /// In es, this message translates to:
-  /// **'Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma Académica'**
+  /// **'Estimados padres de familia y tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma académica'**
   String schoolNoticeBody(String title, String date, String schedule,
       String location, String description, String teacher);
 
   /// No description provided for @principalTeacher.
   ///
   /// In es, this message translates to:
-  /// **'Profesor Titular'**
+  /// **'Profesor titular'**
   String get principalTeacher;
 
   /// No description provided for @locationLine.

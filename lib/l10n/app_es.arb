@@ -105,8 +105,8 @@
   "monthlyFeesTitle": "Cuotas y mensualidades",
   "addFeeBtn": "+ Generar cuota",
   "deactivateStudentBtn": "Dar de baja al alumno",
-  "calendarTitle": "Calendario de Actividades",
-  "newEventBtn": "+ Nuevo Evento",
+  "calendarTitle": "Calendario de actividades",
+  "newEventBtn": "+ Nuevo evento",
   "allFilter": "Todos",
   "classesFilter": "Clases",
   "eventsFilter": "Eventos",
@@ -445,22 +445,22 @@
   "categorySupplies": "Insumos de Aula",
   "categoryTransport": "Transporte",
   "categoryMisc": "Varios",
-  "newSchoolEvent": "Nuevo Evento Escolar",
-  "eventTitleLabel": "Título del Evento *",
-  "eventTitleHint": "Ej. Primer Examen Parcial / Entrega de Proyectos",
-  "activityType": "Tipo de Actividad",
+  "newSchoolEvent": "Nuevo evento escolar",
+  "eventTitleLabel": "Título del evento *",
+  "eventTitleHint": "Ej. Primer examen parcial / Entrega de proyectos",
+  "activityType": "Tipo de actividad",
   "eventTypeExam": "Examen",
   "eventTypeProject": "Proyecto",
-  "eventTypeMeeting": "Reunión Apoderados",
-  "eventTypeHoliday": "Día Festivo",
+  "eventTypeMeeting": "Reunión de apoderados",
+  "eventTypeHoliday": "Día festivo",
   "eventTypeSpecial": "Especial",
-  "associatedCourse": "Curso Asociado",
-  "allCoursesGeneral": "General / Todos los Cursos",
+  "associatedCourse": "Curso asociado",
+  "allCoursesGeneral": "General / Todos los cursos",
   "dateLabel": "Fecha",
   "timeLabel": "Horario",
-  "locationLabel": "Ubicación / Salón / Enlace (opcional)",
+  "locationLabel": "Ubicación / salón / enlace (opcional)",
   "locationHint": "Ej. Aula 3B, Laboratorio o Google Meet",
-  "descriptionInstructionsLabel": "Descripción / Instrucciones *",
+  "descriptionInstructionsLabel": "Descripción / instrucciones *",
   "descriptionHint": "Detalles de la actividad, temas a evaluar o materiales requeridos...",
   "extraEmailsLabel": "Correos adicionales de tutores (opcional)",
   "extraEmailsHint": "apoderado@ejemplo.com, direccion@colegio.edu",
@@ -470,32 +470,34 @@
   "@eventSaved": {
     "placeholders": { "title": { "type": "String" } }
   },
-  "saveEvent": "Guardar Evento",
-  "sendEventToParents": "Enviar Evento a Padres",
-  "bccPrivacyNotice": "Se preparará el correo para {count} tutores con copia oculta (BCC) protegiendo su privacidad.",
+  "saveEvent": "Guardar evento",
+  "sendEventToParents": "Enviar evento a padres",
+  "bccPrivacyNotice": "Se preparará el correo para {count} tutores con copia oculta (CCO) para proteger su privacidad.",
   "@bccPrivacyNotice": {
     "placeholders": { "count": { "type": "int" } }
   },
   "subjectPrefix": "Asunto:",
   "noticeCopied": "Aviso copiado al portapapeles",
-  "copyText": "Copiar Texto",
-  "openMail": "Abrir Correo",
+  "copyText": "Copiar texto",
+  "openMail": "Abrir correo",
   "noMailClient": "No se encontró cliente de correo instalado. Mensaje copiado.",
-  "calendarClassesTitle": "Calendario de Clases y Eventos",
-  "schoolEvents": "Eventos Escolares",
+  "calendarClassesTitle": "Calendario",
+  "schoolEvents": "Eventos escolares",
   "noSchoolEvents": "Sin eventos escolares registrados",
-  "noSchoolEventsDesc": "Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"+ Nuevo Evento\".",
-  "createEvent": "+ Crear Evento",
-  "coursePaymentsTitle": "Pagos y Cuotas de Cursos",
+  "noSchoolEventsDesc": "Puedes agregar exámenes, reuniones de apoderados o actividades con el botón \"Nuevo evento\".",
+  "createEvent": "Crear evento",
+  "coursePaymentsTitle": "Pagos y cuotas de cursos",
   "noDueDatesToday": "Sin vencimientos de cuotas hoy",
   "noDueDatesDesc": "No hay pagos con fecha límite programada para este día.",
-  "scheduledClasses": "Clases Programadas",
+  "scheduledClasses": "Clases programadas",
   "noClassesThisDay": "No hay clases programadas para este día",
   "noClassesThisDayDesc": "Selecciona otro día en el calendario semanal para consultar los horarios.",
-  "deleteEvent": "Eliminar Evento",
+  "deleteEvent": "Eliminar evento",
   "eventDeleted": "Evento escolar eliminado",
-  "notifyParents": "Avisar a Padres",
-  "feeReminder": "Recordatorio de Cuota: {name}",
+  "notifyParents": "Avisar a padres",
+  "groupSingular": "grupo",
+  "groupPlural": "grupos",
+  "feeReminder": "Recordatorio de cuota: {name}",
   "@feeReminder": {
     "placeholders": { "name": { "type": "String" } }
   },
@@ -506,8 +508,8 @@
       "amount": { "type": "String" }
     }
   },
-  "monthStartRange": "Inicio de mes (Día 1-10)",
-  "monthEndDay30": "Fin de mes (Día 30)",
+  "monthStartRange": "Inicio de mes (día 1-10)",
+  "monthEndDay30": "Fin de mes (día 30)",
   "attendanceAction": "Asistencia",
   "classesTabCount": "Clases ({count})",
   "@classesTabCount": {
@@ -521,14 +523,14 @@
   "@paymentsTabCount": {
     "placeholders": { "count": { "type": "int" } }
   },
-  "schoolNoticeSubject": "[Docentia] Aviso Escolar: {title} ({date})",
+  "schoolNoticeSubject": "[Docentia] Aviso escolar: {title} ({date})",
   "@schoolNoticeSubject": {
     "placeholders": {
       "title": { "type": "String" },
       "date": { "type": "String" }
     }
   },
-  "schoolNoticeBody": "Estimados Padres de Familia y Tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma Académica",
+  "schoolNoticeBody": "Estimados padres de familia y tutores:\n\nPor medio del presente aviso escolar, les informamos de la siguiente actividad programada en Docentia:\n• Evento: {title}\n• Fecha: {date}\n• Horario: {schedule}{location}\n• Descripción: {description}\n\nAgradecemos su valioso apoyo y puntual acompañamiento.\n\nAtentamente,\n{teacher}\nDocentia - Plataforma académica",
   "@schoolNoticeBody": {
     "placeholders": {
       "title": { "type": "String" },
@@ -539,7 +541,7 @@
       "teacher": { "type": "String" }
     }
   },
-  "principalTeacher": "Profesor Titular",
+  "principalTeacher": "Profesor titular",
   "locationLine": "\n• Ubicación: {place}",
   "@locationLine": {
     "placeholders": { "place": { "type": "String" } }
