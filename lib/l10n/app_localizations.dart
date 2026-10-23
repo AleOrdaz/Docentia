@@ -1517,7 +1517,7 @@ abstract class AppLocalizations {
   /// No description provided for @addProratedFee.
   ///
   /// In es, this message translates to:
-  /// **'+ Proporcional'**
+  /// **'Proporcional'**
   String get addProratedFee;
 
   /// No description provided for @monthAndYear.

@@ -304,7 +304,7 @@
   },
   "proratedAlreadyExists": "Ya hay una cuota proporcional hasta el próximo cobro.",
   "createProratedFee": "Crear proporcional",
-  "addProratedFee": "+ Proporcional",
+  "addProratedFee": "Proporcional",
   "monthAndYear": "Mes y año:",
   "dueDateField": "Vencimiento:",
   "monthStart": "Inicio de mes",

@@ -99,123 +99,126 @@ class _EditEmergencyContactModalState
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.outlineVariantAdaptive(context),
-                    borderRadius: BorderRadius.circular(100),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.outlineVariantAdaptive(context),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Icon(Icons.emergency_outlined, color: primaryColor, size: 24),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      l10n.editEmergencyTitle,
-                      style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close, color: textSecondary),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                label: l10n.nameLabel,
-                controller: _nameController,
-                hint: l10n.tutorNameHint,
-                validator: (value) =>
-                    (value == null || value.trim().isEmpty) ? l10n.required : null,
-              ),
-              const SizedBox(height: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.relationshipLabel,
-                    style: AppTextStyles.labelMedium.copyWith(color: textSecondary),
-                  ),
-                  const SizedBox(height: 4),
-                  DropdownButtonFormField<TutorRelationship>(
-                    initialValue: _relationship,
-                    isExpanded: true,
-                    style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.surfaceLow(context),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Icon(Icons.emergency_outlined, color: primaryColor, size: 24),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.editEmergencyTitle,
+                        style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     ),
-                    items: [
-                      DropdownMenuItem(value: TutorRelationship.mother, child: Text(l10n.relationshipMother)),
-                      DropdownMenuItem(value: TutorRelationship.father, child: Text(l10n.relationshipFather)),
-                      DropdownMenuItem(value: TutorRelationship.tutor, child: Text(l10n.relationshipTutor)),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) setState(() => _relationship = value);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                label: l10n.mobilePhone,
-                controller: _phoneController,
-                hint: '+54 9 11 4522 8901',
-                keyboardType: TextInputType.phone,
-                prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
-                validator: (value) =>
-                    (value == null || value.trim().isEmpty) ? l10n.required : null,
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: TextButton.styleFrom(
-                      foregroundColor: textPrimary,
-                      backgroundColor: AppColors.surfaceMid(context),
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    IconButton(
+                      icon: Icon(Icons.close, color: textSecondary),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                    child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed: _isSubmitting ? null : _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: AppColors.onPrimary,
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildTextField(
+                  label: l10n.nameLabel,
+                  controller: _nameController,
+                  hint: l10n.tutorNameHint,
+                  validator: (value) =>
+                  (value == null || value.trim().isEmpty) ? l10n.required : null,
+                ),
+                const SizedBox(height: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.relationshipLabel,
+                      style: AppTextStyles.labelMedium.copyWith(color: textSecondary),
                     ),
-                    icon: _isSubmitting
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                        : const Icon(Icons.check, size: 18),
-                    label: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(height: 4),
+                    DropdownButtonFormField<TutorRelationship>(
+                      initialValue: _relationship,
+                      isExpanded: true,
+                      style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppColors.surfaceLow(context),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      ),
+                      items: [
+                        DropdownMenuItem(value: TutorRelationship.mother, child: Text(l10n.relationshipMother)),
+                        DropdownMenuItem(value: TutorRelationship.father, child: Text(l10n.relationshipFather)),
+                        DropdownMenuItem(value: TutorRelationship.tutor, child: Text(l10n.relationshipTutor)),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) setState(() => _relationship = value);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.mobilePhone,
+                  controller: _phoneController,
+                  hint: '+54 9 11 4522 8901',
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                  validator: (value) =>
+                  (value == null || value.trim().isEmpty) ? l10n.required : null,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: textPrimary,
+                        backgroundColor: AppColors.surfaceMid(context),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                      child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _isSubmitting ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: AppColors.onPrimary,
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      icon: _isSubmitting
+                          ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                          : const Icon(Icons.check, size: 18),
+                      label: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

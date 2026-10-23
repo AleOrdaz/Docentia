@@ -98,108 +98,111 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.outlineVariantAdaptive(context),
-                    borderRadius: BorderRadius.circular(100),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.outlineVariantAdaptive(context),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Icon(Icons.edit_outlined, color: primaryColor, size: 24),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      l10n.editStudentTitle,
-                      style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Icon(Icons.edit_outlined, color: primaryColor, size: 24),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l10n.editStudentTitle,
+                        style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                      ),
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close, color: textSecondary),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      label: l10n.firstNamesLabel,
-                      controller: _nameController,
-                      hint: l10n.firstNameHint,
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty) ? l10n.required : null,
+                    IconButton(
+                      icon: Icon(Icons.close, color: textSecondary),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildTextField(
-                      label: l10n.lastNamesLabel,
-                      controller: _lastNameController,
-                      hint: l10n.lastNameHint,
-                      validator: (value) =>
-                          (value == null || value.trim().isEmpty) ? l10n.required : null,
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        label: l10n.firstNamesLabel,
+                        controller: _nameController,
+                        hint: l10n.firstNameHint,
+                        validator: (value) =>
+                        (value == null || value.trim().isEmpty) ? l10n.required : null,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                label: l10n.ageLabel,
-                controller: _ageController,
-                hint: '16',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  final age = int.tryParse(value?.trim() ?? '');
-                  if (age == null || age <= 0) return l10n.required;
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: TextButton.styleFrom(
-                      foregroundColor: textPrimary,
-                      backgroundColor: AppColors.surfaceMid(context),
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _buildTextField(
+                        label: l10n.lastNamesLabel,
+                        controller: _lastNameController,
+                        hint: l10n.lastNameHint,
+                        validator: (value) =>
+                        (value == null || value.trim().isEmpty) ? l10n.required : null,
+                      ),
                     ),
-                    child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed: _isSubmitting ? null : _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: AppColors.onPrimary,
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.ageLabel,
+                  controller: _ageController,
+                  hint: '16',
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    final age = int.tryParse(value?.trim() ?? '');
+                    if (age == null || age <= 0) return l10n.required;
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: textPrimary,
+                        backgroundColor: AppColors.surfaceMid(context),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                      child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
                     ),
-                    icon: _isSubmitting
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                          )
-                        : const Icon(Icons.check, size: 18),
-                    label: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _isSubmitting ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: AppColors.onPrimary,
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      icon: _isSubmitting
+                          ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                          : const Icon(Icons.check, size: 18),
+                      label: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

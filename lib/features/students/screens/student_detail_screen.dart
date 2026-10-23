@@ -134,197 +134,200 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                 bottom: MediaQuery.of(sheetCtx).viewInsets.bottom + 24,
               ),
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        decoration: BoxDecoration(
-                          color: AppColors.outlineVariantAdaptive(sheetCtx),
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Icon(Icons.add_card_outlined, color: primaryColor, size: 24),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            l10n.newMonthlyFee,
-                            style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                child: SafeArea(
+                  top: false,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: AppColors.outlineVariantAdaptive(sheetCtx),
+                            borderRadius: BorderRadius.circular(100),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.close, color: textSecondary),
-                          onPressed: () => Navigator.of(ctx).pop(),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.add_card_outlined, color: primaryColor, size: 24),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              l10n.newMonthlyFee,
+                              style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close, color: textSecondary),
+                            onPressed: () => Navigator.of(ctx).pop(),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        l10n.feeConfigHelp,
+                        style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(l10n.returnDateLabel, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 6),
+                      InkWell(
+                        onTap: () async {
+                          final picked = await showDatePicker(
+                            context: sheetCtx,
+                            initialDate: returnDate,
+                            firstDate: DateTime(returnDate.year - 1),
+                            lastDate: DateTime(returnDate.year + 1, 12, 31),
+                          );
+                          if (picked != null) {
+                            setSheetState(() => returnDate = FeeCycle.dateOnly(picked));
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceLow(sheetCtx),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.event, size: 20, color: primaryColor),
+                              const SizedBox(width: 10),
+                              Text(
+                                FeeCycle.formatDisplayDate(returnDate),
+                                style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
-                    ),
-                    Text(
-                      l10n.feeConfigHelp,
-                      style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(l10n.returnDateLabel, style: AppTextStyles.labelSmall.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 6),
-                    InkWell(
-                      onTap: () async {
-                        final picked = await showDatePicker(
-                          context: sheetCtx,
-                          initialDate: returnDate,
-                          firstDate: DateTime(returnDate.year - 1),
-                          lastDate: DateTime(returnDate.year + 1, 12, 31),
-                        );
-                        if (picked != null) {
-                          setSheetState(() => returnDate = FeeCycle.dateOnly(picked));
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                      ),
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: AppColors.surfaceLow(sheetCtx),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.cardBorder(sheetCtx)),
                         ),
-                        child: Row(
+                        child: canCreate
+                            ? Column(
                           children: [
-                            Icon(Icons.event, size: 20, color: primaryColor),
-                            const SizedBox(width: 10),
-                            Text(
-                              FeeCycle.formatDisplayDate(returnDate),
-                              style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceLow(sheetCtx),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.cardBorder(sheetCtx)),
-                      ),
-                      child: canCreate
-                          ? Column(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(l10n.nextChargeDate, style: AppTextStyles.bodySmall),
-                                    Text(
-                                      FeeCycle.formatDisplayDate(nextBilling),
-                                      style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(l10n.remainingDaysCount(remaining), style: AppTextStyles.bodySmall),
-                                    Text(
-                                      l10n.proratedBreakdown(remaining, cycle),
-                                      style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(l10n.amountToCharge, style: AppTextStyles.bodySmall),
-                                    Text(
-                                      formatCurrency(amount),
-                                      style: AppTextStyles.titleSmall.copyWith(
-                                        color: AppColors.secondary,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                                Text(l10n.nextChargeDate, style: AppTextStyles.bodySmall),
+                                Text(
+                                  FeeCycle.formatDisplayDate(nextBilling),
+                                  style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ],
-                            )
-                          : Text(
-                              l10n.proratedOnBillingDay,
-                              style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                             ),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(ctx).pop(),
-                          style: TextButton.styleFrom(
-                            foregroundColor: textPrimary,
-                            backgroundColor: AppColors.surfaceMid(sheetCtx),
-                            shape: const StadiumBorder(),
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                          ),
-                          child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
+                            const SizedBox(height: 6),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(l10n.remainingDaysCount(remaining), style: AppTextStyles.bodySmall),
+                                Text(
+                                  l10n.proratedBreakdown(remaining, cycle),
+                                  style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(l10n.amountToCharge, style: AppTextStyles.bodySmall),
+                                Text(
+                                  formatCurrency(amount),
+                                  style: AppTextStyles.titleSmall.copyWith(
+                                    color: AppColors.secondary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                            : Text(
+                          l10n.proratedOnBillingDay,
+                          style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                         ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: AppColors.onPrimary,
-                            shape: const StadiumBorder(),
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            style: TextButton.styleFrom(
+                              foregroundColor: textPrimary,
+                              backgroundColor: AppColors.surfaceMid(sheetCtx),
+                              shape: const StadiumBorder(),
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            ),
+                            child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
                           ),
-                          onPressed: !canCreate
-                              ? null
-                              : () async {
-                                  Navigator.of(ctx).pop();
-                                  final result = await ref
-                                      .read(paymentsForCourseProvider(courseId).notifier)
-                                      .generateProratedFeeForStudent(
-                                    studentId: studentId,
-                                    cost: courseCost,
-                                    schedule: courseSchedule,
-                                    returnDate: returnDate,
-                                  );
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              foregroundColor: AppColors.onPrimary,
+                              shape: const StadiumBorder(),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            ),
+                            onPressed: !canCreate
+                                ? null
+                                : () async {
+                              Navigator.of(ctx).pop();
+                              final result = await ref
+                                  .read(paymentsForCourseProvider(courseId).notifier)
+                                  .generateProratedFeeForStudent(
+                                studentId: studentId,
+                                cost: courseCost,
+                                schedule: courseSchedule,
+                                returnDate: returnDate,
+                              );
 
-                                  if (!context.mounted) return;
-                                  ref.read(paymentsRevisionProvider.notifier).state++;
+                              if (!context.mounted) return;
+                              ref.read(paymentsRevisionProvider.notifier).state++;
 
-                                  final message = result.success
-                                      ? l10n.proratedFeeCreated(result.remainingDays)
-                                      : result.message == 'alreadyExists'
-                                          ? l10n.proratedAlreadyExists
-                                          : l10n.proratedOnBillingDay;
+                              final message = result.success
+                                  ? l10n.proratedFeeCreated(result.remainingDays)
+                                  : result.message == 'alreadyExists'
+                                  ? l10n.proratedAlreadyExists
+                                  : l10n.proratedOnBillingDay;
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Row(
-                                        children: [
-                                          Icon(
-                                            result.success ? Icons.check_circle : Icons.warning_amber_rounded,
-                                            color: result.success ? AppColors.secondaryFixed : Colors.amber,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(child: Text(message)),
-                                        ],
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        result.success ? Icons.check_circle : Icons.warning_amber_rounded,
+                                        color: result.success ? AppColors.secondaryFixed : Colors.amber,
+                                        size: 20,
                                       ),
-                                      backgroundColor: AppColors.inverseSurface,
-                                      behavior: SnackBarBehavior.floating,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-                                    ),
-                                  );
-                                },
-                          child: Text(l10n.createProratedFee, style: const TextStyle(fontWeight: FontWeight.w600)),
-                        ),
-                      ],
-                    ),
-                  ],
+                                      const SizedBox(width: 8),
+                                      Expanded(child: Text(message)),
+                                    ],
+                                  ),
+                                  backgroundColor: AppColors.inverseSurface,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                                ),
+                              );
+                            },
+                            child: Text(l10n.createProratedFee, style: const TextStyle(fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

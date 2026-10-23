@@ -770,7 +770,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get createProratedFee => 'Crear proporcional';
 
   @override
-  String get addProratedFee => '+ Proporcional';
+  String get addProratedFee => 'Proporcional';
 
   @override
   String get monthAndYear => 'Mes y año:';

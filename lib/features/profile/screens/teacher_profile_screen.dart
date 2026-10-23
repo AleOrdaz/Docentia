@@ -1,3 +1,4 @@
+import 'package:docentia/features/profile/screens/edit_teacher_profile_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -22,60 +23,14 @@ class TeacherProfileScreen extends ConsumerWidget {
     final phoneCtrl = TextEditingController(text: currentPhone);
     final bioCtrl = TextEditingController(text: currentBio);
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.cardBg(ctx),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(l10n!.editProfileData, style: TextStyle(color: AppColors.textPrimary(ctx))),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameCtrl,
-              decoration: InputDecoration(
-                labelText: l10n.profileTitle,
-                labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
-              ),
-              style: TextStyle(color: AppColors.textPrimary(ctx)),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: phoneCtrl,
-              decoration: InputDecoration(
-                labelText: l10n.whatsappPhone,
-                labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
-              ),
-              style: TextStyle(color: AppColors.textPrimary(ctx)),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: bioCtrl,
-              decoration: InputDecoration(
-                labelText: l10n.biography,
-                labelStyle: TextStyle(color: AppColors.textSecondary(ctx)),
-              ),
-              style: TextStyle(color: AppColors.textPrimary(ctx)),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n.cancel, style: TextStyle(color: AppColors.textSecondary(ctx))),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              ref.read(authProvider.notifier).updateProfile(
-                name: nameCtrl.text.trim(),
-                phone: phoneCtrl.text.trim(),
-                bio: bioCtrl.text.trim(),
-              );
-              Navigator.of(ctx).pop();
-            },
-            child: Text(l10n.save),
-          ),
-        ],
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => EditTeacherProfileModal(
+        currentName: currentName,
+        currentPhone: currentPhone,
+        currentBio: currentBio,
       ),
     );
   }
