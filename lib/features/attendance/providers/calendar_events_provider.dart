@@ -18,22 +18,26 @@ class CalendarEventsNotifier extends StateNotifier<AsyncValue<List<CalendarEvent
 
   Future<CalendarEvent> addEvent({
     required String title,
+    String type = 'exam',
     required String description,
     required String date,
     required String startTime,
     String? endTime,
     String? location,
+    String? courseId,
     List<String> emailRecipients = const [],
     String? reminder,
   }) async {
     final newEvent = CalendarEvent(
       id: 'event-${DateTime.now().millisecondsSinceEpoch}',
       title: title,
+      type: type,
       description: description,
       date: date,
       startTime: startTime,
       endTime: endTime,
       location: location,
+      courseId: courseId,
       emailRecipients: emailRecipients,
       reminder: reminder,
       createdAt: DateTime.now(),

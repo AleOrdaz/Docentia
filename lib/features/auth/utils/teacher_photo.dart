@@ -10,7 +10,9 @@ ImageProvider? teacherImageProvider(String? photoUrl) {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return NetworkImage(url);
   }
-  return FileImage(File(url));
+  final file = File(url);
+  if (!file.existsSync()) return null;
+  return FileImage(file);
 }
 
 String teacherInitials(String? name) {

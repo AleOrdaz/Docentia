@@ -480,11 +480,11 @@
   "copyText": "Copy text",
   "openMail": "Open mail",
   "noMailClient": "No mail app was found. The message was copied.",
-  "calendarClassesTitle": "Class and event calendar",
+  "calendarClassesTitle": "Calendar",
   "schoolEvents": "School events",
   "noSchoolEvents": "No school events recorded",
-  "noSchoolEventsDesc": "You can add exams, parent meetings, or activities with the \"+ New event\" button.",
-  "createEvent": "+ Create event",
+  "noSchoolEventsDesc": "You can add exams, parent meetings, or activities with the \"New event\" button.",
+  "createEvent": "Create event",
   "coursePaymentsTitle": "Course payments and fees",
   "noDueDatesToday": "No fees due today",
   "noDueDatesDesc": "There are no payments with a due date on this day.",
@@ -494,6 +494,8 @@
   "deleteEvent": "Delete event",
   "eventDeleted": "School event deleted",
   "notifyParents": "Notify parents",
+  "groupSingular": "group",
+  "groupPlural": "groups",
   "feeReminder": "Fee reminder: {name}",
   "@feeReminder": {
     "placeholders": { "name": { "type": "String" } }

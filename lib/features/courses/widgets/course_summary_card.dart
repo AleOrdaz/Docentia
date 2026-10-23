@@ -10,11 +10,13 @@ import '../models/course_model.dart';
 class CourseSummaryCard extends ConsumerWidget {
   final Course course;
   final VoidCallback onTap;
+  final bool showBilling;
 
   const CourseSummaryCard({
     super.key,
     required this.course,
     required this.onTap,
+    this.showBilling = true,
   });
 
   @override
@@ -161,77 +163,79 @@ class CourseSummaryCard extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? const Color(0xFF452205)
-                              : const Color(0xFFFFF4DE),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.monetization_on_outlined,
-                          size: 16,
-                          color: Color(0xFFD97706),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${formatCurrency(course.cost)} / ${l10n?.perMonth ?? 'mes'}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: titleColor,
-                              ),
-                            ),
-                            Text(
-                              l10n?.courseFee ?? 'Cuota del curso',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.calendar_today_outlined,
-                          size: 15, color: muted),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          '${l10n?.duePrefix ?? 'Vence'}: ${course.paymentSchedule.getLocalizedName(context)}',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: muted,
+            if (showBilling) ...[
+              const SizedBox(height: 14),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? const Color(0xFF452205)
+                                : const Color(0xFFFFF4DE),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.monetization_on_outlined,
+                            size: 16,
+                            color: Color(0xFFD97706),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${formatCurrency(course.cost)} / ${l10n?.perMonth ?? 'mes'}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: titleColor,
+                                ),
+                              ),
+                              Text(
+                                l10n?.courseFee ?? 'Cuota del curso',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: muted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.calendar_today_outlined,
+                            size: 15, color: muted),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${l10n?.duePrefix ?? 'Vence'}: ${course.paymentSchedule.getLocalizedName(context)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: muted,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
