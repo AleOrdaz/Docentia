@@ -1367,4 +1367,214 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get loginResetPasswordSent =>
       'We sent you an email to reset your password.';
+
+  @override
+  String get financeScreenSubtitle => 'Fee and collection control.';
+
+  @override
+  String get financeCollected => 'Collected';
+
+  @override
+  String get financeToCollect => 'To collect';
+
+  @override
+  String get financeOverdue => 'Overdue';
+
+  @override
+  String get financeUpcoming => 'Upcoming';
+
+  @override
+  String get financeUpcomingBadge => 'Upcoming';
+
+  @override
+  String get financeFeeSingular => 'fee';
+
+  @override
+  String get financeFeePlural => 'fees';
+
+  @override
+  String get financeQuickAccess => 'Quick actions';
+
+  @override
+  String get financeRegisterPayment => 'Record payment';
+
+  @override
+  String get financeReminders => 'Reminders';
+
+  @override
+  String get financeReports => 'Reports';
+
+  @override
+  String get financeUpcomingDues => 'Upcoming due dates';
+
+  @override
+  String get financeSeeAll => 'See all';
+
+  @override
+  String get financeSearchHint => 'Search student or course...';
+
+  @override
+  String get financeFilterPending => 'Pending';
+
+  @override
+  String get financeFilterOverdue => 'Overdue';
+
+  @override
+  String get financeFilterPaid => 'Paid';
+
+  @override
+  String get financePaymentDetail => 'Payment detail';
+
+  @override
+  String get financeFeeLabel => 'Fee';
+
+  @override
+  String get financeIssueDate => 'Issue date';
+
+  @override
+  String get financeDueDateLabel => 'Due date';
+
+  @override
+  String get financeNotifyParents => 'Notify parents';
+
+  @override
+  String get financeCourseInfo => 'Course information';
+
+  @override
+  String get financeMovementHistory => 'Activity history';
+
+  @override
+  String get financeNoMovements => 'No activity yet';
+
+  @override
+  String get financeNoMovementsDesc =>
+      'This payment has not been recorded in the system yet.';
+
+  @override
+  String get financeFilters => 'Filters';
+
+  @override
+  String get financeAllCourses => 'All courses';
+
+  @override
+  String get financeAllStudents => 'All students';
+
+  @override
+  String get financeAllStatuses => 'All';
+
+  @override
+  String get financeStatusField => 'Status';
+
+  @override
+  String get financeClear => 'Clear';
+
+  @override
+  String get financeApply => 'Apply';
+
+  @override
+  String get financeIncome => 'Income';
+
+  @override
+  String get financeByCourse => 'By course';
+
+  @override
+  String get financeCompliance => 'Compliance';
+
+  @override
+  String get financeThisMonth => 'This month';
+
+  @override
+  String get financeIncomeByMonth => 'Monthly income';
+
+  @override
+  String get financeNoPaymentsTitle => 'No payments';
+
+  @override
+  String get financeNoPaymentsDesc =>
+      'There are no payments yet. When you record payments, they will show up here.';
+
+  @override
+  String get financeNoResultsTitle => 'No results';
+
+  @override
+  String get financeNoResultsDesc =>
+      'We couldn\'t find payments. Try another name or adjust the filters.';
+
+  @override
+  String get financeLoadErrorTitle => 'Couldn\'t load';
+
+  @override
+  String get financeLoadErrorDesc =>
+      'Payments could not be loaded. Please try again.';
+
+  @override
+  String get financeRetry => 'Try again';
+
+  @override
+  String get financeMovementPaid => 'Payment recorded';
+
+  @override
+  String get financeMovementGenerated => 'Fee generated';
+
+  @override
+  String get financeMovementOverdue => 'Payment overdue';
+
+  @override
+  String get financeDateRange => 'Date range';
+
+  @override
+  String get financeNoUnpaid => 'There are no unpaid fees in this period.';
+
+  @override
+  String get financeNoReminders => 'There are no fees waiting for a reminder.';
+
+  @override
+  String get financeReminderHint =>
+      'Notify tutors about fees that are due, upcoming, or overdue.';
+
+  @override
+  String get financeNoTutorPhone => 'This student has no tutor phone number.';
+
+  @override
+  String get financeViewStudent => 'View student';
+
+  @override
+  String get financeNoPeriodDues => 'There are no due dates in this period.';
+
+  @override
+  String get financeNoCourseIncome =>
+      'There is no income by course in this period.';
+
+  @override
+  String get financeExpenses => 'Expenses';
+
+  @override
+  String get financeRealProfit => 'Real profit';
+
+  @override
+  String get financeRealProfitHint =>
+      'Collected in this period, minus course expenses.';
+
+  @override
+  String get financeExpenseSaved => 'Expense saved';
+
+  @override
+  String get financePickCourse => 'Select a course';
+
+  @override
+  String get financeNoExpensesPeriod =>
+      'There are no expenses in this period yet.';
+
+  @override
+  String get financeNoCoursesForExpense =>
+      'Create a course before recording its expenses.';
+
+  @override
+  String get financeExpenseCategory => 'Category';
+
+  @override
+  String financeReminderMessage(String tutor, String student, String course,
+      String period, String amount, String due) {
+    return 'Hello $tutor, this is Docentia. $student\'s fee for $course ($period) is $amount and is due on $due.';
+  }
 }

@@ -12,7 +12,12 @@ import '../../features/attendance/screens/attendance_history_screen.dart';
 import '../../features/attendance/screens/take_attendance_screen.dart';
 import '../../features/students/screens/student_detail_screen.dart';
 import '../../features/profile/screens/teacher_profile_screen.dart';
+import '../../features/finance/screens/finance_expenses_screen.dart';
+import '../../features/finance/screens/finance_reminders_screen.dart';
+import '../../features/finance/screens/finance_reports_screen.dart';
 import '../../features/finance/screens/finance_screen.dart';
+import '../../features/finance/screens/payment_detail_screen.dart';
+import '../../features/finance/screens/payment_list_screen.dart';
 import '../../features/design/screens/style_guide_screen.dart';
 import '../widgets/app_shell.dart';
 
@@ -135,6 +140,33 @@ final routerProvider = Provider<GoRouter>((ref) {
           final studentId = (state.pathParameters['studentId'] as String?) ?? '';
           return StudentDetailScreen(studentId: studentId);
         },
+      ),
+      GoRoute(
+        path: '/finance/payments',
+        builder: (context, state) => const PaymentListScreen(),
+      ),
+      GoRoute(
+        path: '/finance/payment/:paymentId',
+        builder: (context, state) {
+          final paymentId = state.pathParameters['paymentId'] ?? '';
+          return PaymentDetailScreen(paymentId: paymentId);
+        },
+      ),
+      GoRoute(
+        path: '/finance/reports',
+        builder: (context, state) => const FinanceReportsScreen(),
+      ),
+      GoRoute(
+        path: '/finance/reminders',
+        builder: (context, state) => const FinanceRemindersScreen(),
+      ),
+      GoRoute(
+        path: '/finance/expenses',
+        builder: (context, state) => const FinanceExpensesScreen(),
+      ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const TeacherProfileScreen(),
       ),
       GoRoute(
         path: '/estilos',

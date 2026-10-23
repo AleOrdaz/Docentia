@@ -1373,4 +1373,214 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get loginResetPasswordSent =>
       'Te enviamos un correo para restablecer tu contraseña.';
+
+  @override
+  String get financeScreenSubtitle => 'Control de cuotas y cobros.';
+
+  @override
+  String get financeCollected => 'Cobrado';
+
+  @override
+  String get financeToCollect => 'Por cobrar';
+
+  @override
+  String get financeOverdue => 'Vencido';
+
+  @override
+  String get financeUpcoming => 'Próximos';
+
+  @override
+  String get financeUpcomingBadge => 'Próximo';
+
+  @override
+  String get financeFeeSingular => 'cuota';
+
+  @override
+  String get financeFeePlural => 'cuotas';
+
+  @override
+  String get financeQuickAccess => 'Accesos rápidos';
+
+  @override
+  String get financeRegisterPayment => 'Registrar pago';
+
+  @override
+  String get financeReminders => 'Recordatorios';
+
+  @override
+  String get financeReports => 'Reportes';
+
+  @override
+  String get financeUpcomingDues => 'Próximos vencimientos';
+
+  @override
+  String get financeSeeAll => 'Ver todos';
+
+  @override
+  String get financeSearchHint => 'Buscar alumno o curso...';
+
+  @override
+  String get financeFilterPending => 'Pendientes';
+
+  @override
+  String get financeFilterOverdue => 'Vencidos';
+
+  @override
+  String get financeFilterPaid => 'Pagados';
+
+  @override
+  String get financePaymentDetail => 'Detalle del pago';
+
+  @override
+  String get financeFeeLabel => 'Cuota';
+
+  @override
+  String get financeIssueDate => 'Fecha de emisión';
+
+  @override
+  String get financeDueDateLabel => 'Fecha límite';
+
+  @override
+  String get financeNotifyParents => 'Avisar a padres';
+
+  @override
+  String get financeCourseInfo => 'Información del curso';
+
+  @override
+  String get financeMovementHistory => 'Historial de movimientos';
+
+  @override
+  String get financeNoMovements => 'Aún no hay movimientos';
+
+  @override
+  String get financeNoMovementsDesc =>
+      'Este pago todavía no ha sido registrado en el sistema.';
+
+  @override
+  String get financeFilters => 'Filtros';
+
+  @override
+  String get financeAllCourses => 'Todos los cursos';
+
+  @override
+  String get financeAllStudents => 'Todos los alumnos';
+
+  @override
+  String get financeAllStatuses => 'Todos';
+
+  @override
+  String get financeStatusField => 'Estado';
+
+  @override
+  String get financeClear => 'Limpiar';
+
+  @override
+  String get financeApply => 'Aplicar';
+
+  @override
+  String get financeIncome => 'Ingresos';
+
+  @override
+  String get financeByCourse => 'Por curso';
+
+  @override
+  String get financeCompliance => 'Cumplimiento';
+
+  @override
+  String get financeThisMonth => 'Este mes';
+
+  @override
+  String get financeIncomeByMonth => 'Ingresos por mes';
+
+  @override
+  String get financeNoPaymentsTitle => 'Sin pagos';
+
+  @override
+  String get financeNoPaymentsDesc =>
+      'Aún no hay pagos registrados. Cuando registres pagos, los verás aquí.';
+
+  @override
+  String get financeNoResultsTitle => 'Sin resultados';
+
+  @override
+  String get financeNoResultsDesc =>
+      'No encontramos pagos. Intenta con otro nombre o ajusta los filtros.';
+
+  @override
+  String get financeLoadErrorTitle => 'Error de carga';
+
+  @override
+  String get financeLoadErrorDesc =>
+      'No se pudieron cargar los pagos. Intenta nuevamente.';
+
+  @override
+  String get financeRetry => 'Reintentar';
+
+  @override
+  String get financeMovementPaid => 'Pago registrado';
+
+  @override
+  String get financeMovementGenerated => 'Cuota generada';
+
+  @override
+  String get financeMovementOverdue => 'Pago vencido';
+
+  @override
+  String get financeDateRange => 'Rango de fechas';
+
+  @override
+  String get financeNoUnpaid => 'No hay cuotas pendientes en este periodo.';
+
+  @override
+  String get financeNoReminders => 'No hay cuotas pendientes de aviso.';
+
+  @override
+  String get financeReminderHint =>
+      'Avisa a los tutores de las cuotas por cobrar, próximas o vencidas.';
+
+  @override
+  String get financeNoTutorPhone =>
+      'Este alumno no tiene un teléfono de tutor.';
+
+  @override
+  String get financeViewStudent => 'Ver alumno';
+
+  @override
+  String get financeNoPeriodDues => 'No hay vencimientos en este periodo.';
+
+  @override
+  String get financeNoCourseIncome =>
+      'No hay ingresos por curso en este periodo.';
+
+  @override
+  String get financeExpenses => 'Gastos';
+
+  @override
+  String get financeRealProfit => 'Ganancia real';
+
+  @override
+  String get financeRealProfitHint =>
+      'Lo cobrado en este periodo, menos los gastos de los cursos.';
+
+  @override
+  String get financeExpenseSaved => 'Gasto registrado';
+
+  @override
+  String get financePickCourse => 'Selecciona un curso';
+
+  @override
+  String get financeNoExpensesPeriod => 'Aún no hay gastos en este periodo.';
+
+  @override
+  String get financeNoCoursesForExpense =>
+      'Crea un curso para poder registrar sus gastos.';
+
+  @override
+  String get financeExpenseCategory => 'Categoría';
+
+  @override
+  String financeReminderMessage(String tutor, String student, String course,
+      String period, String amount, String due) {
+    return 'Hola $tutor, te contactamos de Docentia. La cuota de $student del curso $course ($period) es de $amount y vence el $due.';
+  }
 }

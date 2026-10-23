@@ -23,16 +23,19 @@ class ExpensesNotifier extends StateNotifier<List<Expense>> {
     required String description,
     required double amount,
     required String category,
+    String? courseId,
+    DateTime? date,
   }) async {
-    final now = DateTime.now();
-    final dateStr = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final when = date ?? DateTime.now();
+    final dateStr = '${when.year}-${when.month.toString().padLeft(2, '0')}-${when.day.toString().padLeft(2, '0')}';
     final newExp = Expense(
-      id: 'exp-${now.millisecondsSinceEpoch}',
+      id: 'exp-${when.millisecondsSinceEpoch}',
       teacherId: 'teacher-1',
       description: description,
       amount: amount,
       date: dateStr,
       category: category,
+      courseId: courseId,
     );
     final updated = [newExp, ...state];
     state = updated;

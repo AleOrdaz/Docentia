@@ -329,367 +329,385 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     final panelColor = isDark ? const Color(0xFF0F172A) : AppColors.surfaceContainerLow;
     final panelBorder = isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
 
-    return Dialog(
-      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 520, maxHeight: 700),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Cabecera
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(isEditing ? Icons.edit_note : Icons.school,
-                              color: primaryColor, size: 24),
-                          const SizedBox(width: 8),
-                          Text(
-                            isEditing
-                                ? (l10n?.editCourseTitle ?? 'Editar curso')
-                                : (l10n?.createCourseTitle ?? 'Crear curso'),
-                            style: AppTextStyles.titleLarge.copyWith(color: titleColor),
-                          ),
-                        ],
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 12,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: SingleChildScrollView(
+        child: SafeArea(
+          top: false,
+          child:Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle de arrastre
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: panelBorder,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.close, color: mutedColor),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Nombre del curso
-                  _buildField(
-                    label: l10n?.courseNameLabel ?? 'Nombre del curso *',
-                    controller: _nameController,
-                    hint: l10n?.courseNameHint ?? 'Ej. Inglés avanzado B2',
-                    validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? (l10n?.courseNameRequired ?? 'Nombre obligatorio') : null,
-                  ),
-                  const SizedBox(height: 14),
-
-                  // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
-                  Text(
-                    l10n?.classDaysLabel ?? 'Días de clase (al menos 1) *',
-                    style: _inputLabelStyle,
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: panelColor,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: panelBorder),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    child: Column(
+                    const SizedBox(height: 16),
+
+                    // Cabecera
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        for (int i = 0; i < _dayNumbers.length; i += 2)
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildDayCheckbox(
-                                  dayNumber: _dayNumbers[i],
-                                  dayName: getWeekdayName(_dayNumbers[i], l10n),
-                                  primaryColor: primaryColor,
-                                ),
-                              ),
-                              if (i + 1 < _dayNumbers.length)
-                                Expanded(
-                                  child: _buildDayCheckbox(
-                                    dayNumber: _dayNumbers[i + 1],
-                                    dayName: getWeekdayName(_dayNumbers[i + 1], l10n),
-                                    primaryColor: primaryColor,
-                                  ),
-                                )
-                              else
-                                const Spacer(),
-                            ],
-                          ),
+                        Row(
+                          children: [
+                            Icon(isEditing ? Icons.edit_note : Icons.school,
+                                color: primaryColor, size: 24),
+                            const SizedBox(width: 8),
+                            Text(
+                              isEditing
+                                  ? (l10n?.editCourseTitle ?? 'Editar curso')
+                                  : (l10n?.createCourseTitle ?? 'Crear curso'),
+                              style: AppTextStyles.titleLarge.copyWith(color: titleColor),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close, color: mutedColor),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 12),
 
-                  // SECCIÓN: Horario de clase (Inicio y Fin independientes)
-                  Text(
-                    l10n?.classScheduleLabel ?? 'Horario de clase',
-                    style: _inputLabelStyle,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      // Hora de inicio
-                      Expanded(
-                        child: InkWell(
-                          onTap: _pickStartTime,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: panelColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: panelBorder),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.schedule, size: 14, color: primaryColor),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      (l10n?.startTimeLabel ?? 'Inicio').replaceAll('*', '').trim(),
-                                      style: _inputLabelStyle,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _formatTime12(_startTime),
-                                  style: AppTextStyles.titleMedium.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      // Hora de finalización
-                      Expanded(
-                        child: InkWell(
-                          onTap: _pickEndTime,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: panelColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: panelBorder),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.timer_outlined, size: 14, color: primaryColor),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      (l10n?.endTimeLabel ?? 'Fin').replaceAll('*', '').trim(),
-                                      style: _inputLabelStyle,
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _formatTime12(_endTime),
-                                  style: AppTextStyles.titleMedium.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 14),
-
-                  // Costo
-                  _buildField(
-                    label: l10n?.monthlyCostLabel ?? 'Costo mensual (\$)',
-                    controller: _costController,
-                    hint: '45,000',
-                    keyboardType: TextInputType.number,
-                    inputFormatters: const [_ThousandsSeparatorInputFormatter()],
-                  ),
-                  const SizedBox(height: 14),
-
-                  // Vencimiento de cuota
-                  Text(
-                    l10n?.paymentScheduleLabel ?? 'Esquema de cobro mensual',
-                    style: _inputLabelStyle,
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ChoiceChip(
-                          label: Text(l10n?.scheduleFirstHalf ?? 'Primera quincena (día 1-15)'),
-                          selected: _paymentSchedule == PaymentSchedule.firstHalf,
-                          selectedColor: primaryColor,
-                          backgroundColor: panelColor,
-                          side: BorderSide(color: panelBorder),
-                          labelStyle: TextStyle(
-                            color: _paymentSchedule == PaymentSchedule.firstHalf
-                                ? Colors.white
-                                : labelColor,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          onSelected: (val) {
-                            if (val) {
-                              setState(() => _paymentSchedule = PaymentSchedule.firstHalf);
-                            }
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ChoiceChip(
-                          label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (día 25-30)'),
-                          selected: _paymentSchedule == PaymentSchedule.endOfMonth,
-                          selectedColor: primaryColor,
-                          backgroundColor: panelColor,
-                          side: BorderSide(color: panelBorder),
-                          labelStyle: TextStyle(
-                            color: _paymentSchedule == PaymentSchedule.endOfMonth
-                                ? Colors.white
-                                : labelColor,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          onSelected: (val) {
-                            if (val) {
-                              setState(() => _paymentSchedule = PaymentSchedule.endOfMonth);
-                            }
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-
-                  // SECCIÓN: Icono del curso
-                  Text(
-                    l10n?.chooseIconLabel ?? 'Seleccionar icono representativo',
-                    style: _inputLabelStyle,
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: panelColor,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: panelBorder),
+                    // Nombre del curso
+                    _buildField(
+                      label: l10n?.courseNameLabel ?? 'Nombre del curso *',
+                      controller: _nameController,
+                      hint: l10n?.courseNameHint ?? 'Ej. Inglés avanzado B2',
+                      validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? (l10n?.courseNameRequired ?? 'Nombre obligatorio') : null,
                     ),
-                    padding: const EdgeInsets.all(10),
-                    child: Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: kCourseIconCategories.map((cat) {
-                        final isSelected =
-                            _selectedIconKey.toLowerCase() == cat.key.toLowerCase();
-                        return InkWell(
-                          onTap: () {
-                            setState(() => _selectedIconKey = cat.key);
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            width: 44,
-                            height: 44,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? primaryColor
-                                  : (isDark ? const Color(0xFF1E293B) : Colors.white),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected
-                                    ? primaryColor
-                                    : (isDark
-                                        ? const Color(0xFF334155)
-                                        : AppColors.surfaceContainerHigh),
-                                width: isSelected ? 1.5 : 1,
-                              ),
-                            ),
-                            child: Icon(
-                              cat.icon,
-                              size: 22,
-                              color: isSelected ? Colors.white : primaryColor,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 22),
+                    const SizedBox(height: 14),
 
-                  // Botones
-                  Row(
-                    mainAxisAlignment: isEditing
-                        ? MainAxisAlignment.spaceBetween
-                        : MainAxisAlignment.end,
-                    children: [
-                      if (isEditing)
-                        TextButton(
-                          onPressed: _isSaving ? null : _confirmDeleteCourse,
-                          style: TextButton.styleFrom(
-                            foregroundColor: const Color(0xFFD32F2F),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 8),
-                          ),
-                          child: Text(
-                            l10n?.deleteCourseBtn ?? 'Eliminar curso',
-                            style: const TextStyle(
-                              color: Color(0xFFD32F2F),
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+                    // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
+                    Text(
+                      l10n?.classDaysLabel ?? 'Días de clase (al menos 1) *',
+                      style: _inputLabelStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: panelColor,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: panelBorder),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      child: Column(
                         children: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            child: Text(l10n?.cancel ?? 'Cancelar'),
-                          ),
-                          const SizedBox(width: 8),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                          for (int i = 0; i < _dayNumbers.length; i += 2)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildDayCheckbox(
+                                    dayNumber: _dayNumbers[i],
+                                    dayName: getWeekdayName(_dayNumbers[i], l10n),
+                                    primaryColor: primaryColor,
+                                  ),
+                                ),
+                                if (i + 1 < _dayNumbers.length)
+                                  Expanded(
+                                    child: _buildDayCheckbox(
+                                      dayNumber: _dayNumbers[i + 1],
+                                      dayName: getWeekdayName(_dayNumbers[i + 1], l10n),
+                                      primaryColor: primaryColor,
+                                    ),
+                                  )
+                                else
+                                  const Spacer(),
+                              ],
                             ),
-                            onPressed: _isSaving ? null : _submit,
-                            child: _isSaving
-                                ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: Colors.white,
-                              ),
-                            )
-                                : Text(isEditing ? (l10n?.save ?? 'Guardar') : (l10n?.create ?? 'Crear')),
-                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // SECCIÓN: Horario de clase (Inicio y Fin independientes)
+                    Text(
+                      l10n?.classScheduleLabel ?? 'Horario de clase',
+                      style: _inputLabelStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        // Hora de inicio
+                        Expanded(
+                          child: InkWell(
+                            onTap: _pickStartTime,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: panelColor,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: panelBorder),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.schedule, size: 14, color: primaryColor),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        (l10n?.startTimeLabel ?? 'Inicio').replaceAll('*', '').trim(),
+                                        style: _inputLabelStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _formatTime12(_startTime),
+                                    style: AppTextStyles.titleMedium.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        // Hora de finalización
+                        Expanded(
+                          child: InkWell(
+                            onTap: _pickEndTime,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              decoration: BoxDecoration(
+                                color: panelColor,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: panelBorder),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(Icons.timer_outlined, size: 14, color: primaryColor),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        (l10n?.endTimeLabel ?? 'Fin').replaceAll('*', '').trim(),
+                                        style: _inputLabelStyle,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _formatTime12(_endTime),
+                                    style: AppTextStyles.titleMedium.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Costo
+                    _buildField(
+                      label: l10n?.monthlyCostLabel ?? 'Costo mensual (\$)',
+                      controller: _costController,
+                      hint: '45,000',
+                      keyboardType: TextInputType.number,
+                      inputFormatters: const [_ThousandsSeparatorInputFormatter()],
+                    ),
+                    const SizedBox(height: 14),
+
+                    // Vencimiento de cuota
+                    Text(
+                      l10n?.paymentScheduleLabel ?? 'Esquema de cobro mensual',
+                      style: _inputLabelStyle,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ChoiceChip(
+                            label: Text(l10n?.scheduleFirstHalf ?? 'Primera quincena (día 1-15)'),
+                            selected: _paymentSchedule == PaymentSchedule.firstHalf,
+                            selectedColor: primaryColor,
+                            backgroundColor: panelColor,
+                            side: BorderSide(color: panelBorder),
+                            labelStyle: TextStyle(
+                              color: _paymentSchedule == PaymentSchedule.firstHalf
+                                  ? Colors.white
+                                  : labelColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            onSelected: (val) {
+                              if (val) {
+                                setState(() => _paymentSchedule = PaymentSchedule.firstHalf);
+                              }
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ChoiceChip(
+                            label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (día 25-30)'),
+                            selected: _paymentSchedule == PaymentSchedule.endOfMonth,
+                            selectedColor: primaryColor,
+                            backgroundColor: panelColor,
+                            side: BorderSide(color: panelBorder),
+                            labelStyle: TextStyle(
+                              color: _paymentSchedule == PaymentSchedule.endOfMonth
+                                  ? Colors.white
+                                  : labelColor,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            onSelected: (val) {
+                              if (val) {
+                                setState(() => _paymentSchedule = PaymentSchedule.endOfMonth);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // SECCIÓN: Icono del curso
+                    Text(
+                      l10n?.chooseIconLabel ?? 'Seleccionar icono representativo',
+                      style: _inputLabelStyle,
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: panelColor,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: panelBorder),
+                      ),
+                      padding: const EdgeInsets.all(10),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: kCourseIconCategories.map((cat) {
+                          final isSelected =
+                              _selectedIconKey.toLowerCase() == cat.key.toLowerCase();
+                          return InkWell(
+                            onTap: () {
+                              setState(() => _selectedIconKey = cat.key);
+                            },
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: 44,
+                              height: 44,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? primaryColor
+                                    : (isDark ? const Color(0xFF1E293B) : Colors.white),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? primaryColor
+                                      : (isDark
+                                      ? const Color(0xFF334155)
+                                      : AppColors.surfaceContainerHigh),
+                                  width: isSelected ? 1.5 : 1,
+                                ),
+                              ),
+                              child: Icon(
+                                cat.icon,
+                                size: 22,
+                                color: isSelected ? Colors.white : primaryColor,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+
+                    // Botones
+                    Row(
+                      mainAxisAlignment: isEditing
+                          ? MainAxisAlignment.spaceBetween
+                          : MainAxisAlignment.end,
+                      children: [
+                        if (isEditing)
+                          TextButton(
+                            onPressed: _isSaving ? null : _confirmDeleteCourse,
+                            style: TextButton.styleFrom(
+                              foregroundColor: const Color(0xFFD32F2F),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                            ),
+                            child: Text(
+                              l10n?.deleteCourseBtn ?? 'Eliminar curso',
+                              style: const TextStyle(
+                                color: Color(0xFFD32F2F),
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text(l10n?.cancel ?? 'Cancelar'),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColor,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: _isSaving ? null : _submit,
+                              child: _isSaving
+                                  ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                                  : Text(isEditing ? (l10n?.save ?? 'Guardar') : (l10n?.create ?? 'Crear')),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
         ),
       ),
     );

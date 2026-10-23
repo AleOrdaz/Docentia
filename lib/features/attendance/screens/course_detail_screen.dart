@@ -43,8 +43,11 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
 
   void _openEditCourseDialog(Course? course) {
     if (course == null) return;
-    showDialog(
+    showModalBottomSheet<Course>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) => CreateCourseDialog(courseToEdit: course),
     );
   }

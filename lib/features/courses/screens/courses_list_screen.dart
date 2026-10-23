@@ -12,8 +12,11 @@ class CoursesListScreen extends ConsumerWidget {
   const CoursesListScreen({super.key});
 
   void _openCreateCourseDialog(BuildContext context) {
-    showDialog(
+    showModalBottomSheet<Course>(
       context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
       builder: (ctx) => const CreateCourseDialog(),
     );
   }

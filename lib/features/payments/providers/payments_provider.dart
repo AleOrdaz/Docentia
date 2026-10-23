@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
@@ -15,8 +16,9 @@ final paymentsRevisionProvider = StateProvider<int>((ref) => 0);
 class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
   final PaymentsRepository _repository;
   final String _courseId;
+  final VoidCallback? onChanged;
 
-  PaymentsNotifier(this._repository, this._courseId)
+  PaymentsNotifier(this._repository, this._courseId, {this.onChanged})
       : super(const AsyncValue.loading()) {
     loadPayments();
   }
@@ -34,6 +36,7 @@ class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
     await _repository.confirmPayment(paymentId, paidAmount: paidAmount, paidDate: paidDate);
     final updated = await _repository.getPaymentsByCourse(_courseId);
     state = AsyncValue.data(updated);
+    onChanged?.call();
   }
 
   Future<({bool success, String message, Payment? payment})> generateFeeForStudent({
@@ -207,7 +210,11 @@ final paymentsForCourseProvider = StateNotifierProvider.family<
     PaymentsNotifier, AsyncValue<List<Payment>>, String>((ref, courseId) {
   ref.watch(paymentsRevisionProvider);
   final repo = ref.watch(paymentsRepositoryProvider);
-  return PaymentsNotifier(repo, courseId);
+  return PaymentsNotifier(
+    repo,
+    courseId,
+    onChanged: () => ref.read(paymentsRevisionProvider.notifier).state++,
+  );
 });
 
 final studentPaymentsProvider =

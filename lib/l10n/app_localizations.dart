@@ -2588,6 +2588,403 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Te enviamos un correo para restablecer tu contraseña.'**
   String get loginResetPasswordSent;
+
+  /// No description provided for @financeScreenSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Control de cuotas y cobros.'**
+  String get financeScreenSubtitle;
+
+  /// No description provided for @financeCollected.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobrado'**
+  String get financeCollected;
+
+  /// No description provided for @financeToCollect.
+  ///
+  /// In es, this message translates to:
+  /// **'Por cobrar'**
+  String get financeToCollect;
+
+  /// No description provided for @financeOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencido'**
+  String get financeOverdue;
+
+  /// No description provided for @financeUpcoming.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos'**
+  String get financeUpcoming;
+
+  /// No description provided for @financeUpcomingBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximo'**
+  String get financeUpcomingBadge;
+
+  /// No description provided for @financeFeeSingular.
+  ///
+  /// In es, this message translates to:
+  /// **'cuota'**
+  String get financeFeeSingular;
+
+  /// No description provided for @financeFeePlural.
+  ///
+  /// In es, this message translates to:
+  /// **'cuotas'**
+  String get financeFeePlural;
+
+  /// No description provided for @financeQuickAccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesos rápidos'**
+  String get financeQuickAccess;
+
+  /// No description provided for @financeRegisterPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar pago'**
+  String get financeRegisterPayment;
+
+  /// No description provided for @financeReminders.
+  ///
+  /// In es, this message translates to:
+  /// **'Recordatorios'**
+  String get financeReminders;
+
+  /// No description provided for @financeReports.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportes'**
+  String get financeReports;
+
+  /// No description provided for @financeUpcomingDues.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximos vencimientos'**
+  String get financeUpcomingDues;
+
+  /// No description provided for @financeSeeAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todos'**
+  String get financeSeeAll;
+
+  /// No description provided for @financeSearchHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar alumno o curso...'**
+  String get financeSearchHint;
+
+  /// No description provided for @financeFilterPending.
+  ///
+  /// In es, this message translates to:
+  /// **'Pendientes'**
+  String get financeFilterPending;
+
+  /// No description provided for @financeFilterOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencidos'**
+  String get financeFilterOverdue;
+
+  /// No description provided for @financeFilterPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagados'**
+  String get financeFilterPaid;
+
+  /// No description provided for @financePaymentDetail.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle del pago'**
+  String get financePaymentDetail;
+
+  /// No description provided for @financeFeeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota'**
+  String get financeFeeLabel;
+
+  /// No description provided for @financeIssueDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de emisión'**
+  String get financeIssueDate;
+
+  /// No description provided for @financeDueDateLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha límite'**
+  String get financeDueDateLabel;
+
+  /// No description provided for @financeNotifyParents.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisar a padres'**
+  String get financeNotifyParents;
+
+  /// No description provided for @financeCourseInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Información del curso'**
+  String get financeCourseInfo;
+
+  /// No description provided for @financeMovementHistory.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial de movimientos'**
+  String get financeMovementHistory;
+
+  /// No description provided for @financeNoMovements.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay movimientos'**
+  String get financeNoMovements;
+
+  /// No description provided for @financeNoMovementsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Este pago todavía no ha sido registrado en el sistema.'**
+  String get financeNoMovementsDesc;
+
+  /// No description provided for @financeFilters.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros'**
+  String get financeFilters;
+
+  /// No description provided for @financeAllCourses.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los cursos'**
+  String get financeAllCourses;
+
+  /// No description provided for @financeAllStudents.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos los alumnos'**
+  String get financeAllStudents;
+
+  /// No description provided for @financeAllStatuses.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get financeAllStatuses;
+
+  /// No description provided for @financeStatusField.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get financeStatusField;
+
+  /// No description provided for @financeClear.
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar'**
+  String get financeClear;
+
+  /// No description provided for @financeApply.
+  ///
+  /// In es, this message translates to:
+  /// **'Aplicar'**
+  String get financeApply;
+
+  /// No description provided for @financeIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresos'**
+  String get financeIncome;
+
+  /// No description provided for @financeByCourse.
+  ///
+  /// In es, this message translates to:
+  /// **'Por curso'**
+  String get financeByCourse;
+
+  /// No description provided for @financeCompliance.
+  ///
+  /// In es, this message translates to:
+  /// **'Cumplimiento'**
+  String get financeCompliance;
+
+  /// No description provided for @financeThisMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Este mes'**
+  String get financeThisMonth;
+
+  /// No description provided for @financeIncomeByMonth.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresos por mes'**
+  String get financeIncomeByMonth;
+
+  /// No description provided for @financeNoPaymentsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin pagos'**
+  String get financeNoPaymentsTitle;
+
+  /// No description provided for @financeNoPaymentsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay pagos registrados. Cuando registres pagos, los verás aquí.'**
+  String get financeNoPaymentsDesc;
+
+  /// No description provided for @financeNoResultsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin resultados'**
+  String get financeNoResultsTitle;
+
+  /// No description provided for @financeNoResultsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos pagos. Intenta con otro nombre o ajusta los filtros.'**
+  String get financeNoResultsDesc;
+
+  /// No description provided for @financeLoadErrorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Error de carga'**
+  String get financeLoadErrorTitle;
+
+  /// No description provided for @financeLoadErrorDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudieron cargar los pagos. Intenta nuevamente.'**
+  String get financeLoadErrorDesc;
+
+  /// No description provided for @financeRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get financeRetry;
+
+  /// No description provided for @financeMovementPaid.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago registrado'**
+  String get financeMovementPaid;
+
+  /// No description provided for @financeMovementGenerated.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota generada'**
+  String get financeMovementGenerated;
+
+  /// No description provided for @financeMovementOverdue.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago vencido'**
+  String get financeMovementOverdue;
+
+  /// No description provided for @financeDateRange.
+  ///
+  /// In es, this message translates to:
+  /// **'Rango de fechas'**
+  String get financeDateRange;
+
+  /// No description provided for @financeNoUnpaid.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay cuotas pendientes en este periodo.'**
+  String get financeNoUnpaid;
+
+  /// No description provided for @financeNoReminders.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay cuotas pendientes de aviso.'**
+  String get financeNoReminders;
+
+  /// No description provided for @financeReminderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisa a los tutores de las cuotas por cobrar, próximas o vencidas.'**
+  String get financeReminderHint;
+
+  /// No description provided for @financeNoTutorPhone.
+  ///
+  /// In es, this message translates to:
+  /// **'Este alumno no tiene un teléfono de tutor.'**
+  String get financeNoTutorPhone;
+
+  /// No description provided for @financeViewStudent.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver alumno'**
+  String get financeViewStudent;
+
+  /// No description provided for @financeNoPeriodDues.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay vencimientos en este periodo.'**
+  String get financeNoPeriodDues;
+
+  /// No description provided for @financeNoCourseIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay ingresos por curso en este periodo.'**
+  String get financeNoCourseIncome;
+
+  /// No description provided for @financeExpenses.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos'**
+  String get financeExpenses;
+
+  /// No description provided for @financeRealProfit.
+  ///
+  /// In es, this message translates to:
+  /// **'Ganancia real'**
+  String get financeRealProfit;
+
+  /// No description provided for @financeRealProfitHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo cobrado en este periodo, menos los gastos de los cursos.'**
+  String get financeRealProfitHint;
+
+  /// No description provided for @financeExpenseSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'Gasto registrado'**
+  String get financeExpenseSaved;
+
+  /// No description provided for @financePickCourse.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona un curso'**
+  String get financePickCourse;
+
+  /// No description provided for @financeNoExpensesPeriod.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay gastos en este periodo.'**
+  String get financeNoExpensesPeriod;
+
+  /// No description provided for @financeNoCoursesForExpense.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un curso para poder registrar sus gastos.'**
+  String get financeNoCoursesForExpense;
+
+  /// No description provided for @financeExpenseCategory.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría'**
+  String get financeExpenseCategory;
+
+  /// No description provided for @financeReminderMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y vence el {due}.'**
+  String financeReminderMessage(String tutor, String student, String course,
+      String period, String amount, String due);
 }
 
 class _AppLocalizationsDelegate

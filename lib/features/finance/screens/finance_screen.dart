@@ -1,479 +1,505 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../app/theme/app_colors.dart';
-import '../../../app/theme/app_text_styles.dart';
-import '../../../core/utils/currency_formatter.dart';
+
+import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../l10n/app_localizations.dart';
-import '../providers/finance_provider.dart';
+import '../../payments/models/payment_model.dart';
+import '../logic/finance_fees.dart';
+import '../providers/finance_catalog_provider.dart';
+import '../widgets/finance_sheets.dart';
+import '../widgets/finance_ui.dart';
 
 class FinanceScreen extends ConsumerWidget {
   const FinanceScreen({super.key});
 
-  void _openAddExpenseDialog(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    final descController = TextEditingController();
-    final amountController = TextEditingController();
-    String category = 'Materiales';
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(financeCatalogProvider);
+    final window = ref.watch(financeWindowProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: Text(l10n.addExpenseBtn),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: descController,
-                decoration: InputDecoration(labelText: l10n.expenseDescriptionLabel),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: l10n.amountDollarLabel),
-              ),
-              const SizedBox(height: 8),
-              DropdownButton<String>(
-                value: category,
-                isExpanded: true,
-                items: [
-                  DropdownMenuItem(value: 'Materiales', child: Text(l10n.categoryMaterials)),
-                  DropdownMenuItem(value: 'Software', child: Text(l10n.categorySoftware)),
-                  DropdownMenuItem(value: 'Insumos', child: Text(l10n.categorySupplies)),
-                  DropdownMenuItem(value: 'Transporte', child: Text(l10n.categoryTransport)),
-                  DropdownMenuItem(value: 'Varios', child: Text(l10n.categoryMisc)),
-                ],
-                onChanged: (val) {
-                  if (val != null) setState(() => category = val);
-                },
-              ),
-            ],
+    return Scaffold(
+      backgroundColor: FinancePalette.page(isDark),
+      body: SafeArea(
+        bottom: false,
+        child: catalog.when(
+          loading: () => const _FinanceSkeleton(),
+          error: (_, __) => _FinanceError(
+            onRetry: () => reloadFinance(ref),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.cancel),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final amount = double.tryParse(amountController.text) ?? 0.0;
-                if (descController.text.trim().isNotEmpty && amount > 0) {
-                  ref.read(expensesProvider.notifier).addExpense(
-                    description: descController.text.trim(),
-                    amount: amount,
-                    category: category,
-                  );
-                  Navigator.of(ctx).pop();
-                }
-              },
-              child: Text(l10n.save),
-            ),
-          ],
+          data: (data) {
+            return ListView(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, AppBottomNavBar.reservedHeight(context)),
+              children: [
+                _FinanceHeader(
+                  window: window,
+                  onPickPeriod: () => showFinancePeriodPicker(context, ref, data.payments),
+                ),
+                const SizedBox(height: 16),
+                if (data.payments.isEmpty)
+                  FinanceStateMessage(
+                    icon: Icons.person_outline,
+                    iconColor: FinancePalette.muted(isDark),
+                    iconBackground: isDark ? const Color(0xFF1E293B) : const Color(0xFFEEF2F7),
+                    title: AppLocalizations.of(context)!.financeNoPaymentsTitle,
+                    description: AppLocalizations.of(context)!.financeNoPaymentsDesc,
+                  )
+                else
+                  _Dashboard(catalog: data, window: window),
+              ],
+            );
+          },
         ),
       ),
     );
   }
+}
 
-  String _categoryLabel(AppLocalizations l10n, String category) {
-    switch (category) {
-      case 'Materiales':
-        return l10n.categoryMaterials;
-      case 'Software':
-        return l10n.categorySoftware;
-      case 'Insumos':
-        return l10n.categorySupplies;
-      case 'Transporte':
-        return l10n.categoryTransport;
-      case 'Varios':
-        return l10n.categoryMisc;
-      default:
-        return category;
-    }
-  }
+class _Dashboard extends ConsumerWidget {
+  final FinanceCatalog catalog;
+  final FinanceWindow window;
+
+  const _Dashboard({required this.catalog, required this.window});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final summary = ref.watch(financeSummaryProvider);
-    final period = ref.watch(selectedPeriodProvider);
-    final expenses = ref.watch(expensesProvider);
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final primaryColor = theme.colorScheme.primary;
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
+    final totals = financeTotals(catalog.payments, window);
+    final dues = upcomingDues(catalog.payments, window);
+    final dueEntries = [
+      for (final payment in dues)
+        catalog.entries.firstWhere((entry) => entry.payment.id == payment.id),
+    ];
+    final unpaid = catalog.entries.where((entry) {
+      if (!window.includes(entry.payment)) return false;
+      return entry.payment.status != PaymentStatus.paid;
+    }).toList();
 
-    return Scaffold(
-      extendBody: true,
-      backgroundColor:
-      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back,
-              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D)),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: _MetricCard(
+                amount: financeMoney(totals.collected),
+                label: l10n.financeCollected,
+                color: FinancePalette.collected,
+                background: FinancePalette.collectedBg(isDark),
+                icon: Icons.account_balance_wallet_outlined,
+                footnote: totals.changePercent == null
+                    ? null
+                    : _ChangeFootnote(percent: totals.changePercent!),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _MetricCard(
+                amount: financeMoney(totals.toCollect),
+                label: l10n.financeToCollect,
+                color: FinancePalette.toCollect,
+                background: FinancePalette.toCollectBg(isDark),
+                icon: Icons.account_balance_wallet_outlined,
+                footnote: Text(
+                  financeFeeCount(l10n, totals.toCollectCount),
+                  style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+                ),
+              ),
+            ),
+          ],
         ),
-        title: Text(
-          l10n.financeStatsTitle,
-          style: AppTextStyles.titleMedium.copyWith(
-            fontWeight: FontWeight.bold,
-            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: _MetricCard(
+                amount: financeMoney(totals.overdue),
+                label: l10n.financeOverdue,
+                color: FinancePalette.overdue,
+                background: FinancePalette.overdueBg(isDark),
+                icon: Icons.payments_outlined,
+                footnote: Text(
+                  financeFeeCount(l10n, totals.overdueCount),
+                  style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: _MetricCard(
+                amount: financeMoney(totals.upcoming),
+                label: l10n.financeUpcoming,
+                color: FinancePalette.upcoming,
+                background: FinancePalette.upcomingBg(isDark),
+                icon: Icons.calendar_month_outlined,
+                footnote: Text(
+                  financeFeeCount(l10n, totals.upcomingCount),
+                  style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 18),
+        Text(
+          l10n.financeQuickAccess,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w800,
+            color: FinancePalette.ink(isDark),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        const SizedBox(height: 10),
+        FinanceSectionCard(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Row(
+              children: [
+                _QuickAction(
+                  icon: Icons.edit_note_outlined,
+                  label: l10n.financeRegisterPayment,
+                  onTap: () => showRegisterPaymentSheet(context, ref, unpaid),
+                ),
+                _QuickAction(
+                  icon: Icons.notifications_none,
+                  label: l10n.financeReminders,
+                  onTap: () => context.push('/finance/reminders'),
+                ),
+                _QuickAction(
+                  icon: Icons.bar_chart_rounded,
+                  label: l10n.financeReports,
+                  onTap: () => context.push('/finance/reports'),
+                ),
+                _QuickAction(
+                  icon: Icons.receipt_long_outlined,
+                  label: l10n.financeExpenses,
+                  onTap: () => context.push('/finance/expenses'),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 18),
+        Row(
           children: [
-            // Filtro de periodo
-            Row(
-              children: [
-                Expanded(
-                  child: FilterChip(
-                    label: Text(l10n.currentMonthTab),
-                    selected: period == FinancePeriod.currentMonth,
-                    selectedColor: primaryColor,
-                    labelStyle: TextStyle(
-                      color: period == FinancePeriod.currentMonth ? Colors.white : AppColors.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                    onSelected: (val) => ref.read(selectedPeriodProvider.notifier).state = FinancePeriod.currentMonth,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: FilterChip(
-                    label: Text(l10n.previousMonthTab),
-                    selected: period == FinancePeriod.previousMonth,
-                    selectedColor: primaryColor,
-                    labelStyle: TextStyle(
-                      color: period == FinancePeriod.previousMonth ? Colors.white : AppColors.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                    onSelected: (val) => ref.read(selectedPeriodProvider.notifier).state = FinancePeriod.previousMonth,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: FilterChip(
-                    label: Text(l10n.allYearTab),
-                    selected: period == FinancePeriod.allTime,
-                    selectedColor: primaryColor,
-                    labelStyle: TextStyle(
-                      color: period == FinancePeriod.allTime ? Colors.white : AppColors.onSurfaceVariant,
-                      fontSize: 11,
-                    ),
-                    onSelected: (val) => ref.read(selectedPeriodProvider.notifier).state = FinancePeriod.allTime,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // Tarjetas de Métricas (Ingresos, Gastos, Ganancia)
-            Row(
-              children: [
-                Expanded(
-                  child: _buildFinancialTile(
-                    title: l10n.incomeLabel,
-                    amount: summary.totalIncome,
-                    color: AppColors.secondary,
-                    icon: Icons.trending_up,
-                    isDark: isDark,
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _buildFinancialTile(
-                    title: l10n.expensesLabel,
-                    amount: summary.totalExpenses,
-                    color: AppColors.error,
-                    icon: Icons.trending_down,
-                    isDark: isDark,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Ganancia Neta
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF151D2E) : Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+            Expanded(
+              child: Text(
+                l10n.financeUpcomingDues,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: FinancePalette.ink(isDark),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.netProfitFormula,
-                        style: AppTextStyles.labelMedium.copyWith(
-                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        formatCurrency(summary.netProfit),
-                        style: AppTextStyles.headlineMedium.copyWith(
-                          color: summary.netProfit >= 0 ? primaryColor : AppColors.error,
-                          fontWeight: FontWeight.bold,
-                        ),
+            ),
+            TextButton(
+              onPressed: () => context.push('/finance/payments'),
+              child: Text(
+                l10n.financeSeeAll,
+                style: TextStyle(color: primary, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
+        FinanceSectionCard(
+          child: dueEntries.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Text(
+                    l10n.financeNoPeriodDues,
+                    style: TextStyle(color: FinancePalette.muted(isDark)),
+                  ),
+                )
+              : Column(
+                  children: [
+                    for (var i = 0; i < dueEntries.length; i++) ...[
+                      if (i > 0) Divider(height: 1, color: FinancePalette.border(isDark)),
+                      FinancePaymentTile(
+                        entry: dueEntries[i],
+                        onTap: () => context.push('/finance/payment/${dueEntries[i].payment.id}'),
                       ),
                     ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: isDark ? primaryColor.withValues(alpha: 0.2) : AppColors.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Text(
-                      l10n.marginLabel('${summary.profitMargin}'),
-                      style: AppTextStyles.labelSmall.copyWith(
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+                  ],
+                ),
+        ),
+      ],
+    );
+  }
+}
 
-            // Gráfico dinámico de distribución
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF151D2E) : Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+class _FinanceHeader extends StatelessWidget {
+  final FinanceWindow window;
+  final VoidCallback onPickPeriod;
+
+  const _FinanceHeader({required this.window, required this.onPickPeriod});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primary = Theme.of(context).colorScheme.primary;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.navFinance,
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.4,
+                  color: primary,
                 ),
               ),
+              const SizedBox(height: 2),
+              Text(
+                l10n.financeScreenSubtitle,
+                style: TextStyle(fontSize: 13, color: FinancePalette.muted(isDark)),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        _PeriodButton(label: financeWindowLabel(context, window), onTap: onPickPeriod),
+      ],
+    );
+  }
+}
+
+class _PeriodButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _PeriodButton({required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return TextButton(
+      onPressed: onTap,
+      style: TextButton.styleFrom(
+        foregroundColor: primary,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        minimumSize: const Size(0, 36),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+            ),
+          ),
+          const Icon(Icons.keyboard_arrow_down, size: 18),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricCard extends StatelessWidget {
+  final String amount;
+  final String label;
+  final Color color;
+  final Color background;
+  final IconData icon;
+  final Widget? footnote;
+
+  const _MetricCard({
+    required this.amount,
+    required this.label,
+    required this.color,
+    required this.background,
+    required this.icon,
+    this.footnote,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return FinanceSectionCard(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: background,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, size: 18, color: color),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      amount,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: color,
+                      ),
+                    ),
+                  ),
                   Text(
-                    l10n.financialDistribution,
-                    style: AppTextStyles.titleSmall.copyWith(
-                      color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
-                      fontWeight: FontWeight.bold,
-                    ),
+                    label,
+                    style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
                   ),
-                  const SizedBox(height: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: SizedBox(
-                      height: 12,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: summary.totalIncome > 0 ? summary.totalIncome.round() : 1,
-                            child: Container(color: AppColors.secondary),
-                          ),
-                          Expanded(
-                            flex: summary.totalExpenses > 0 ? summary.totalExpenses.round() : 0,
-                            child: Container(color: AppColors.error),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.secondary, shape: BoxShape.circle)),
-                          const SizedBox(width: 6),
-                          Text(
-                            l10n.collectedWithAmount(formatCurrency(summary.totalIncome)),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle)),
-                          const SizedBox(width: 6),
-                          Text(
-                            l10n.expensesWithAmount(formatCurrency(summary.totalExpenses)),
-                            style: AppTextStyles.bodySmall.copyWith(
-                              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  if (footnote != null) footnote!,
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Encabezado de Gastos
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  l10n.teacherExpenses,
-                  style: AppTextStyles.titleMedium.copyWith(
-                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => _openAddExpenseDialog(context, ref),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isDark ? const Color(0xFF1E2A42) : AppColors.surfaceContainerHigh,
-                    foregroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  ),
-                  icon: const Icon(Icons.add, size: 16),
-                  label: Text(l10n.register, style: const TextStyle(fontSize: 12)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-
-            // Lista de Gastos o estado vacío
-            if (expenses.isEmpty)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF151D2E) : Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
-                  ),
-                ),
-                child: Text(
-                  l10n.noExpensesPeriod,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                  ),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: expenses.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (ctx, index) {
-                  final exp = expenses[index];
-                  return Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF151D2E) : Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              exp.description,
-                              style: AppTextStyles.titleSmall.copyWith(
-                                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '${_categoryLabel(l10n, exp.category)} • ${exp.date}',
-                              style: AppTextStyles.bodySmall.copyWith(
-                                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          '-${formatCurrency(exp.amount)}',
-                          style: AppTextStyles.titleMedium.copyWith(
-                            color: AppColors.error,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            const SizedBox(height: 32),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildFinancialTile({
-    required String title,
-    required double amount,
-    required Color color,
-    required IconData icon,
-    required bool isDark,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF151D2E) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9),
+class _ChangeFootnote extends StatelessWidget {
+  final int percent;
+
+  const _ChangeFootnote({required this.percent});
+
+  @override
+  Widget build(BuildContext context) {
+    final positive = percent >= 0;
+    final color = positive ? FinancePalette.collected : FinancePalette.overdue;
+    final prefix = positive ? '+' : '';
+    return Row(
+      children: [
+        Icon(
+          positive ? Icons.arrow_upward : Icons.arrow_downward,
+          size: 12,
+          color: color,
+        ),
+        Text(
+          '$prefix$percent%',
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: color),
+        ),
+      ],
+    );
+  }
+}
+
+class _QuickAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickAction({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          children: [
+            Icon(icon, color: primary, size: 26),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isDark ? const Color(0xFFCBD5E1) : primary,
+              ),
+            ),
+          ],
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: AppTextStyles.labelMedium.copyWith(
-                  color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
-                ),
-              ),
-              Icon(icon, size: 18, color: color),
-            ],
+    );
+  }
+}
+
+class _FinanceError extends StatelessWidget {
+  final VoidCallback onRetry;
+
+  const _FinanceError({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return ListView(
+      padding: EdgeInsets.fromLTRB(16, 8, 16, AppBottomNavBar.reservedHeight(context)),
+      children: [
+        Text(
+          l10n.navFinance,
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.w800,
+            color: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(height: 6),
-          Text(
-            formatCurrency(amount),
-            style: AppTextStyles.titleLarge.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
-            ),
+        ),
+        const SizedBox(height: 16),
+        FinanceStateMessage(
+          icon: Icons.error_outline,
+          iconColor: FinancePalette.overdue,
+          iconBackground: FinancePalette.overdueBg(Theme.of(context).brightness == Brightness.dark),
+          title: l10n.financeLoadErrorTitle,
+          description: l10n.financeLoadErrorDesc,
+          actionLabel: l10n.financeRetry,
+          onAction: onRetry,
+        ),
+      ],
+    );
+  }
+}
+
+class _FinanceSkeleton extends StatelessWidget {
+  const _FinanceSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bone = isDark ? const Color(0xFF22304A) : const Color(0xFFE6EDF5);
+    Widget block({double height = 72}) => Container(
+          height: height,
+          decoration: BoxDecoration(
+            color: FinancePalette.card(isDark),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: bone),
           ),
-        ],
-      ),
+        );
+    return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, AppBottomNavBar.reservedHeight(context)),
+      children: [
+        Container(height: 28, width: 140, color: bone),
+        const SizedBox(height: 16),
+        Row(children: [Expanded(child: block()), const SizedBox(width: 8), Expanded(child: block())]),
+        const SizedBox(height: 8),
+        Row(children: [Expanded(child: block()), const SizedBox(width: 8), Expanded(child: block())]),
+        const SizedBox(height: 16),
+        block(height: 88),
+        const SizedBox(height: 16),
+        block(height: 180),
+      ],
     );
   }
 }
