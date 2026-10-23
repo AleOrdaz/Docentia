@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../app/theme/app_colors.dart';
+import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/theme/theme_provider.dart';
 import '../../../l10n/app_localizations.dart';
@@ -145,14 +146,16 @@ class TeacherProfileScreen extends ConsumerWidget {
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: textPrimary),
-          onPressed: () => context.pop(),
-        ),
-        title: Text(l10n!.profileTitle, style: AppTextStyles.titleMedium.copyWith(color: textPrimary)),
+        automaticallyImplyLeading: false,
+        title: Text(l10n.profileTitle, style: AppTextStyles.titleMedium.copyWith(color: textPrimary)),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          16 + AppBottomNavBar.reservedHeight(context),
+        ),
         child: Column(
           children: [
             // Tarjeta Principal de Identidad

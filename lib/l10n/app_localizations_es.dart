@@ -24,6 +24,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navFinance => 'Finanzas';
 
   @override
+  String get navProfile => 'Perfil';
+
+  @override
   String get back => 'Volver';
 
   @override

@@ -98,6 +98,14 @@ final routerProvider = Provider<GoRouter>((ref) {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const TeacherProfileScreen(),
+              ),
+            ],
+          ),
         ],
       ),
       GoRoute(
@@ -127,10 +135,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           final studentId = (state.pathParameters['studentId'] as String?) ?? '';
           return StudentDetailScreen(studentId: studentId);
         },
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) => const TeacherProfileScreen(),
       ),
       GoRoute(
         path: '/estilos',

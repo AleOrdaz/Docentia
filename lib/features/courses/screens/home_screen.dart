@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
-import '../../auth/widgets/teacher_avatar.dart';
 import '../../payments/models/payment_model.dart';
 import '../../payments/providers/payments_provider.dart';
 import '../../students/providers/students_provider.dart';
@@ -61,31 +60,6 @@ class HomeScreen extends ConsumerWidget {
             ),
           ],
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: InkWell(
-              onTap: () => context.push('/profile'),
-              borderRadius: BorderRadius.circular(100),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TeacherAvatar(
-                    radius: 18,
-                    photoUrl: teacher?.photoUrl,
-                    name: teacher?.name,
-                  ),
-                  const SizedBox(width: 4),
-                  const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Color(0xFF5F6368),
-                    size: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
       body: coursesAsync.when(
         data: (courses) {

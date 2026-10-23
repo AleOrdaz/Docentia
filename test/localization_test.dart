@@ -19,6 +19,7 @@ void main() {
       expect(l10nEs.navCourses, 'Cursos');
       expect(l10nEs.navCalendar, 'Calendario');
       expect(l10nEs.navFinance, 'Finanzas');
+      expect(l10nEs.navProfile, 'Perfil');
       expect(l10nEs.languageTitle, 'Idioma');
       expect(l10nEs.spanishLanguage, 'Español');
       expect(l10nEs.englishLanguage, 'English');
@@ -43,6 +44,7 @@ void main() {
       expect(l10nEn.navCourses, 'Courses');
       expect(l10nEn.navCalendar, 'Calendar');
       expect(l10nEn.navFinance, 'Finance');
+      expect(l10nEn.navProfile, 'Profile');
       expect(l10nEn.languageTitle, 'Language');
       expect(l10nEn.spanishLanguage, 'Español');
       expect(l10nEn.englishLanguage, 'English');

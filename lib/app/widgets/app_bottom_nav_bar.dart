@@ -1,10 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/providers/auth_provider.dart';
+import '../../features/auth/widgets/teacher_avatar.dart';
 import '../../l10n/app_localizations.dart';
 
-class AppBottomNavBar extends StatelessWidget {
+class AppBottomNavBar extends ConsumerWidget {
   final int currentIndex;
   final ValueChanged<int>? onDestinationSelected;
 
@@ -22,11 +25,12 @@ class AppBottomNavBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = theme.colorScheme.primary;
     final l10n = AppLocalizations.of(context);
+    final teacher = ref.watch(authProvider).teacher;
 
     final navItems = [
       (
@@ -34,24 +38,35 @@ class AppBottomNavBar extends StatelessWidget {
       activeIcon: Icons.home,
       label: l10n?.navHome ?? 'Inicio',
       route: '/home',
+      isProfile: false,
       ),
       (
       icon: Icons.auto_stories_outlined,
       activeIcon: Icons.auto_stories,
       label: l10n?.navCourses ?? 'Cursos',
       route: '/courses',
+      isProfile: false,
       ),
       (
       icon: Icons.calendar_month_outlined,
       activeIcon: Icons.calendar_month,
       label: l10n?.navCalendar ?? 'Calendario',
       route: '/calendar',
+      isProfile: false,
       ),
       (
       icon: Icons.insert_chart_outlined,
       activeIcon: Icons.insert_chart,
       label: l10n?.navFinance ?? 'Finanzas',
       route: '/finance',
+      isProfile: false,
+      ),
+      (
+      icon: Icons.person_outline,
+      activeIcon: Icons.person,
+      label: l10n?.navProfile ?? 'Perfil',
+      route: '/profile',
+      isProfile: true,
       ),
     ];
 
@@ -61,9 +76,9 @@ class AppBottomNavBar extends StatelessWidget {
       top: false,
       child: Padding(
         padding: EdgeInsets.fromLTRB(
-          20,
+          12,
           0,
-          20,
+          12,
           bottomPadding > 0 ? 0: 4,
         ),
         child: DecoratedBox(
@@ -97,7 +112,7 @@ class AppBottomNavBar extends StatelessWidget {
                     width: 0.8,
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: List.generate(navItems.length, (index) {
@@ -132,14 +147,23 @@ class AppBottomNavBar extends StatelessWidget {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                isActive ? item.activeIcon : item.icon,
-                                size: 22,
-                                color: iconColor,
-                              ),
+                              if (item.isProfile)
+                                TeacherAvatar(
+                                  radius: 11,
+                                  photoUrl: teacher?.photoUrl,
+                                  name: teacher?.name,
+                                )
+                              else
+                                Icon(
+                                  isActive ? item.activeIcon : item.icon,
+                                  size: 22,
+                                  color: iconColor,
+                                ),
                               const SizedBox(height: 2),
                               Text(
                                 item.label,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: isActive

@@ -128,6 +128,12 @@ abstract class AppLocalizations {
   /// **'Finanzas'**
   String get navFinance;
 
+  /// No description provided for @navProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get navProfile;
+
   /// No description provided for @back.
   ///
   /// In es, this message translates to:
