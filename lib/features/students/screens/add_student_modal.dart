@@ -123,190 +123,193 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.outlineVariantAdaptive(context),
-                    borderRadius: BorderRadius.circular(100),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.outlineVariantAdaptive(context),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.person_add, color: primaryColor, size: 24),
-                      const SizedBox(width: 8),
-                      Text(
-                        l10n.addStudentTitle,
-                        style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.person_add, color: primaryColor, size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.addStudentTitle,
+                          style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: textSecondary),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+
+                Text(
+                  l10n.addStudentDesc(widget.courseName),
+                  style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                ),
+                const SizedBox(height: 16),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        label: l10n.firstNamesLabel,
+                        controller: _nameController,
+                        hint: l10n.firstNameHint,
+                        validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? l10n.required : null,
                       ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close, color: textSecondary),
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
-              ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _buildTextField(
+                        label: l10n.lastNamesLabel,
+                        controller: _lastNameController,
+                        hint: l10n.lastNameHint,
+                        validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? l10n.required : null,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-              Text(
-                l10n.addStudentDesc(widget.courseName),
-                style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
-              ),
-              const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        label: l10n.ageLabel,
+                        controller: _ageController,
+                        hint: '16',
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _buildRelationshipField(
+                        l10n,
+                        value: _relationship,
+                        onChanged: (value) => setState(() => _relationship = value),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      label: l10n.firstNamesLabel,
-                      controller: _nameController,
-                      hint: l10n.firstNameHint,
-                      validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? l10n.required : null,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildTextField(
-                      label: l10n.lastNamesLabel,
-                      controller: _lastNameController,
-                      hint: l10n.lastNameHint,
-                      validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? l10n.required : null,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.tutorNameLabel,
+                  controller: _tutorNameController,
+                  hint: l10n.tutorNameHint,
+                ),
+                const SizedBox(height: 12),
 
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      label: l10n.ageLabel,
-                      controller: _ageController,
-                      hint: '16',
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildRelationshipField(
-                      l10n,
-                      value: _relationship,
-                      onChanged: (value) => setState(() => _relationship = value),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.tutorPhoneRequiredLabel,
+                  controller: _tutorPhoneController,
+                  hint: '+54 9 11 4522 8901',
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                  validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? l10n.phoneRequiredWhatsapp : null,
+                ),
+                const SizedBox(height: 12),
 
-              _buildTextField(
-                label: l10n.tutorNameLabel,
-                controller: _tutorNameController,
-                hint: l10n.tutorNameHint,
-              ),
-              const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.emailLabel,
+                  controller: _tutorEmailController,
+                  hint: l10n.emailHint,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.emergencyContactTitle,
+                  style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _buildTextField(
+                        label: l10n.nameLabel,
+                        controller: _emergencyNameController,
+                        hint: l10n.tutorNameHint,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _buildRelationshipField(
+                        l10n,
+                        value: _emergencyRelationship,
+                        onChanged: (value) => setState(() => _emergencyRelationship = value),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.mobilePhone,
+                  controller: _emergencyPhoneController,
+                  hint: '+54 9 11 4522 8901',
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                ),
+                const SizedBox(height: 20),
 
-              _buildTextField(
-                label: l10n.tutorPhoneRequiredLabel,
-                controller: _tutorPhoneController,
-                hint: '+54 9 11 4522 8901',
-                keyboardType: TextInputType.phone,
-                prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
-                validator: (v) =>
-                (v == null || v.trim().isEmpty) ? l10n.phoneRequiredWhatsapp : null,
-              ),
-              const SizedBox(height: 12),
-
-              _buildTextField(
-                label: l10n.emailLabel,
-                controller: _tutorEmailController,
-                hint: l10n.emailHint,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                l10n.emergencyContactTitle,
-                style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      label: l10n.nameLabel,
-                      controller: _emergencyNameController,
-                      hint: l10n.tutorNameHint,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: TextButton.styleFrom(
+                        foregroundColor: textPrimary,
+                        backgroundColor: AppColors.surfaceMid(context),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      ),
+                      child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _buildRelationshipField(
-                      l10n,
-                      value: _emergencyRelationship,
-                      onChanged: (value) => setState(() => _emergencyRelationship = value),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _isSubmitting ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: AppColors.onPrimary,
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                      icon: _isSubmitting
+                          ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                          : const Icon(Icons.check, size: 18),
+                      label: Text(l10n.register, style: const TextStyle(fontWeight: FontWeight.w600)),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _buildTextField(
-                label: l10n.mobilePhone,
-                controller: _emergencyPhoneController,
-                hint: '+54 9 11 4522 8901',
-                keyboardType: TextInputType.phone,
-                prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
-              ),
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: TextButton.styleFrom(
-                      foregroundColor: textPrimary,
-                      backgroundColor: AppColors.surfaceMid(context),
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    ),
-                    child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton.icon(
-                    onPressed: _isSubmitting ? null : _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: AppColors.onPrimary,
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    ),
-                    icon: _isSubmitting
-                        ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                    )
-                        : const Icon(Icons.check, size: 18),
-                    label: Text(l10n.register, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -537,199 +537,201 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             borderRadius:
             const BorderRadius.vertical(top: Radius.circular(28)),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 44,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF334155)
-                        : const Color(0xFFE2E8F0),
-                    borderRadius: BorderRadius.circular(2),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 44,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? const Color(0xFF334155)
+                          : const Color(0xFFE2E8F0),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 14),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+                const SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.mail, color: Color(0xFF0284C7), size: 24),
+                        const SizedBox(width: 8),
+                        Text(
+                          l10n.sendEventToParents,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? const Color(0xFFF8FAFC)
+                                : const Color(0xFF00174D),
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(ctx).pop(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Banner informativo de destinatarios
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF0C3353)
+                        : const Color(0xFFF0F9FF),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFF1E4D7A)
+                          : const Color(0xFFBAE6FD),
+                    ),
+                  ),
+                  child: Row(
                     children: [
-                      const Icon(Icons.mail, color: Color(0xFF0284C7), size: 24),
+                      const Icon(Icons.shield_outlined,
+                          color: Color(0xFF0284C7), size: 20),
                       const SizedBox(width: 8),
-                      Text(
-                        l10n.sendEventToParents,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: isDark
-                              ? const Color(0xFFF8FAFC)
-                              : const Color(0xFF00174D),
+                      Expanded(
+                        child: Text(
+                          l10n.bccPrivacyNotice(allRecipients.length),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark
+                                ? const Color(0xFFE0F2FE)
+                                : const Color(0xFF0C4A6E),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.of(ctx).pop(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-
-              // Banner informativo de destinatarios
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? const Color(0xFF0C3353)
-                      : const Color(0xFFF0F9FF),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF1E4D7A)
-                        : const Color(0xFFBAE6FD),
-                  ),
                 ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.shield_outlined,
-                        color: Color(0xFF0284C7), size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.bccPrivacyNotice(allRecipients.length),
+                const SizedBox(height: 12),
+
+                // Vista previa del mensaje
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isDark
+                        ? const Color(0xFF1C273D)
+                        : const Color(0xFFF8F9FE),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark
+                          ? const Color(0xFF2B3A55)
+                          : const Color(0xFFEEF2F9),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${l10n.subjectPrefix} $subject',
                         style: TextStyle(
                           fontSize: 12,
+                          fontWeight: FontWeight.bold,
                           color: isDark
-                              ? const Color(0xFFE0F2FE)
-                              : const Color(0xFF0C4A6E),
+                              ? const Color(0xFFE6EDF8)
+                              : const Color(0xFF00174D),
+                        ),
+                      ),
+                      const Divider(height: 16),
+                      Text(
+                        body,
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          height: 1.45,
+                          color: isDark
+                              ? const Color(0xFFCBD5E1)
+                              : const Color(0xFF43474E),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Botones de acción
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: '$subject\n\n$body'));
+                          Navigator.of(ctx).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.noticeCopied),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.copy, size: 16),
+                        label: Text(l10n.copyText,
+                            style: const TextStyle(fontSize: 12)),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          final uri = Uri(
+                            scheme: 'mailto',
+                            path: allRecipients.isNotEmpty
+                                ? allRecipients.first : '',
+                            queryParameters: {
+                              if (allRecipients.length > 1)
+                                'bcc': allRecipients.skip(1).join(','),
+                              'subject': subject,
+                              'body': body,
+                            },
+                          );
+
+                          Navigator.of(ctx).pop();
+                          if (await canLaunchUrl(uri)) {
+                            await launchUrl(uri);
+                          } else {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      l10n.noMailClient),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.open_in_new, size: 16),
+                        label: Text(l10n.openMail,
+                            style: const TextStyle(fontSize: 12)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0284C7),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 12),
-
-              // Vista previa del mensaje
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? const Color(0xFF1C273D)
-                      : const Color(0xFFF8F9FE),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isDark
-                        ? const Color(0xFF2B3A55)
-                        : const Color(0xFFEEF2F9),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${l10n.subjectPrefix} $subject',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: isDark
-                            ? const Color(0xFFE6EDF8)
-                            : const Color(0xFF00174D),
-                      ),
-                    ),
-                    const Divider(height: 16),
-                    Text(
-                      body,
-                      style: TextStyle(
-                        fontSize: 11.5,
-                        height: 1.45,
-                        color: isDark
-                            ? const Color(0xFFCBD5E1)
-                            : const Color(0xFF43474E),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Botones de acción
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Clipboard.setData(ClipboardData(text: '$subject\n\n$body'));
-                        Navigator.of(ctx).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(l10n.noticeCopied),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.copy, size: 16),
-                      label: Text(l10n.copyText,
-                          style: TextStyle(fontSize: 12)),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final uri = Uri(
-                          scheme: 'mailto',
-                          path: allRecipients.isNotEmpty
-                              ? allRecipients.first
-                              : '',
-                          queryParameters: {
-                            if (allRecipients.length > 1)
-                              'bcc': allRecipients.skip(1).join(','),
-                            'subject': subject,
-                            'body': body,
-                          },
-                        );
-
-                        Navigator.of(ctx).pop();
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri);
-                        } else {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    l10n.noMailClient),
-                              ),
-                            );
-                          }
-                        }
-                      },
-                      icon: const Icon(Icons.open_in_new, size: 16),
-                      label: Text(l10n.openMail,
-                          style: TextStyle(fontSize: 12)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0284C7),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
