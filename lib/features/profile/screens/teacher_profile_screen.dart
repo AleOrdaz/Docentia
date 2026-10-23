@@ -352,6 +352,7 @@ class TeacherProfileScreen extends ConsumerWidget {
                   // Grid de los 10 colores
                   GridView.builder(
                     shrinkWrap: true,
+                    padding: EdgeInsets.zero,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 5,
