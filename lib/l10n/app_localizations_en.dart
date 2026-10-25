@@ -115,6 +115,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get todaysCoursesTitle => 'Today\'s Courses';
 
   @override
+  String get homeShortcutsTitle => 'Quick access';
+
+  @override
+  String get newEventShortcut => 'New event';
+
+  @override
+  String get recordExpenseShortcut => 'Record expense';
+
+  @override
+  String get selectCourseTitle => 'Select a course';
+
+  @override
+  String get createCourseFirst => 'Create a course to add students';
+
+  @override
+  String get homeActivityTitle => 'Your activity today';
+
+  @override
+  String get homeSeeAll => 'See all';
+
+  @override
+  String get feeDueSoonTitle => 'Fee due soon';
+
+  @override
+  String dueOnDate(String date) {
+    return 'Due $date';
+  }
+
+  @override
+  String get homeNoActivityTitle => 'Nothing today';
+
+  @override
+  String get homeNoActivityDesc =>
+      'Classes, events, and fees will show up here.';
+
+  @override
   String get newCourseBtn => 'New Course';
 
   @override

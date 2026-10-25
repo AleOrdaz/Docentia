@@ -29,6 +29,9 @@ void main() {
       expect(l10nEs.loginSignIn, 'Iniciar sesión');
       expect(l10nEs.loginForgotPassword, '¿Olvidaste tu contraseña?');
       expect(l10nEs.homeGreeting('Antonio'), 'Hola, Antonio');
+      expect(l10nEs.homeShortcutsTitle, 'Accesos rápidos');
+      expect(l10nEs.homeActivityTitle, 'Tu actividad de hoy');
+      expect(l10nEs.newEventShortcut, 'Nuevo evento');
       expect(l10nEs.pendingPaymentSingular, 'pago pendiente');
       expect(l10nEs.pendingPaymentPlural, 'pagos pendientes');
       expect(l10nEs.relationshipLabel, 'Parentesco');
@@ -54,6 +57,9 @@ void main() {
       expect(l10nEn.loginSignIn, 'Sign in');
       expect(l10nEn.loginForgotPassword, 'Forgot your password?');
       expect(l10nEn.homeGreeting('Antonio'), 'Hello, Antonio');
+      expect(l10nEn.homeShortcutsTitle, 'Quick access');
+      expect(l10nEn.homeActivityTitle, 'Your activity today');
+      expect(l10nEn.newEventShortcut, 'New event');
       expect(l10nEn.pendingPaymentSingular, 'pending payment');
       expect(l10nEn.pendingPaymentPlural, 'pending payments');
       expect(l10nEn.relationshipLabel, 'Relationship');

@@ -302,6 +302,72 @@ abstract class AppLocalizations {
   /// **'Cursos de hoy'**
   String get todaysCoursesTitle;
 
+  /// No description provided for @homeShortcutsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesos rápidos'**
+  String get homeShortcutsTitle;
+
+  /// No description provided for @newEventShortcut.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo evento'**
+  String get newEventShortcut;
+
+  /// No description provided for @recordExpenseShortcut.
+  ///
+  /// In es, this message translates to:
+  /// **'Registrar gasto'**
+  String get recordExpenseShortcut;
+
+  /// No description provided for @selectCourseTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona un curso'**
+  String get selectCourseTitle;
+
+  /// No description provided for @createCourseFirst.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un curso para agregar alumnos'**
+  String get createCourseFirst;
+
+  /// No description provided for @homeActivityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu actividad de hoy'**
+  String get homeActivityTitle;
+
+  /// No description provided for @homeSeeAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todo'**
+  String get homeSeeAll;
+
+  /// No description provided for @feeDueSoonTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota por vencer'**
+  String get feeDueSoonTitle;
+
+  /// No description provided for @dueOnDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {date}'**
+  String dueOnDate(String date);
+
+  /// No description provided for @homeNoActivityTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada por hoy'**
+  String get homeNoActivityTitle;
+
+  /// No description provided for @homeNoActivityDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando tengas clases, eventos o cuotas, aparecerán aquí.'**
+  String get homeNoActivityDesc;
+
   /// No description provided for @newCourseBtn.
   ///
   /// In es, this message translates to:
