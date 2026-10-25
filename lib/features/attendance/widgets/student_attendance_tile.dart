@@ -173,11 +173,11 @@ class StudentAttendanceTile extends StatelessWidget {
                         height: 44,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) =>
-                            _buildInitials(displayInitials, displayName),
+                            _buildInitials(context, displayInitials, displayName),
                       ),
                     )
                   else
-                    _buildInitials(displayInitials, displayName),
+                    _buildInitials(context, displayInitials, displayName),
 
                   const SizedBox(width: 12),
 
@@ -458,12 +458,12 @@ class StudentAttendanceTile extends StatelessWidget {
     );
   }
 
-  Widget _buildInitials(String initials, String name) {
+  Widget _buildInitials(BuildContext context, String initials, String name) {
     return Container(
       width: 44,
       height: 44,
-      decoration: const BoxDecoration(
-        color: AppColors.surfaceContainerHigh,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
         shape: BoxShape.circle,
       ),
       alignment: Alignment.center,
@@ -471,8 +471,8 @@ class StudentAttendanceTile extends StatelessWidget {
         initials.isNotEmpty
             ? initials
             : (name.isNotEmpty ? name.substring(0, 1).toUpperCase() : 'AL'),
-        style: const TextStyle(
-          color: AppColors.primary,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
           fontWeight: FontWeight.bold,
           fontSize: 14,
         ),

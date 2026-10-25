@@ -484,7 +484,9 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 height: 44,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E2E4E) : const Color(0xFFE3EDFF),
+                  color: Theme.of(context).colorScheme.primary.withValues(
+                        alpha: isDark ? 0.22 : 0.12,
+                      ),
                   shape: BoxShape.circle,
                 ),
                 child: Text(

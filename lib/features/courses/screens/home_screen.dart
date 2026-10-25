@@ -77,14 +77,10 @@ class HomeScreen extends ConsumerWidget {
                   width: double.infinity,
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF151D2E)
-                        : const Color(0xFFE3EDFF),
+                    color: primaryColor.withValues(alpha: isDark ? 0.18 : 0.14),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isDark
-                          ? const Color(0xFF22304A)
-                          : const Color(0xFFD6E2FB),
+                      color: primaryColor.withValues(alpha: isDark ? 0.32 : 0.24),
                     ),
                   ),
                   child: Stack(
@@ -192,9 +188,7 @@ class HomeScreen extends ConsumerWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: isDark
-                              ? primaryColor.withValues(alpha: 0.2)
-                              : const Color(0xFFE3EDFF),
+                          color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -240,9 +234,7 @@ class HomeScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? primaryColor.withValues(alpha: 0.2)
-                                : const Color(0xFFE8EFFF),
+                            color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -305,9 +297,7 @@ class HomeScreen extends ConsumerWidget {
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: isDark
-                                ? primaryColor.withValues(alpha: 0.2)
-                                : const Color(0xFFE8EFFF),
+                            color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
