@@ -81,67 +81,71 @@ class _Dashboard extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _MetricCard(
-                amount: financeMoney(totals.collected),
-                label: l10n.financeCollected,
-                color: FinancePalette.collected,
-                background: FinancePalette.collectedBg(isDark),
-                icon: Icons.account_balance_wallet_outlined,
-                footnote: totals.changePercent == null
-                    ? null
-                    : _ChangeFootnote(percent: totals.changePercent!),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _MetricCard(
-                amount: financeMoney(totals.toCollect),
-                label: l10n.financeToCollect,
-                color: FinancePalette.toCollect,
-                background: FinancePalette.toCollectBg(isDark),
-                icon: Icons.account_balance_wallet_outlined,
-                footnote: Text(
-                  financeFeeCount(l10n, totals.toCollectCount),
-                  style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+        IntrinsicHeight(
+          child: Row(
+            children: [
+              Expanded(
+                child: _MetricCard(
+                  amount: financeMoney(totals.collected),
+                  label: l10n.financeCollected,
+                  color: FinancePalette.collected,
+                  background: FinancePalette.collectedBg(isDark),
+                  icon: Icons.account_balance_wallet_outlined,
+                  footnote: totals.changePercent == null
+                      ? null
+                      : _ChangeFootnote(percent: totals.changePercent!),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(width: 8),
+              Expanded(
+                child: _MetricCard(
+                  amount: financeMoney(totals.toCollect),
+                  label: l10n.financeToCollect,
+                  color: FinancePalette.toCollect,
+                  background: FinancePalette.toCollectBg(isDark),
+                  icon: Icons.account_balance_wallet_outlined,
+                  footnote: Text(
+                    financeFeeCount(l10n, totals.toCollectCount),
+                    style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            Expanded(
-              child: _MetricCard(
-                amount: financeMoney(totals.overdue),
-                label: l10n.financeOverdue,
-                color: FinancePalette.overdue,
-                background: FinancePalette.overdueBg(isDark),
-                icon: Icons.payments_outlined,
-                footnote: Text(
-                  financeFeeCount(l10n, totals.overdueCount),
-                  style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+        IntrinsicHeight(
+          child: Row(
+            children: [
+              Expanded(
+                child: _MetricCard(
+                  amount: financeMoney(totals.overdue),
+                  label: l10n.financeOverdue,
+                  color: FinancePalette.overdue,
+                  background: FinancePalette.overdueBg(isDark),
+                  icon: Icons.payments_outlined,
+                  footnote: Text(
+                    financeFeeCount(l10n, totals.overdueCount),
+                    style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: _MetricCard(
-                amount: financeMoney(totals.upcoming),
-                label: l10n.financeUpcoming,
-                color: FinancePalette.upcoming,
-                background: FinancePalette.upcomingBg(isDark),
-                icon: Icons.calendar_month_outlined,
-                footnote: Text(
-                  financeFeeCount(l10n, totals.upcomingCount),
-                  style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _MetricCard(
+                  amount: financeMoney(totals.upcoming),
+                  label: l10n.financeUpcoming,
+                  color: FinancePalette.upcoming,
+                  background: FinancePalette.upcomingBg(isDark),
+                  icon: Icons.calendar_month_outlined,
+                  footnote: Text(
+                    financeFeeCount(l10n, totals.upcomingCount),
+                    style: TextStyle(fontSize: 12, color: FinancePalette.muted(isDark)),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: 18),
         Text(
