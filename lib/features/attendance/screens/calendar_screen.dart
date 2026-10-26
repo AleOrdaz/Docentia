@@ -103,6 +103,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       backgroundColor: Colors.transparent,
       builder: (ctx) {
         final isDark = Theme.of(ctx).brightness == Brightness.dark;
+        final primaryColor = Theme.of(ctx).colorScheme.primary;
         return Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -134,7 +135,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.mail, color: Color(0xFF0284C7), size: 24),
+                        Icon(Icons.mail, color: primaryColor, size: 24),
                         const SizedBox(width: 8),
                         Text(
                           l10n.sendEventToParents,
@@ -160,29 +161,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF0C3353)
-                        : const Color(0xFFF0F9FF),
+                    color: primaryColor.withValues(alpha: isDark ? 0.18 : 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isDark
-                          ? const Color(0xFF1E4D7A)
-                          : const Color(0xFFBAE6FD),
+                      color: primaryColor.withValues(alpha: isDark ? 0.35 : 0.28),
                     ),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.shield_outlined,
-                          color: Color(0xFF0284C7), size: 20),
+                      Icon(Icons.shield_outlined, color: primaryColor, size: 20),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           l10n.bccPrivacyNotice(allRecipients.length),
                           style: TextStyle(
                             fontSize: 12,
-                            color: isDark
-                                ? const Color(0xFFE0F2FE)
-                                : const Color(0xFF0C4A6E),
+                            color: primaryColor,
                           ),
                         ),
                       ),
@@ -293,7 +287,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         label: Text(l10n.openMail,
                             style: const TextStyle(fontSize: 12)),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0284C7),
+                          backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -573,9 +567,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             color: isSelected
                                 ? primaryColor
                                 : (isToday
-                                ? (isDark
-                                ? const Color(0xFF1E2E4E)
-                                : const Color(0xFFE3EDFF))
+                                ? primaryColor.withValues(
+                                    alpha: isDark ? 0.22 : 0.12,
+                                  )
                                 : Colors.transparent),
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -686,9 +680,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? primaryColor.withValues(alpha: 0.2)
-                          : const Color(0xFFE3EDFF),
+                      color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -763,9 +755,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? primaryColor.withValues(alpha: 0.2)
-                          : const Color(0xFFE3EDFF),
+                      color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -1056,7 +1046,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           BoxShadow(
             color: isDark
                 ? Colors.black.withValues(alpha: 0.28)
-                : const Color(0xFF1E3A8A).withValues(alpha: 0.06),
+                : Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -1229,12 +1219,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ),
                 ),
                 style: FilledButton.styleFrom(
-                  backgroundColor: isDark
-                      ? const Color(0xFF134E4A)
-                      : const Color(0xFFE7F8FB),
-                  foregroundColor: isDark
-                      ? const Color(0xFF99F6E4)
-                      : const Color(0xFF0E7490),
+                  backgroundColor: Theme.of(context).colorScheme.primary.withValues(
+                        alpha: isDark ? 0.22 : 0.12,
+                      ),
+                  foregroundColor: Theme.of(context).colorScheme.primary,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -1263,17 +1251,18 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final isPaid = payment.status == PaymentStatus.paid;
     final isOverdue = payment.status == PaymentStatus.overdue;
 
+    final pendingColor = Theme.of(context).colorScheme.primary;
     final badgeBg = isPaid
         ? (isDark ? const Color(0xFF064E3B) : const Color(0xFFD8F3DC))
         : isOverdue
         ? (isDark ? const Color(0xFF7F1D1D) : const Color(0xFFFDE8E8))
-        : (isDark ? const Color(0xFF1E2E4E) : const Color(0xFFE3EDFF));
+        : pendingColor.withValues(alpha: isDark ? 0.22 : 0.12);
 
     final badgeTextColor = isPaid
         ? const Color(0xFF00796B)
         : isOverdue
         ? const Color(0xFFD32F2F)
-        : const Color(0xFF00236F);
+        : pendingColor;
 
     final statusText = isPaid
         ? l10n.paidStatus

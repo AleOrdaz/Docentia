@@ -35,6 +35,7 @@ class HomeScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final navy = isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D);
+    final primaryColor = theme.colorScheme.primary;
 
     return Scaffold(
       extendBody: true,
@@ -87,12 +88,7 @@ class HomeScreen extends ConsumerWidget {
           );
 
           return SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              8,
-              16,
-              AppBottomNavBar.reservedHeight(context) + 8,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -103,6 +99,7 @@ class HomeScreen extends ConsumerWidget {
                   l10n: l10n,
                   isDark: isDark,
                   navy: navy,
+                  primaryColor: primaryColor,
                 ),
                 const SizedBox(height: 22),
                 _SectionHeader(
@@ -282,6 +279,7 @@ class _GreetingCard extends StatelessWidget {
   final AppLocalizations? l10n;
   final bool isDark;
   final Color navy;
+  final Color primaryColor;
 
   const _GreetingCard({
     required this.teacherFirstName,
@@ -290,6 +288,7 @@ class _GreetingCard extends StatelessWidget {
     required this.l10n,
     required this.isDark,
     required this.navy,
+    required this.primaryColor,
   });
 
   @override
@@ -298,10 +297,10 @@ class _GreetingCard extends StatelessWidget {
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF151D2E) : const Color(0xFFE3EDFF),
+        color: primaryColor.withValues(alpha: isDark ? 0.18 : 0.14),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isDark ? const Color(0xFF22304A) : const Color(0xFFD6E2FB),
+          color: primaryColor.withValues(alpha: isDark ? 0.32 : 0.24),
         ),
       ),
       child: Stack(

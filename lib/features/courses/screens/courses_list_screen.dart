@@ -79,9 +79,7 @@ class CoursesListScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? primaryColor.withValues(alpha: 0.2)
-                            : const Color(0xFFE8EFFF),
+                        color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(Icons.school_outlined,

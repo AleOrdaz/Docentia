@@ -88,7 +88,7 @@ class AppBottomNavBar extends ConsumerWidget {
               BoxShadow(
                 color: isDark
                     ? Colors.black.withValues(alpha: 0.5)
-                    : const Color(0xFF00184D).withValues(alpha: 0.12),
+                    : primaryColor.withValues(alpha: 0.12),
                 blurRadius: 28,
                 offset: const Offset(0, 10),
               ),
@@ -108,7 +108,7 @@ class AppBottomNavBar extends ConsumerWidget {
                   border: Border.all(
                     color: isDark
                         ? const Color(0x33FFFFFF)
-                        : const Color(0x2400184D),
+                        : primaryColor.withValues(alpha: 0.14),
                     width: 0.8,
                   ),
                 ),
