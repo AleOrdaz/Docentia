@@ -3045,6 +3045,198 @@ abstract class AppLocalizations {
   /// **'Categoría'**
   String get financeExpenseCategory;
 
+  /// No description provided for @certificatesBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificados'**
+  String get certificatesBtn;
+
+  /// No description provided for @certificatesTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificados'**
+  String get certificatesTitle;
+
+  /// No description provided for @certificatesSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige el estilo, el tipo y los alumnos para generar los diplomas.'**
+  String get certificatesSubtitle;
+
+  /// No description provided for @certificateStyleLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Estilo'**
+  String get certificateStyleLabel;
+
+  /// No description provided for @certificateStyleClassic.
+  ///
+  /// In es, this message translates to:
+  /// **'Clásico'**
+  String get certificateStyleClassic;
+
+  /// No description provided for @certificateStyleModern.
+  ///
+  /// In es, this message translates to:
+  /// **'Moderno'**
+  String get certificateStyleModern;
+
+  /// No description provided for @certificateStyleElegant.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegante'**
+  String get certificateStyleElegant;
+
+  /// No description provided for @certificateTypeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de certificado'**
+  String get certificateTypeLabel;
+
+  /// No description provided for @certificateTypeCompletion.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalización'**
+  String get certificateTypeCompletion;
+
+  /// No description provided for @certificateTypeApproval.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobación'**
+  String get certificateTypeApproval;
+
+  /// No description provided for @certificateTypeParticipation.
+  ///
+  /// In es, this message translates to:
+  /// **'Participación'**
+  String get certificateTypeParticipation;
+
+  /// No description provided for @certificateTitleCompletion.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificado de finalización'**
+  String get certificateTitleCompletion;
+
+  /// No description provided for @certificateTitleApproval.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificado de aprobación'**
+  String get certificateTitleApproval;
+
+  /// No description provided for @certificateTitleParticipation.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificado de participación'**
+  String get certificateTitleParticipation;
+
+  /// No description provided for @certificateStudentsLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumnos'**
+  String get certificateStudentsLabel;
+
+  /// No description provided for @certificateSelectAll.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar todos'**
+  String get certificateSelectAll;
+
+  /// No description provided for @certificateClearSelection.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar selección'**
+  String get certificateClearSelection;
+
+  /// No description provided for @certificateSelectedCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} seleccionados'**
+  String certificateSelectedCount(int count);
+
+  /// No description provided for @certificateGenerate.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar PDF'**
+  String get certificateGenerate;
+
+  /// No description provided for @certificatePreviewTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa'**
+  String get certificatePreviewTitle;
+
+  /// No description provided for @certificateShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir PDF'**
+  String get certificateShare;
+
+  /// No description provided for @certificateSaved.
+  ///
+  /// In es, this message translates to:
+  /// **'El PDF se guardó en los documentos de la app.'**
+  String get certificateSaved;
+
+  /// No description provided for @certificateNoStudents.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega alumnos al curso para emitir certificados.'**
+  String get certificateNoStudents;
+
+  /// No description provided for @certificatePickStudents.
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona al menos un alumno.'**
+  String get certificatePickStudents;
+
+  /// No description provided for @certificateGenerated.
+  ///
+  /// In es, this message translates to:
+  /// **'Se generaron {count} diplomas.'**
+  String certificateGenerated(int count);
+
+  /// No description provided for @certificateConfers.
+  ///
+  /// In es, this message translates to:
+  /// **'Otorga el presente diploma a'**
+  String get certificateConfers;
+
+  /// No description provided for @certificateCompletionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'por haber finalizado satisfactoriamente el curso'**
+  String get certificateCompletionBody;
+
+  /// No description provided for @certificateApprovalBody.
+  ///
+  /// In es, this message translates to:
+  /// **'por haber aprobado el curso'**
+  String get certificateApprovalBody;
+
+  /// No description provided for @certificateParticipationBody.
+  ///
+  /// In es, this message translates to:
+  /// **'por su participación en el curso'**
+  String get certificateParticipationBody;
+
+  /// No description provided for @certificateIssuedIn.
+  ///
+  /// In es, this message translates to:
+  /// **'Expedido el {date}'**
+  String certificateIssuedIn(String date);
+
+  /// No description provided for @certificateTeacherSign.
+  ///
+  /// In es, this message translates to:
+  /// **'Docente'**
+  String get certificateTeacherSign;
+
+  /// No description provided for @certificateFolioLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Folio'**
+  String get certificateFolioLabel;
+
   /// No description provided for @financeReminderMessage.
   ///
   /// In es, this message translates to:

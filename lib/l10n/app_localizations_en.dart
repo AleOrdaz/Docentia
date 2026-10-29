@@ -1609,6 +1609,112 @@ class AppLocalizationsEn extends AppLocalizations {
   String get financeExpenseCategory => 'Category';
 
   @override
+  String get certificatesBtn => 'Certificates';
+
+  @override
+  String get certificatesTitle => 'Certificates';
+
+  @override
+  String get certificatesSubtitle =>
+      'Choose the style, type, and students to generate the diplomas.';
+
+  @override
+  String get certificateStyleLabel => 'Style';
+
+  @override
+  String get certificateStyleClassic => 'Classic';
+
+  @override
+  String get certificateStyleModern => 'Modern';
+
+  @override
+  String get certificateStyleElegant => 'Elegant';
+
+  @override
+  String get certificateTypeLabel => 'Certificate type';
+
+  @override
+  String get certificateTypeCompletion => 'Completion';
+
+  @override
+  String get certificateTypeApproval => 'Approval';
+
+  @override
+  String get certificateTypeParticipation => 'Participation';
+
+  @override
+  String get certificateTitleCompletion => 'Certificate of completion';
+
+  @override
+  String get certificateTitleApproval => 'Certificate of approval';
+
+  @override
+  String get certificateTitleParticipation => 'Certificate of participation';
+
+  @override
+  String get certificateStudentsLabel => 'Students';
+
+  @override
+  String get certificateSelectAll => 'Select all';
+
+  @override
+  String get certificateClearSelection => 'Clear selection';
+
+  @override
+  String certificateSelectedCount(int count) {
+    return '$count selected';
+  }
+
+  @override
+  String get certificateGenerate => 'Generate PDF';
+
+  @override
+  String get certificatePreviewTitle => 'Preview';
+
+  @override
+  String get certificateShare => 'Share PDF';
+
+  @override
+  String get certificateSaved =>
+      'The PDF was saved to the app documents folder.';
+
+  @override
+  String get certificateNoStudents =>
+      'Add students to the course before issuing certificates.';
+
+  @override
+  String get certificatePickStudents => 'Select at least one student.';
+
+  @override
+  String certificateGenerated(int count) {
+    return '$count diplomas were generated.';
+  }
+
+  @override
+  String get certificateConfers => 'Awards this diploma to';
+
+  @override
+  String get certificateCompletionBody =>
+      'for successfully completing the course';
+
+  @override
+  String get certificateApprovalBody => 'for passing the course';
+
+  @override
+  String get certificateParticipationBody => 'for participating in the course';
+
+  @override
+  String certificateIssuedIn(String date) {
+    return 'Issued on $date';
+  }
+
+  @override
+  String get certificateTeacherSign => 'Teacher';
+
+  @override
+  String get certificateFolioLabel => 'Folio';
+
+  @override
   String financeReminderMessage(String tutor, String student, String course,
       String period, String amount, String due) {
     return 'Hello $tutor, this is Docentia. $student\'s fee for $course ($period) is $amount and is due on $due.';

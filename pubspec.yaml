@@ -23,6 +23,8 @@ dependencies:
   firebase_auth: ^6.7.0
   image_picker: ^1.1.2
   path_provider: ^2.1.5
+  pdf: ^3.13.1
+  printing: ^5.15.1
 
 dev_dependencies:
   flutter_test:

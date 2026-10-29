@@ -7,6 +7,7 @@ import '../../features/payments/models/payment_model.dart';
 import '../../features/finance/models/expense_model.dart';
 import '../../features/attendance/models/calendar_event_model.dart';
 import '../../features/auth/models/teacher_model.dart';
+import '../../features/certificates/models/certificate_model.dart';
 
 class StorageService {
   static const String _keyCourses = 'docentia_courses';
@@ -20,6 +21,8 @@ class StorageService {
   static const String _keyCalendarEvents = 'docentia_calendar_events';
   static const String _keyLanguage = 'docentia_language';
   static const String _keyTeacherPrefix = 'docentia_teacher_';
+  static const String _keyCertificates = 'docentia_certificates';
+  static const String _keyFolioSequence = 'docentia_folio_sequence';
 
   static SharedPreferences? _prefs;
 
@@ -251,6 +254,44 @@ class StorageService {
     } catch (_) {
       return null;
     }
+  }
+
+  static Future<List<IssuedCertificate>> getCertificates() async {
+    try {
+      final prefs = await _instance;
+      final raw = prefs.getString(_keyCertificates);
+      if (raw == null || raw.isEmpty) return [];
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list
+          .map((item) => IssuedCertificate.fromMap(item as Map<String, dynamic>))
+          .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  static Future<void> saveCertificates(List<IssuedCertificate> certificates) async {
+    try {
+      final prefs = await _instance;
+      final raw = jsonEncode(certificates.map((item) => item.toMap()).toList());
+      await prefs.setString(_keyCertificates, raw);
+    } catch (_) {}
+  }
+
+  static Future<int> getFolioSequence() async {
+    try {
+      final prefs = await _instance;
+      return prefs.getInt(_keyFolioSequence) ?? 0;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  static Future<void> saveFolioSequence(int sequence) async {
+    try {
+      final prefs = await _instance;
+      await prefs.setInt(_keyFolioSequence, sequence);
+    } catch (_) {}
   }
 
   static Future<void> saveTeacher(Teacher teacher) async {

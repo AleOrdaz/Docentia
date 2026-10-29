@@ -1615,6 +1615,112 @@ class AppLocalizationsEs extends AppLocalizations {
   String get financeExpenseCategory => 'Categoría';
 
   @override
+  String get certificatesBtn => 'Certificados';
+
+  @override
+  String get certificatesTitle => 'Certificados';
+
+  @override
+  String get certificatesSubtitle =>
+      'Elige el estilo, el tipo y los alumnos para generar los diplomas.';
+
+  @override
+  String get certificateStyleLabel => 'Estilo';
+
+  @override
+  String get certificateStyleClassic => 'Clásico';
+
+  @override
+  String get certificateStyleModern => 'Moderno';
+
+  @override
+  String get certificateStyleElegant => 'Elegante';
+
+  @override
+  String get certificateTypeLabel => 'Tipo de certificado';
+
+  @override
+  String get certificateTypeCompletion => 'Finalización';
+
+  @override
+  String get certificateTypeApproval => 'Aprobación';
+
+  @override
+  String get certificateTypeParticipation => 'Participación';
+
+  @override
+  String get certificateTitleCompletion => 'Certificado de finalización';
+
+  @override
+  String get certificateTitleApproval => 'Certificado de aprobación';
+
+  @override
+  String get certificateTitleParticipation => 'Certificado de participación';
+
+  @override
+  String get certificateStudentsLabel => 'Alumnos';
+
+  @override
+  String get certificateSelectAll => 'Seleccionar todos';
+
+  @override
+  String get certificateClearSelection => 'Quitar selección';
+
+  @override
+  String certificateSelectedCount(int count) {
+    return '$count seleccionados';
+  }
+
+  @override
+  String get certificateGenerate => 'Generar PDF';
+
+  @override
+  String get certificatePreviewTitle => 'Vista previa';
+
+  @override
+  String get certificateShare => 'Compartir PDF';
+
+  @override
+  String get certificateSaved =>
+      'El PDF se guardó en los documentos de la app.';
+
+  @override
+  String get certificateNoStudents =>
+      'Agrega alumnos al curso para emitir certificados.';
+
+  @override
+  String get certificatePickStudents => 'Selecciona al menos un alumno.';
+
+  @override
+  String certificateGenerated(int count) {
+    return 'Se generaron $count diplomas.';
+  }
+
+  @override
+  String get certificateConfers => 'Otorga el presente diploma a';
+
+  @override
+  String get certificateCompletionBody =>
+      'por haber finalizado satisfactoriamente el curso';
+
+  @override
+  String get certificateApprovalBody => 'por haber aprobado el curso';
+
+  @override
+  String get certificateParticipationBody => 'por su participación en el curso';
+
+  @override
+  String certificateIssuedIn(String date) {
+    return 'Expedido el $date';
+  }
+
+  @override
+  String get certificateTeacherSign => 'Docente';
+
+  @override
+  String get certificateFolioLabel => 'Folio';
+
+  @override
   String financeReminderMessage(String tutor, String student, String course,
       String period, String amount, String due) {
     return 'Hola $tutor, te contactamos de Docentia. La cuota de $student del curso $course ($period) es de $amount y vence el $due.';
