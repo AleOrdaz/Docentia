@@ -29,6 +29,10 @@ void main() {
       expect(l10nEs.loginSignIn, 'Iniciar sesión');
       expect(l10nEs.loginForgotPassword, '¿Olvidaste tu contraseña?');
       expect(l10nEs.homeGreeting('Antonio'), 'Hola, Antonio');
+      expect(
+        l10nEs.summarySubtitle,
+        'Este es el resumen general\nde tus cursos',
+      );
       expect(l10nEs.homeShortcutsTitle, 'Accesos rápidos');
       expect(l10nEs.homeActivityTitle, 'Tu actividad de hoy');
       expect(l10nEs.newEventShortcut, 'Nuevo evento');
@@ -57,6 +61,10 @@ void main() {
       expect(l10nEn.loginSignIn, 'Sign in');
       expect(l10nEn.loginForgotPassword, 'Forgot your password?');
       expect(l10nEn.homeGreeting('Antonio'), 'Hello, Antonio');
+      expect(
+        l10nEn.summarySubtitle,
+        'This is the general summary\nof your courses',
+      );
       expect(l10nEn.homeShortcutsTitle, 'Quick access');
       expect(l10nEn.homeActivityTitle, 'Your activity today');
       expect(l10nEn.newEventShortcut, 'New event');

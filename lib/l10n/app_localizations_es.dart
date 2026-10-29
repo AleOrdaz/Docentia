@@ -139,9 +139,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get feeDueSoonTitle => 'Cuota por vencer';
 
   @override
+  String get feeOverdueTitle => 'Cuota vencida';
+
+  @override
   String dueOnDate(String date) {
     return 'Vence el $date';
   }
+
+  @override
+  String overdueOnDate(String date) {
+    return 'Venció el $date';
+  }
+
+  @override
+  String get overdueFeeStatus => 'Vencida';
 
   @override
   String get homeNoActivityTitle => 'Nada por hoy';
@@ -401,7 +412,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get weekdaySunday => 'Domingo';
 
   @override
-  String get summarySubtitle => 'Aquí tienes el resumen de tus cursos.';
+  String get summarySubtitle => 'Este es el resumen general\nde tus cursos';
 
   @override
   String get activeCourseSingular => 'curso activo';

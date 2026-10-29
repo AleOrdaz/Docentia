@@ -297,10 +297,19 @@ class _GreetingCard extends StatelessWidget {
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: primaryColor.withValues(alpha: isDark ? 0.18 : 0.14),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: primaryColor.withValues(alpha: isDark ? 0.32 : 0.24),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isDark
+              ? [
+                  Color.lerp(const Color(0xFF151D2E), primaryColor, 0.22)!,
+                  const Color(0xFF151D2E),
+                ]
+              : [
+                  primaryColor.withValues(alpha: 0.24),
+                  primaryColor.withValues(alpha: 0.08),
+                ],
         ),
       ),
       child: Stack(
@@ -310,10 +319,13 @@ class _GreetingCard extends StatelessWidget {
             top: -12,
             bottom: -12,
             width: 200,
-            child: Image.asset(
-              'assets/images/home_greeting.png',
-              fit: BoxFit.contain,
-              alignment: Alignment.centerRight,
+            child: Transform.scale(
+              scale: 0.85,
+              child: Image.asset(
+                'assets/images/home_greeting.png',
+                fit: BoxFit.contain,
+                alignment: Alignment.centerRight,
+              ),
             ),
           ),
           Padding(
@@ -334,9 +346,10 @@ class _GreetingCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   l10n?.summarySubtitle ??
-                      'Aquí tienes el resumen de tus cursos.',
+                      'Este es el resumen general\nde tus cursos',
                   style: TextStyle(
                     fontSize: 13,
+                    height: 1.25,
                     fontWeight: FontWeight.w600,
                     color: isDark
                         ? const Color(0xFF94A3B8)
@@ -355,7 +368,7 @@ class _GreetingCard extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: isDark
-                              ? const Color(0xFFE2E8F0)
+                              ? const Color(0xFFCBD5E1)
                               : const Color(0xFF00174D),
                         ),
                       ),
@@ -442,31 +455,43 @@ class _ShortcutsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       _ShortcutSpec(
-        icon: Icons.add,
+        icon: Icons.add_box_outlined,
         label: l10n?.newCourseBtn ?? 'Nuevo curso',
-        background: isDark ? const Color(0xFF1E2E4E) : const Color(0xFFEEF3FF),
-        foreground: isDark ? const Color(0xFF1E2E4E) : const Color(0xFF2563EB),
+        background: isDark ? const Color(0xFF151D2E) : const Color(0xFFEEF3FF),
+        iconBackground: isDark
+            ? const Color(0xFF2563EB).withValues(alpha: 0.20)
+            : Colors.white.withValues(alpha: 0.72),
+        foreground: isDark ? const Color(0xFF93C5FD) : const Color(0xFF2563EB),
         onTap: onNewCourse,
       ),
       _ShortcutSpec(
         icon: Icons.person_add_alt_1_outlined,
         label: l10n?.addStudentShort ?? 'Agregar alumno',
-        background: isDark ? const Color(0xFF13403A) : const Color(0xFFE6FAF6),
-        foreground: isDark ? const Color(0xFF13403A) : const Color(0xFF0D9488),
+        background: isDark ? const Color(0xFF151D2E) : const Color(0xFFE6FAF6),
+        iconBackground: isDark
+            ? const Color(0xFF0D9488).withValues(alpha: 0.22)
+            : Colors.white.withValues(alpha: 0.72),
+        foreground: isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0D9488),
         onTap: onAddStudent,
       ),
       _ShortcutSpec(
         icon: Icons.event_available_outlined,
         label: l10n?.newEventShortcut ?? 'Nuevo evento',
-        background: isDark ? const Color(0xFF2E1B4E) : const Color(0xFFF3EEFF),
-        foreground: isDark ? const Color(0xFF2E1B4E) : const Color(0xFF7C3AED),
+        background: isDark ? const Color(0xFF151D2E) : const Color(0xFFF3EEFF),
+        iconBackground: isDark
+            ? const Color(0xFF7C3AED).withValues(alpha: 0.22)
+            : Colors.white.withValues(alpha: 0.72),
+        foreground: isDark ? const Color(0xFFC4B5FD) : const Color(0xFF7C3AED),
         onTap: onNewEvent,
       ),
       _ShortcutSpec(
         icon: Icons.receipt_long_outlined,
         label: l10n?.recordExpenseShortcut ?? 'Registrar gasto',
-        background: isDark ? const Color(0xFF4C1D24) : const Color(0xFFFFF1F2),
-        foreground: isDark ? const Color(0xFF4C1D24) : const Color(0xFFE11D48),
+        background: isDark ? const Color(0xFF151D2E) : const Color(0xFFFFF1F2),
+        iconBackground: isDark
+            ? const Color(0xFFE11D48).withValues(alpha: 0.20)
+            : Colors.white.withValues(alpha: 0.72),
+        foreground: isDark ? const Color(0xFFFDA4AF) : const Color(0xFFE11D48),
         onTap: onRecordExpense,
       ),
     ];
@@ -497,6 +522,7 @@ class _ShortcutSpec {
   final IconData icon;
   final String label;
   final Color background;
+  final Color iconBackground;
   final Color foreground;
   final VoidCallback onTap;
 
@@ -504,6 +530,7 @@ class _ShortcutSpec {
     required this.icon,
     required this.label,
     required this.background,
+    required this.iconBackground,
     required this.foreground,
     required this.onTap,
   });
@@ -524,17 +551,22 @@ class _ShortcutChip extends StatelessWidget {
         onTap: spec.onTap,
         borderRadius: BorderRadius.circular(18),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 12, 8, 12),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
                 width: 28,
                 height: 28,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.72),
-                  shape: BoxShape.circle,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: spec.iconBackground,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Icon(spec.icon, size: 18, color: spec.foreground),
+                  ),
                 ),
-                child: Icon(spec.icon, size: 16, color: spec.foreground),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -544,12 +576,23 @@ class _ShortcutChip extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 13,
+                    height: 1.15,
                     fontWeight: FontWeight.w700,
                     color: navy,
                   ),
                 ),
               ),
-              Icon(Icons.chevron_right, size: 18, color: navy.withValues(alpha: 0.45)),
+              SizedBox(
+                width: 20,
+                height: 28,
+                child: Center(
+                  child: Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: navy.withValues(alpha: 0.45),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -614,15 +657,32 @@ class _TodayActivityList extends StatelessWidget {
       for (final fee in fees)
         _ActivityRow(
           icon: Icons.payments_outlined,
-          iconBackground:
-              isDark ? const Color(0xFF13403A) : const Color(0xFFE6FAF6),
-          iconColor: isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0D9488),
-          title: l10n?.feeDueSoonTitle ?? 'Cuota por vencer',
-          subtitle: [
-            fee.courseName,
-            l10n?.dueOnDate(fee.dueLabel) ?? 'Vence el ${fee.dueLabel}',
-          ].where((part) => part.isNotEmpty).join(' · '),
-          badge: l10n?.pendingStatus ?? 'Pendiente',
+          iconBackground: fee.isOverdue
+              ? (isDark ? const Color(0xFF3F1D24) : const Color(0xFFFFE8EE))
+              : (isDark ? const Color(0xFF13403A) : const Color(0xFFE6FAF6)),
+          iconColor: fee.isOverdue
+              ? (isDark ? const Color(0xFFFDA4AF) : const Color(0xFFE11D48))
+              : (isDark ? const Color(0xFF5EEAD4) : const Color(0xFF0D9488)),
+          title: fee.isOverdue
+              ? (l10n?.feeOverdueTitle ?? 'Cuota vencida')
+              : (l10n?.feeDueSoonTitle ?? 'Cuota por vencer'),
+          subtitle: fee.courseName,
+          emphasizedText: fee.isOverdue
+              ? (l10n?.overdueOnDate(fee.dueLabel) ??
+                  'Venció el ${fee.dueLabel}')
+              : (l10n?.dueOnDate(fee.dueLabel) ?? 'Vence el ${fee.dueLabel}'),
+          emphasizedColor: fee.isOverdue
+              ? (isDark ? const Color(0xFFFDA4AF) : const Color(0xFFE11D48))
+              : (isDark ? const Color(0xFFFCD34D) : const Color(0xFFB45309)),
+          badge: fee.isOverdue
+              ? (l10n?.overdueFeeStatus ?? 'Vencida')
+              : (l10n?.pendingStatus ?? 'Pendiente'),
+          badgeBackground: fee.isOverdue
+              ? (isDark ? const Color(0xFF3F1D24) : const Color(0xFFFFE8EE))
+              : null,
+          badgeForeground: fee.isOverdue
+              ? (isDark ? const Color(0xFFFDA4AF) : const Color(0xFFE11D48))
+              : null,
           navy: navy,
           isDark: isDark,
           onTap: () => onOpenFee(fee.payment),
@@ -661,7 +721,11 @@ class _ActivityRow extends StatelessWidget {
   final Color iconColor;
   final String title;
   final String subtitle;
+  final String? emphasizedText;
+  final Color? emphasizedColor;
   final String? badge;
+  final Color? badgeBackground;
+  final Color? badgeForeground;
   final Color navy;
   final bool isDark;
   final VoidCallback? onTap;
@@ -675,7 +739,11 @@ class _ActivityRow extends StatelessWidget {
     required this.subtitle,
     required this.navy,
     required this.isDark,
+    this.emphasizedText,
+    this.emphasizedColor,
     this.badge,
+    this.badgeBackground,
+    this.badgeForeground,
     this.onTap,
     this.showChevron = true,
   });
@@ -718,17 +786,39 @@ class _ActivityRow extends StatelessWidget {
                         color: navy,
                       ),
                     ),
-                    if (subtitle.isNotEmpty) ...[
+                    if (subtitle.isNotEmpty ||
+                        (emphasizedText != null &&
+                            emphasizedText!.isNotEmpty)) ...[
                       const SizedBox(height: 2),
-                      Text(
-                        subtitle,
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            if (subtitle.isNotEmpty)
+                              TextSpan(
+                                text: emphasizedText != null &&
+                                        emphasizedText!.isNotEmpty
+                                    ? '$subtitle  ·  '
+                                    : subtitle,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: muted,
+                                ),
+                              ),
+                            if (emphasizedText != null &&
+                                emphasizedText!.isNotEmpty)
+                              TextSpan(
+                                text: emphasizedText,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w800,
+                                  color: emphasizedColor ?? navy,
+                                ),
+                              ),
+                          ],
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: muted,
-                        ),
                       ),
                     ],
                   ],
@@ -740,9 +830,10 @@ class _ActivityRow extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF3F2E0A)
-                        : const Color(0xFFFEF3C7),
+                    color: badgeBackground ??
+                        (isDark
+                            ? const Color(0xFF3F2E0A)
+                            : const Color(0xFFFEF3C7)),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -750,9 +841,10 @@ class _ActivityRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      color: isDark
-                          ? const Color(0xFFFCD34D)
-                          : const Color(0xFFB45309),
+                      color: badgeForeground ??
+                          (isDark
+                              ? const Color(0xFFFCD34D)
+                              : const Color(0xFFB45309)),
                     ),
                   ),
                 ),
@@ -775,11 +867,13 @@ class _FeeActivity {
   final Payment payment;
   final String courseName;
   final String dueLabel;
+  final bool isOverdue;
 
   const _FeeActivity({
     required this.payment,
     required this.courseName,
     required this.dueLabel,
+    required this.isOverdue,
   });
 }
 
@@ -860,6 +954,8 @@ List<_FeeActivity> _upcomingFees(
         payment: payment,
         courseName: coursesById[payment.courseId]?.name ?? '',
         dueLabel: DateFormat('d MMM y', locale).format(due),
+        isOverdue: payment.status == PaymentStatus.overdue ||
+            due.isBefore(today),
       ),
     );
     if (items.length == 2) break;

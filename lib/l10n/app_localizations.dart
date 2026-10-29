@@ -350,11 +350,29 @@ abstract class AppLocalizations {
   /// **'Cuota por vencer'**
   String get feeDueSoonTitle;
 
+  /// No description provided for @feeOverdueTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuota vencida'**
+  String get feeOverdueTitle;
+
   /// No description provided for @dueOnDate.
   ///
   /// In es, this message translates to:
   /// **'Vence el {date}'**
   String dueOnDate(String date);
+
+  /// No description provided for @overdueOnDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Venció el {date}'**
+  String overdueOnDate(String date);
+
+  /// No description provided for @overdueFeeStatus.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencida'**
+  String get overdueFeeStatus;
 
   /// No description provided for @homeNoActivityTitle.
   ///
@@ -863,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @summarySubtitle.
   ///
   /// In es, this message translates to:
-  /// **'Aquí tienes el resumen de tus cursos.'**
+  /// **'Este es el resumen general\nde tus cursos'**
   String get summarySubtitle;
 
   /// No description provided for @activeCourseSingular.

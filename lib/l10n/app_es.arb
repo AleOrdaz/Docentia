@@ -45,10 +45,16 @@
   "homeActivityTitle": "Tu actividad de hoy",
   "homeSeeAll": "Ver todo",
   "feeDueSoonTitle": "Cuota por vencer",
+  "feeOverdueTitle": "Cuota vencida",
   "dueOnDate": "Vence el {date}",
   "@dueOnDate": {
     "placeholders": { "date": { "type": "String" } }
   },
+  "overdueOnDate": "Venció el {date}",
+  "@overdueOnDate": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "overdueFeeStatus": "Vencida",
   "homeNoActivityTitle": "Nada por hoy",
   "homeNoActivityDesc": "Cuando tengas clases, eventos o cuotas, aparecerán aquí.",
   "newCourseBtn": "Nuevo curso",
@@ -133,7 +139,7 @@
   "weekdayFriday": "Viernes",
   "weekdaySaturday": "Sábado",
   "weekdaySunday": "Domingo",
-  "summarySubtitle": "Aquí tienes el resumen de tus cursos.",
+  "summarySubtitle": "Este es el resumen general\nde tus cursos",
   "activeCourseSingular": "curso activo",
   "activeCoursePlural": "cursos activos",
   "studentSingular": "alumno",

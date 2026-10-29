@@ -45,10 +45,16 @@
   "homeActivityTitle": "Your activity today",
   "homeSeeAll": "See all",
   "feeDueSoonTitle": "Fee due soon",
+  "feeOverdueTitle": "Overdue fee",
   "dueOnDate": "Due {date}",
   "@dueOnDate": {
     "placeholders": { "date": { "type": "String" } }
   },
+  "overdueOnDate": "Was due {date}",
+  "@overdueOnDate": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "overdueFeeStatus": "Overdue",
   "homeNoActivityTitle": "Nothing today",
   "homeNoActivityDesc": "Classes, events, and fees will show up here.",
   "newCourseBtn": "New Course",
@@ -133,7 +139,7 @@
   "weekdayFriday": "Friday",
   "weekdaySaturday": "Saturday",
   "weekdaySunday": "Sunday",
-  "summarySubtitle": "Here is a summary of your courses.",
+  "summarySubtitle": "This is the general summary\nof your courses",
   "activeCourseSingular": "active course",
   "activeCoursePlural": "active courses",
   "studentSingular": "student",

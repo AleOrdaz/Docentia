@@ -105,12 +105,6 @@ class AppBottomNavBar extends ConsumerWidget {
                       ? const Color(0xE8131B2E)
                       : const Color(0xF2FFFFFF),
                   borderRadius: BorderRadius.circular(36),
-                  border: Border.all(
-                    color: isDark
-                        ? const Color(0x33FFFFFF)
-                        : primaryColor.withValues(alpha: 0.14),
-                    width: 0.8,
-                  ),
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                 child: Row(
@@ -136,14 +130,8 @@ class AppBottomNavBar extends ConsumerWidget {
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         borderRadius: BorderRadius.circular(28),
-                        child: Container(
+                        child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
-                          decoration: BoxDecoration(
-                            color: isActive
-                                ? primaryColor.withValues(alpha: 0.10)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(28),
-                          ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -174,8 +162,14 @@ class AppBottomNavBar extends ConsumerWidget {
                               const SizedBox(height: 2),
                               AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
-                                width: isActive ? 4 : 0,
-                                height: isActive ? 4 : 0,
+                                width: isActive ? 14 : 0,
+                                height: 2,
+                                decoration: BoxDecoration(
+                                  color: isActive
+                                      ? primaryColor
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(999),
+                                ),
                               ),
                             ],
                           ),
