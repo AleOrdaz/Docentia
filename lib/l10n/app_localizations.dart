@@ -3261,6 +3261,78 @@ abstract class AppLocalizations {
   /// **'Reporte'**
   String get courseReportBtn;
 
+  /// No description provided for @courseStudentCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{1 alumno} other{{count} alumnos}}'**
+  String courseStudentCount(int count);
+
+  /// No description provided for @courseStudentCountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cantidad de alumnos'**
+  String get courseStudentCountLabel;
+
+  /// No description provided for @courseNextClass.
+  ///
+  /// In es, this message translates to:
+  /// **'Próxima clase'**
+  String get courseNextClass;
+
+  /// No description provided for @emptyStudentsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay alumnos'**
+  String get emptyStudentsTitle;
+
+  /// No description provided for @emptyStudentsDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega alumnos para comenzar a gestionar este curso.'**
+  String get emptyStudentsDesc;
+
+  /// No description provided for @searchStudentsHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar alumno'**
+  String get searchStudentsHint;
+
+  /// No description provided for @noStudentsSearch.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos alumnos con ese nombre.'**
+  String get noStudentsSearch;
+
+  /// No description provided for @viewStudentProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver perfil'**
+  String get viewStudentProfile;
+
+  /// No description provided for @viewStudentAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver asistencias'**
+  String get viewStudentAttendance;
+
+  /// No description provided for @editStudentInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar información'**
+  String get editStudentInfo;
+
+  /// No description provided for @deleteStudentAction.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar alumno'**
+  String get deleteStudentAction;
+
+  /// No description provided for @paymentOnTime.
+  ///
+  /// In es, this message translates to:
+  /// **'Al día'**
+  String get paymentOnTime;
+
   /// No description provided for @courseReportTitle.
   ///
   /// In es, this message translates to:

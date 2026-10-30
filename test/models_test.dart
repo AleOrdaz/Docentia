@@ -42,6 +42,34 @@ void main() {
       final fromJson = Course.fromJson(map);
       expect(fromJson.name, 'Inglés Avanzado B2');
     });
+
+    test('nextClassDate uses today if it is a class day, otherwise the next one', () {
+      final course = Course(
+        id: 'course-test',
+        teacherId: 'teacher-1',
+        name: 'Arte',
+        schedule: 'Mar y Jue',
+        classDays: const [2, 4],
+        startTime: '17:00',
+        endTime: '18:30',
+        duration: '32 sesiones',
+        currentSession: 1,
+        totalSessions: 32,
+        cost: 200,
+        capacity: 12,
+        paymentSchedule: PaymentSchedule.endOfMonth,
+        active: true,
+        createdAt: DateTime(2026, 1, 1),
+      );
+
+      final tuesday = DateTime(2026, 10, 27);
+      expect(tuesday.weekday, 2);
+      expect(course.nextClassDate(tuesday), DateTime(2026, 10, 27));
+
+      final wednesday = DateTime(2026, 10, 28);
+      expect(wednesday.weekday, 3);
+      expect(course.nextClassDate(wednesday), DateTime(2026, 10, 29));
+    });
   });
 
   group('Student Model Tests', () {

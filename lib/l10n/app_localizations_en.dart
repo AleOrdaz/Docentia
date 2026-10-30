@@ -1729,6 +1729,50 @@ class AppLocalizationsEn extends AppLocalizations {
   String get courseReportBtn => 'Report';
 
   @override
+  String courseStudentCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count students',
+      one: '1 student',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get courseStudentCountLabel => 'Number of students';
+
+  @override
+  String get courseNextClass => 'Next class';
+
+  @override
+  String get emptyStudentsTitle => 'No students yet';
+
+  @override
+  String get emptyStudentsDesc => 'Add students to start managing this course.';
+
+  @override
+  String get searchStudentsHint => 'Search student';
+
+  @override
+  String get noStudentsSearch => 'No students match that name.';
+
+  @override
+  String get viewStudentProfile => 'View profile';
+
+  @override
+  String get viewStudentAttendance => 'View attendance';
+
+  @override
+  String get editStudentInfo => 'Edit details';
+
+  @override
+  String get deleteStudentAction => 'Remove student';
+
+  @override
+  String get paymentOnTime => 'Up to date';
+
+  @override
   String get courseReportTitle => 'Course report';
 
   @override
