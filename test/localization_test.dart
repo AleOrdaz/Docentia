@@ -42,6 +42,10 @@ void main() {
       expect(l10nEs.certificateTypeApproval, 'Aprobación');
       expect(l10nEs.courseReportBtn, 'Reporte');
       expect(l10nEs.financeExportPdf, 'Exportar PDF');
+      expect(l10nEs.courseNextClass, 'Próxima clase');
+      expect(l10nEs.courseStudentCountLabel, 'Cantidad de alumnos');
+      expect(l10nEs.paymentOnTime, 'Al día');
+      expect(l10nEs.emptyStudentsTitle, 'Aún no hay alumnos');
     });
 
     test('English translations are valid and properly mapped', () {
@@ -74,6 +78,10 @@ void main() {
       expect(l10nEn.certificateTypeApproval, 'Approval');
       expect(l10nEn.courseReportBtn, 'Report');
       expect(l10nEn.financeExportPdf, 'Export PDF');
+      expect(l10nEn.courseNextClass, 'Next class');
+      expect(l10nEn.courseStudentCountLabel, 'Number of students');
+      expect(l10nEn.paymentOnTime, 'Up to date');
+      expect(l10nEn.emptyStudentsTitle, 'No students yet');
     });
 
     test('Delegate supports Spanish and English only', () {

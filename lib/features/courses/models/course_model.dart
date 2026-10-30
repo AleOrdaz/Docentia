@@ -70,6 +70,17 @@ class Course {
     return classDays.contains(d.weekday);
   }
 
+  /// Próximo día de clase, incluyendo hoy si todavía aplica.
+  DateTime? nextClassDate([DateTime? from]) {
+    final start = from ?? DateTime.now();
+    final day = DateTime(start.year, start.month, start.day);
+    for (var i = 0; i < 14; i++) {
+      final candidate = day.add(Duration(days: i));
+      if (isClassDay(candidate)) return candidate;
+    }
+    return null;
+  }
+
   /// Nombres legibles de los días seleccionados
   String get formattedDays {
     const shortNames = {
@@ -114,6 +125,15 @@ class Course {
         ? '$startTime - $endTime'
         : (startTime.isNotEmpty ? startTime : schedule);
     return '${getLocalizedFormattedDays(context)} $timeStr'.trim();
+  }
+
+  String getLocalizedHeaderSchedule(BuildContext context) {
+    final days = getLocalizedFormattedDays(context);
+    final timeStr = startTime.isNotEmpty && endTime.isNotEmpty
+        ? '$startTime - $endTime'
+        : (startTime.isNotEmpty ? startTime : schedule);
+    if (timeStr.isEmpty) return days;
+    return '$days · $timeStr';
   }
 
   static String getDayName(int weekday) {
