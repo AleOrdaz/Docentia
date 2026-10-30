@@ -304,33 +304,74 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    onPressed: () {
-                      ref.read(selectedCourseIdProvider.notifier).state =
-                          widget.courseId;
-                      context.push(
-                        '/course-detail/${widget.courseId}/certificates',
-                      );
-                    },
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: primaryColor,
-                      side: BorderSide(
-                        color: primaryColor.withValues(alpha: 0.4),
+                Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            ref.read(selectedCourseIdProvider.notifier).state =
+                                widget.courseId;
+                            context.push(
+                              '/course-detail/${widget.courseId}/certificates',
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: primaryColor,
+                            side: BorderSide(
+                              color: primaryColor.withValues(alpha: 0.4),
+                            ),
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          icon: const Icon(Icons.workspace_premium_outlined, size: 18),
+                          label: Text(
+                            l10n.certificatesBtn,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
                       ),
-                      shape: const StadiumBorder(),
                     ),
-                    icon: const Icon(Icons.workspace_premium_outlined, size: 18),
-                    label: Text(
-                      l10n.certificatesBtn,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SizedBox(
+                        height: 48,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            ref.read(selectedCourseIdProvider.notifier).state =
+                                widget.courseId;
+                            context.push(
+                              '/course-detail/${widget.courseId}/report',
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: primaryColor,
+                            side: BorderSide(
+                              color: primaryColor.withValues(alpha: 0.4),
+                            ),
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                          icon: const Icon(Icons.description_outlined, size: 18),
+                          label: Text(
+                            l10n.courseReportBtn,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
 
                 const SizedBox(height: 20),

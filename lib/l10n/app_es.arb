@@ -700,6 +700,22 @@
   },
   "certificateTeacherSign": "Docente",
   "certificateFolioLabel": "Folio",
+  "courseReportBtn": "Reporte",
+  "courseReportTitle": "Reporte del curso",
+  "financeReportTitle": "Reporte financiero",
+  "financeExportPdf": "Exportar PDF",
+  "reportAttendance": "Asistencia",
+  "reportSchedule": "Horario",
+  "reportMonthlyCost": "Costo mensual",
+  "reportStudent": "Alumno",
+  "reportCourse": "Curso",
+  "reportAmount": "Monto",
+  "reportPayment": "Pago",
+  "reportPendingPayments": "Pagos pendientes",
+  "reportGeneratedOn": "Generado el {date}",
+  "@reportGeneratedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
   "financeReminderMessage": "Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y vence el {due}.",
   "@financeReminderMessage": {
     "placeholders": {

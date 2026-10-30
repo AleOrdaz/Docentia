@@ -32,9 +32,14 @@ class FinanceWindow {
     if (!isRange) {
       return payment.periodYear == year && payment.periodMonth == month;
     }
-    final due = DateTime.tryParse(payment.dueDate);
-    if (due == null) return false;
-    final day = DateTime(due.year, due.month, due.day);
+    return includesDate(payment.dueDate);
+  }
+
+  bool includesDate(String yyyyMmDd) {
+    final parsed = DateTime.tryParse(yyyyMmDd);
+    if (parsed == null) return false;
+    final day = DateTime(parsed.year, parsed.month, parsed.day);
+    if (!isRange) return day.year == year && day.month == month;
     final start = DateTime(rangeStart!.year, rangeStart!.month, rangeStart!.day);
     final end = DateTime(rangeEnd!.year, rangeEnd!.month, rangeEnd!.day);
     return !day.isBefore(start) && !day.isAfter(end);
