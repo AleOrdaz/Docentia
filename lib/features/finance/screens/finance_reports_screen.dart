@@ -4,10 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../auth/providers/auth_provider.dart';
+import '../../auth/utils/teacher_name.dart';
 import '../../payments/models/payment_model.dart';
+import '../../reports/logic/report_builders.dart';
+import '../../reports/services/report_pdf_service.dart';
 import '../logic/finance_fees.dart';
 import '../providers/finance_catalog_provider.dart';
+import '../providers/finance_provider.dart';
 import '../widgets/finance_sheets.dart';
 import '../widgets/finance_ui.dart';
 
@@ -22,6 +28,51 @@ class FinanceReportsScreen extends ConsumerStatefulWidget {
 
 class _FinanceReportsScreenState extends ConsumerState<FinanceReportsScreen> {
   _ReportTab _tab = _ReportTab.income;
+  bool _exporting = false;
+
+  Future<void> _export() async {
+    if (_exporting) return;
+    final catalog = ref.read(financeCatalogProvider).value;
+    if (catalog == null) return;
+    setState(() => _exporting = true);
+    final l10n = AppLocalizations.of(context)!;
+    final window = ref.read(financeWindowProvider);
+    final teacherName = ref.read(authProvider).teacher?.name ?? kFallbackTeacherName;
+    final locale = Localizations.localeOf(context).toString();
+    try {
+      final data = buildFinanceReport(
+        catalog: catalog,
+        window: window,
+        expenses: ref.read(expensesProvider),
+        fallbackCourse: l10n.courseFallback,
+        fallbackStudent: l10n.studentFallback,
+      );
+      final bytes = await ReportPdfService().buildFinancePdf(
+        data: data,
+        l10n: l10n,
+        periodLabel: financeWindowLabel(context, window, thisMonth: true),
+        teacherName: teacherName,
+        generatedOn: l10n.reportGeneratedOn(DateFormat.yMMMd(locale).format(DateTime.now())),
+      );
+      if (!mounted) return;
+      await ReportPdfService().share(
+        bytes: bytes,
+        filename: reportFilename(l10n.financeReportTitle, window),
+        l10n: l10n,
+        onMessage: (message) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        },
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorWithDetail('$error'))),
+      );
+    } finally {
+      if (mounted) setState(() => _exporting = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,20 +118,41 @@ class _FinanceReportsScreenState extends ConsumerState<FinanceReportsScreen> {
         ),
         data: (data) {
           final totals = financeTotals(data.payments, window);
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+          return Column(
             children: [
-              Row(
-                children: [
-                  _Tab(label: l10n.financeIncome, selected: _tab == _ReportTab.income, onTap: () => setState(() => _tab = _ReportTab.income)),
-                  _Tab(label: l10n.financeByCourse, selected: _tab == _ReportTab.course, onTap: () => setState(() => _tab = _ReportTab.course)),
-                  _Tab(label: l10n.financeCompliance, selected: _tab == _ReportTab.compliance, onTap: () => setState(() => _tab = _ReportTab.compliance)),
-                ],
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _Tab(label: l10n.financeIncome, selected: _tab == _ReportTab.income, onTap: () => setState(() => _tab = _ReportTab.income)),
+                          _Tab(label: l10n.financeByCourse, selected: _tab == _ReportTab.course, onTap: () => setState(() => _tab = _ReportTab.course)),
+                          _Tab(label: l10n.financeCompliance, selected: _tab == _ReportTab.compliance, onTap: () => setState(() => _tab = _ReportTab.compliance)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    if (_tab == _ReportTab.income) _IncomeChart(payments: data.payments, window: window, totals: totals),
+                    if (_tab == _ReportTab.course) _CourseBreakdown(catalog: data, window: window),
+                    if (_tab == _ReportTab.compliance) _Compliance(totals: totals),
+                  ],
+                ),
               ),
-              const SizedBox(height: 14),
-              if (_tab == _ReportTab.income) _IncomeChart(payments: data.payments, window: window, totals: totals),
-              if (_tab == _ReportTab.course) _CourseBreakdown(catalog: data, window: window),
-              if (_tab == _ReportTab.compliance) _Compliance(totals: totals),
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: AppPrimaryButton(
+                    label: l10n.financeExportPdf,
+                    icon: Icons.picture_as_pdf_outlined,
+                    loading: _exporting,
+                    onPressed: _export,
+                  ),
+                ),
+              ),
             ],
           );
         },

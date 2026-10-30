@@ -1726,6 +1726,47 @@ class AppLocalizationsEn extends AppLocalizations {
   String get certificateFolioLabel => 'Folio';
 
   @override
+  String get courseReportBtn => 'Report';
+
+  @override
+  String get courseReportTitle => 'Course report';
+
+  @override
+  String get financeReportTitle => 'Financial report';
+
+  @override
+  String get financeExportPdf => 'Export PDF';
+
+  @override
+  String get reportAttendance => 'Attendance';
+
+  @override
+  String get reportSchedule => 'Schedule';
+
+  @override
+  String get reportMonthlyCost => 'Monthly fee';
+
+  @override
+  String get reportStudent => 'Student';
+
+  @override
+  String get reportCourse => 'Course';
+
+  @override
+  String get reportAmount => 'Amount';
+
+  @override
+  String get reportPayment => 'Payment';
+
+  @override
+  String get reportPendingPayments => 'Pending payments';
+
+  @override
+  String reportGeneratedOn(String date) {
+    return 'Generated on $date';
+  }
+
+  @override
   String financeReminderMessage(String tutor, String student, String course,
       String period, String amount, String due) {
     return 'Hello $tutor, this is Docentia. $student\'s fee for $course ($period) is $amount and is due on $due.';

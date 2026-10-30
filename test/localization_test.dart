@@ -44,6 +44,8 @@ void main() {
       expect(l10nEs.relationshipTutor, 'Tutor');
       expect(l10nEs.certificatesBtn, 'Certificados');
       expect(l10nEs.certificateTypeApproval, 'Aprobación');
+      expect(l10nEs.courseReportBtn, 'Reporte');
+      expect(l10nEs.financeExportPdf, 'Exportar PDF');
     });
 
     test('English translations are valid and properly mapped', () {
@@ -78,6 +80,8 @@ void main() {
       expect(l10nEn.relationshipTutor, 'Tutor');
       expect(l10nEn.certificatesBtn, 'Certificates');
       expect(l10nEn.certificateTypeApproval, 'Approval');
+      expect(l10nEn.courseReportBtn, 'Report');
+      expect(l10nEn.financeExportPdf, 'Export PDF');
     });
 
     test('Delegate supports Spanish and English only', () {

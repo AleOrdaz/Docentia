@@ -3255,6 +3255,84 @@ abstract class AppLocalizations {
   /// **'Folio'**
   String get certificateFolioLabel;
 
+  /// No description provided for @courseReportBtn.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte'**
+  String get courseReportBtn;
+
+  /// No description provided for @courseReportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte del curso'**
+  String get courseReportTitle;
+
+  /// No description provided for @financeReportTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Reporte financiero'**
+  String get financeReportTitle;
+
+  /// No description provided for @financeExportPdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar PDF'**
+  String get financeExportPdf;
+
+  /// No description provided for @reportAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia'**
+  String get reportAttendance;
+
+  /// No description provided for @reportSchedule.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario'**
+  String get reportSchedule;
+
+  /// No description provided for @reportMonthlyCost.
+  ///
+  /// In es, this message translates to:
+  /// **'Costo mensual'**
+  String get reportMonthlyCost;
+
+  /// No description provided for @reportStudent.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumno'**
+  String get reportStudent;
+
+  /// No description provided for @reportCourse.
+  ///
+  /// In es, this message translates to:
+  /// **'Curso'**
+  String get reportCourse;
+
+  /// No description provided for @reportAmount.
+  ///
+  /// In es, this message translates to:
+  /// **'Monto'**
+  String get reportAmount;
+
+  /// No description provided for @reportPayment.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago'**
+  String get reportPayment;
+
+  /// No description provided for @reportPendingPayments.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagos pendientes'**
+  String get reportPendingPayments;
+
+  /// No description provided for @reportGeneratedOn.
+  ///
+  /// In es, this message translates to:
+  /// **'Generado el {date}'**
+  String reportGeneratedOn(String date);
+
   /// No description provided for @financeReminderMessage.
   ///
   /// In es, this message translates to:
