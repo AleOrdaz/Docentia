@@ -700,6 +700,22 @@
   },
   "certificateTeacherSign": "Teacher",
   "certificateFolioLabel": "Folio",
+  "courseReportBtn": "Report",
+  "courseReportTitle": "Course report",
+  "financeReportTitle": "Financial report",
+  "financeExportPdf": "Export PDF",
+  "reportAttendance": "Attendance",
+  "reportSchedule": "Schedule",
+  "reportMonthlyCost": "Monthly fee",
+  "reportStudent": "Student",
+  "reportCourse": "Course",
+  "reportAmount": "Amount",
+  "reportPayment": "Payment",
+  "reportPendingPayments": "Pending payments",
+  "reportGeneratedOn": "Generated on {date}",
+  "@reportGeneratedOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
   "financeReminderMessage": "Hello {tutor}, this is Docentia. {student}'s fee for {course} ({period}) is {amount} and is due on {due}.",
   "@financeReminderMessage": {
     "placeholders": {

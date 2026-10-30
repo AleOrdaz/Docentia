@@ -19,6 +19,7 @@ import '../../features/finance/screens/finance_screen.dart';
 import '../../features/finance/screens/payment_detail_screen.dart';
 import '../../features/finance/screens/payment_list_screen.dart';
 import '../../features/certificates/screens/issue_certificates_screen.dart';
+import '../../features/reports/screens/course_report_screen.dart';
 import '../../features/design/screens/style_guide_screen.dart';
 import '../widgets/app_shell.dart';
 
@@ -133,6 +134,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final courseId = state.pathParameters['courseId'] ?? '';
           return IssueCertificatesScreen(courseId: courseId);
+        },
+      ),
+      GoRoute(
+        path: '/course-detail/:courseId/report',
+        builder: (context, state) {
+          final courseId = state.pathParameters['courseId'] ?? '';
+          return CourseReportScreen(courseId: courseId);
         },
       ),
       GoRoute(
