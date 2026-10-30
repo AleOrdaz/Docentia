@@ -665,6 +665,47 @@
   "financeNoExpensesPeriod": "Aún no hay gastos en este periodo.",
   "financeNoCoursesForExpense": "Crea un curso para poder registrar sus gastos.",
   "financeExpenseCategory": "Categoría",
+  "certificatesBtn": "Certificados",
+  "certificatesTitle": "Certificados",
+  "certificatesSubtitle": "Elige el estilo, el tipo y los alumnos para generar los diplomas.",
+  "certificateStyleLabel": "Estilo",
+  "certificateStyleClassic": "Clásico",
+  "certificateStyleModern": "Moderno",
+  "certificateStyleElegant": "Elegante",
+  "certificateTypeLabel": "Tipo de certificado",
+  "certificateTypeCompletion": "Finalización",
+  "certificateTypeApproval": "Aprobación",
+  "certificateTypeParticipation": "Participación",
+  "certificateTitleCompletion": "Certificado de finalización",
+  "certificateTitleApproval": "Certificado de aprobación",
+  "certificateTitleParticipation": "Certificado de participación",
+  "certificateStudentsLabel": "Alumnos",
+  "certificateSelectAll": "Seleccionar todos",
+  "certificateClearSelection": "Quitar selección",
+  "certificateSelectedCount": "{count} seleccionados",
+  "@certificateSelectedCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "certificateGenerate": "Generar PDF",
+  "certificatePreviewTitle": "Vista previa",
+  "certificateShare": "Compartir PDF",
+  "certificateSaved": "El PDF se guardó en los documentos de la app.",
+  "certificateNoStudents": "Agrega alumnos al curso para emitir certificados.",
+  "certificatePickStudents": "Selecciona al menos un alumno.",
+  "certificateGenerated": "Se generaron {count} diplomas.",
+  "@certificateGenerated": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "certificateConfers": "Otorga el presente diploma a",
+  "certificateCompletionBody": "por haber finalizado satisfactoriamente el curso",
+  "certificateApprovalBody": "por haber aprobado el curso",
+  "certificateParticipationBody": "por su participación en el curso",
+  "certificateIssuedIn": "Expedido el {date}",
+  "@certificateIssuedIn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "certificateTeacherSign": "Docente",
+  "certificateFolioLabel": "Folio",
   "financeReminderMessage": "Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y vence el {due}.",
   "@financeReminderMessage": {
     "placeholders": {

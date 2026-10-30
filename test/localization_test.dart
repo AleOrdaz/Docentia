@@ -42,6 +42,8 @@ void main() {
       expect(l10nEs.relationshipMother, 'Madre');
       expect(l10nEs.relationshipFather, 'Padre');
       expect(l10nEs.relationshipTutor, 'Tutor');
+      expect(l10nEs.certificatesBtn, 'Certificados');
+      expect(l10nEs.certificateTypeApproval, 'Aprobación');
     });
 
     test('English translations are valid and properly mapped', () {
@@ -74,6 +76,8 @@ void main() {
       expect(l10nEn.relationshipMother, 'Mother');
       expect(l10nEn.relationshipFather, 'Father');
       expect(l10nEn.relationshipTutor, 'Tutor');
+      expect(l10nEn.certificatesBtn, 'Certificates');
+      expect(l10nEn.certificateTypeApproval, 'Approval');
     });
 
     test('Delegate supports Spanish and English only', () {
