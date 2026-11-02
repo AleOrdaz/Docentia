@@ -748,6 +748,24 @@
       "due": { "type": "String" }
     }
   },
+  "financeReminderOverdueMessage": "Hello {tutor}, this is Docentia. {student}'s fee for {course} ({period}) is {amount} and was due on {due}.",
+  "@financeReminderOverdueMessage": {
+    "placeholders": {
+      "tutor": { "type": "String" },
+      "student": { "type": "String" },
+      "course": { "type": "String" },
+      "period": { "type": "String" },
+      "amount": { "type": "String" },
+      "due": { "type": "String" }
+    }
+  },
+  "overdueFeesNotificationTitle": "Overdue fees",
+  "overdueFeesNotificationBody": "{count, plural, =1{You have 1 overdue fee to review.} other{You have {count} overdue fees to review.}}",
+  "@overdueFeesNotificationBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "planSectionTitle": "Docentia plan",
   "planFreeLabel": "Free",
   "planProLabel": "Pro",

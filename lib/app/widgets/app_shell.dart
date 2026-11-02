@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/payments/providers/overdue_teacher_notify_provider.dart';
 import '../../features/payments/providers/payments_provider.dart';
 import 'app_bottom_nav_bar.dart';
 
@@ -13,6 +14,7 @@ class AppShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(autoGenerateFeesProvider);
+    ref.watch(overdueTeacherNotifyProvider);
     return Scaffold(
       extendBody: true,
       body: navigationShell,

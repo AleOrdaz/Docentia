@@ -3412,6 +3412,25 @@ abstract class AppLocalizations {
   String financeReminderMessage(String tutor, String student, String course,
       String period, String amount, String due);
 
+  /// No description provided for @financeReminderOverdueMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y venció el {due}.'**
+  String financeReminderOverdueMessage(String tutor, String student,
+      String course, String period, String amount, String due);
+
+  /// No description provided for @overdueFeesNotificationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuotas vencidas'**
+  String get overdueFeesNotificationTitle;
+
+  /// No description provided for @overdueFeesNotificationBody.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Tienes 1 cuota vencida por revisar.} other{Tienes {count} cuotas vencidas por revisar.}}'**
+  String overdueFeesNotificationBody(int count);
+
   /// No description provided for @planSectionTitle.
   ///
   /// In es, this message translates to:

@@ -11,20 +11,40 @@ class WhatsAppService {
     final cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
     if (cleanPhone.isEmpty) return false;
 
-    final textParam = message != null ? '?text=${Uri.encodeComponent(message)}' : '';
-    
-    // 1. Probar deep link nativo de WhatsApp
-    final nativeUri = Uri.parse('whatsapp://send?phone=$cleanPhone$textParam');
+    final nativeUri = buildNativeUri(cleanPhone, message);
     if (await canLaunchUrl(nativeUri)) {
       return await launchUrl(nativeUri, mode: LaunchMode.externalApplication);
     }
 
-    // 2. Fallback universal vía HTTPS (wa.me)
-    final webUri = Uri.parse('https://wa.me/$cleanPhone$textParam');
+    final webUri = buildWebUri(cleanPhone, message);
     if (await canLaunchUrl(webUri)) {
       return await launchUrl(webUri, mode: LaunchMode.externalApplication);
     }
 
     return false;
+  }
+
+  /// URI nativa `whatsapp://send?phone=...&text=...` (un solo `?`).
+  static Uri buildNativeUri(String cleanPhone, String? message) {
+    return Uri(
+      scheme: 'whatsapp',
+      host: 'send',
+      queryParameters: {
+        'phone': cleanPhone,
+        if (message != null) 'text': message,
+      },
+    );
+  }
+
+  /// URI web `https://wa.me/<phone>?text=...`.
+  static Uri buildWebUri(String cleanPhone, String? message) {
+    return Uri(
+      scheme: 'https',
+      host: 'wa.me',
+      path: '/$cleanPhone',
+      queryParameters: {
+        if (message != null) 'text': message,
+      },
+    );
   }
 }

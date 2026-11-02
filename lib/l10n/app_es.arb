@@ -748,6 +748,24 @@
       "due": { "type": "String" }
     }
   },
+  "financeReminderOverdueMessage": "Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y venció el {due}.",
+  "@financeReminderOverdueMessage": {
+    "placeholders": {
+      "tutor": { "type": "String" },
+      "student": { "type": "String" },
+      "course": { "type": "String" },
+      "period": { "type": "String" },
+      "amount": { "type": "String" },
+      "due": { "type": "String" }
+    }
+  },
+  "overdueFeesNotificationTitle": "Cuotas vencidas",
+  "overdueFeesNotificationBody": "{count, plural, =1{Tienes 1 cuota vencida por revisar.} other{Tienes {count} cuotas vencidas por revisar.}}",
+  "@overdueFeesNotificationBody": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "planSectionTitle": "Plan Docentia",
   "planFreeLabel": "Free",
   "planProLabel": "Pro",

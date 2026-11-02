@@ -1824,6 +1824,26 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String financeReminderOverdueMessage(String tutor, String student,
+      String course, String period, String amount, String due) {
+    return 'Hola $tutor, te contactamos de Docentia. La cuota de $student del curso $course ($period) es de $amount y venció el $due.';
+  }
+
+  @override
+  String get overdueFeesNotificationTitle => 'Cuotas vencidas';
+
+  @override
+  String overdueFeesNotificationBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tienes $count cuotas vencidas por revisar.',
+      one: 'Tienes 1 cuota vencida por revisar.',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get planSectionTitle => 'Plan Docentia';
 
   @override

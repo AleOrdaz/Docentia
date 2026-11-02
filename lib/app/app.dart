@@ -1,13 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/services/local_notification_service.dart';
 import '../l10n/app_localizations.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_provider.dart';
 
-class DocentiaApp extends ConsumerWidget {
+class DocentiaApp extends ConsumerStatefulWidget {
   const DocentiaApp({super.key});
+
+  @override
+  ConsumerState<DocentiaApp> createState() => _DocentiaAppState();
+}
+
+class _DocentiaAppState extends ConsumerState<DocentiaApp> {
+  @override
+  void initState() {
+    super.initState();
+    LocalNotificationService.instance.onNotificationTap = (payload) {
+      if (payload != LocalNotificationService.financePayload) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ref.read(routerProvider).go('/finance');
+      });
+    };
+  }
 
   Brightness _resolvedBrightness(BuildContext context, ThemeMode themeMode) {
     switch (themeMode) {
@@ -21,7 +39,7 @@ class DocentiaApp extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final primaryColor = ref.watch(currentPrimaryColorProvider);
     final themeMode = ref.watch(themeModeProvider);

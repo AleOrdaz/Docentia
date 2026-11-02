@@ -202,4 +202,7 @@ class _PaymentsRepo implements PaymentsRepository {
   }) async => false;
   @override
   Future<void> updatePaymentDueDate(String paymentId, DueDateOption option) async {}
+  @override
+  Future<int> refreshUnpaidStatuses({DateTime? now}) async => 0;
 }
+

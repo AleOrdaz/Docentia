@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/app_snackbars.dart';
 import 'app_colors.dart';
 import 'app_text_styles.dart';
 
@@ -87,6 +88,7 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
+      snackBarTheme: appSnackBarTheme(Brightness.light),
     );
   }
 
@@ -178,6 +180,7 @@ class AppTheme {
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
       ),
+      snackBarTheme: appSnackBarTheme(Brightness.dark),
     );
   }
 }

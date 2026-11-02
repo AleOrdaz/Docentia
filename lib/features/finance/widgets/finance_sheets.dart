@@ -432,16 +432,29 @@ Future<void> notifyTutor(BuildContext context, FeeEntry entry) async {
   final student = entry.studentName.isEmpty ? l10n.studentFallback : entry.studentName;
   final course = entry.courseName.isEmpty ? l10n.courseFallback : entry.courseName;
   final due = DateTime.tryParse(entry.payment.dueDate);
+  final dueLabel = due == null ? entry.payment.dueDate : financeDay(context, due);
+  final tutor = entry.tutorName.isEmpty ? l10n.studentFallback : entry.tutorName;
+  final amount = financeMoney(entry.payment.amount);
+  final message = entry.payment.status == PaymentStatus.overdue
+      ? l10n.financeReminderOverdueMessage(
+          tutor,
+          student,
+          course,
+          entry.payment.period,
+          amount,
+          dueLabel,
+        )
+      : l10n.financeReminderMessage(
+          tutor,
+          student,
+          course,
+          entry.payment.period,
+          amount,
+          dueLabel,
+        );
   final opened = await WhatsAppService.openWhatsApp(
     phone: entry.tutorPhone,
-    message: l10n.financeReminderMessage(
-      entry.tutorName.isEmpty ? l10n.studentFallback : entry.tutorName,
-      student,
-      course,
-      entry.payment.period,
-      financeMoney(entry.payment.amount),
-      due == null ? entry.payment.dueDate : financeDay(context, due),
-    ),
+    message: message,
   );
   if (!opened && context.mounted) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.whatsappOpenError)));
