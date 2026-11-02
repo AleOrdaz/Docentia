@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/student_model.dart';
 import '../providers/students_provider.dart';
@@ -58,20 +59,13 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
           .updateStudent(updated);
 
       if (!mounted) return;
+      final messenger = ScaffoldMessenger.of(context);
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
-              const SizedBox(width: 8),
-              Text(l10n.studentUpdatedSuccess),
-            ],
-          ),
-          backgroundColor: AppColors.inverseSurface,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        ),
+      showAppSnackBar(
+        context,
+        message: l10n.studentUpdatedSuccess,
+        kind: AppSnackKind.success,
+        messenger: messenger,
       );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../core/services/whatsapp_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../payments/providers/payments_provider.dart';
@@ -319,7 +320,11 @@ class _FilterSheetState extends State<_FilterSheet> {
 Future<void> showRegisterPaymentSheet(BuildContext context, WidgetRef ref, List<FeeEntry> unpaid) async {
   final l10n = AppLocalizations.of(context)!;
   if (unpaid.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.financeNoUnpaid)));
+    showAppSnackBar(
+      context,
+      message: l10n.financeNoUnpaid,
+      kind: AppSnackKind.info,
+    );
     return;
   }
   await showModalBottomSheet<void>(
@@ -418,15 +423,21 @@ Future<void> registerFinancePayment(BuildContext context, WidgetRef ref, FeeEntr
         paidDate: DateTime.now(),
       );
   if (!context.mounted) return;
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(l10n.paymentConfirmed(financeMoney(entry.payment.amount), student))),
+  showAppSnackBar(
+    context,
+    message: l10n.paymentConfirmed(financeMoney(entry.payment.amount), student),
+    kind: AppSnackKind.success,
   );
 }
 
 Future<void> notifyTutor(BuildContext context, FeeEntry entry) async {
   final l10n = AppLocalizations.of(context)!;
   if (entry.tutorPhone.trim().isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.financeNoTutorPhone)));
+    showAppSnackBar(
+      context,
+      message: l10n.financeNoTutorPhone,
+      kind: AppSnackKind.warning,
+    );
     return;
   }
   final student = entry.studentName.isEmpty ? l10n.studentFallback : entry.studentName;
@@ -444,6 +455,10 @@ Future<void> notifyTutor(BuildContext context, FeeEntry entry) async {
     ),
   );
   if (!opened && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.whatsappOpenError)));
+    showAppSnackBar(
+      context,
+      message: l10n.whatsappOpenError,
+      kind: AppSnackKind.error,
+    );
   }
 }

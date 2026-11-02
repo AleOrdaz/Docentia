@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../providers/calendar_events_provider.dart';
@@ -148,13 +149,12 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
 
     if (!mounted) return;
     final messenger = ScaffoldMessenger.of(context);
-    final primaryColor = Theme.of(context).colorScheme.primary;
     Navigator.of(context).pop();
-    messenger.showSnackBar(
-      SnackBar(
-        content: Text(l10n.eventSaved(title)),
-        backgroundColor: primaryColor,
-      ),
+    showAppSnackBar(
+      context,
+      message: l10n.eventSaved(title),
+      kind: AppSnackKind.success,
+      messenger: messenger,
     );
   }
 

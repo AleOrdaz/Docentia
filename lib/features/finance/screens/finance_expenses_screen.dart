@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../courses/models/course_model.dart';
 import '../logic/finance_fees.dart';
@@ -249,7 +250,11 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
     _descriptionController.clear();
     _amountController.clear();
     setState(() => _saving = false);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.financeExpenseSaved)));
+    showAppSnackBar(
+      context,
+      message: l10n.financeExpenseSaved,
+      kind: AppSnackKind.success,
+    );
   }
 }
 

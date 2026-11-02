@@ -45,6 +45,25 @@ void main() {
 
     expect(find.text('Reporte del curso'), findsOneWidget);
     expect(find.text('Arte'), findsWidgets);
+    expect(find.text('Alumnos activos'), findsOneWidget);
+    expect(find.text('Ingreso esperado del mes'), findsOneWidget);
+    expect(find.text('Horas a la semana'), findsOneWidget);
+
+    final scrollable = find.byType(Scrollable).first;
+    await tester.scrollUntilVisible(
+      find.text('Sugerencia'),
+      300,
+      scrollable: scrollable,
+    );
+    expect(find.text('Asistencia del curso'), findsWidgets);
+    expect(find.text('Alumnos con pago pendiente'), findsWidgets);
+    expect(find.text('Sugerencia'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Rosa Jaramillo'),
+      300,
+      scrollable: scrollable,
+    );
     expect(find.text('Rosa Jaramillo'), findsOneWidget);
     expect(find.textContaining('Asistencias 1'), findsOneWidget);
     expect(find.textContaining('Retardo 0'), findsOneWidget);

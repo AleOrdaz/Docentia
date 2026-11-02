@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
@@ -79,11 +80,10 @@ Future<void> showDeleteCourseConfirmation({
               }
               await ref.read(coursesProvider.notifier).deleteCourse(course.id);
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.courseDeletedSuccess(course.name)),
-                    backgroundColor: const Color(0xFFD32F2F),
-                  ),
+                showAppSnackBar(
+                  context,
+                  message: l10n.courseDeletedSuccess(course.name),
+                  kind: AppSnackKind.error,
                 );
               }
             },
@@ -296,11 +296,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
     if (_selectedDays.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.selectAtLeastOneDay),
-          backgroundColor: AppColors.error,
-        ),
+      showAppSnackBar(
+        context,
+        message: l10n.selectAtLeastOneDay,
+        kind: AppSnackKind.error,
       );
       return;
     }
@@ -332,13 +331,15 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
         await ref.read(coursesProvider.notifier).updateCourse(updatedCourse);
 
         if (mounted) {
+          final messenger = ScaffoldMessenger.of(context);
+          final message =
+              AppLocalizations.of(context)!.courseUpdatedSuccess(name);
           Navigator.of(context).pop(updatedCourse);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.courseUpdatedSuccess(name)),
-              backgroundColor: AppColors.inverseSurface,
-              behavior: SnackBarBehavior.floating,
-            ),
+          showAppSnackBar(
+            context,
+            message: message,
+            kind: AppSnackKind.success,
+            messenger: messenger,
           );
         }
       } else {
@@ -358,13 +359,15 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
         ref.read(selectedCourseIdProvider.notifier).state = newCourse.id;
 
         if (mounted) {
+          final messenger = ScaffoldMessenger.of(context);
+          final message =
+              AppLocalizations.of(context)!.courseCreatedSuccess(name);
           Navigator.of(context).pop(newCourse);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.courseCreatedSuccess(name)),
-              backgroundColor: AppColors.inverseSurface,
-              behavior: SnackBarBehavior.floating,
-            ),
+          showAppSnackBar(
+            context,
+            message: message,
+            kind: AppSnackKind.success,
+            messenger: messenger,
           );
         }
       }

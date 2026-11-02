@@ -104,6 +104,28 @@
   "studentsAndTutorsConnected": "alumnos y tutores conectados",
   "broadcastBtn": "Difusión",
   "editCourseTitle": "Editar curso",
+  "courseDetailsOption": "Detalles del curso",
+  "courseDetailsTitle": "Detalles del curso",
+  "courseDetailsStudents": "Alumnos activos",
+  "courseDetailsExpectedIncome": "Ingreso esperado del mes",
+  "courseDetailsWeeklyHours": "Horas a la semana",
+  "courseDetailsAttendance": "Asistencia del curso",
+  "courseDetailsPendingPayments": "Alumnos con pago pendiente",
+  "courseDetailsHoursValue": "{hours} h",
+  "@courseDetailsHoursValue": {
+    "placeholders": { "hours": { "type": "String" } }
+  },
+  "courseDetailsAttendanceValue": "{percent}%",
+  "@courseDetailsAttendanceValue": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "courseDetailsNoAttendanceYet": "Aún no hay asistencias registradas",
+  "courseDetailsSuggestionTitle": "Sugerencia",
+  "courseDetailsSuggestionNone": "Por ahora no hay alumnos con atrasos de pago prolongados.",
+  "courseDetailsSuggestionBody": "Considera dar de baja a {names}: llevan cerca de dos meses o más con cuotas vencidas.",
+  "@courseDetailsSuggestionBody": {
+    "placeholders": { "names": { "type": "String" } }
+  },
   "createCourseTitle": "Crear nuevo curso",
   "courseNameLabel": "Nombre del curso *",
   "sessionsLabel": "Total de sesiones *",

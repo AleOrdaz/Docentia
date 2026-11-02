@@ -104,6 +104,28 @@
   "studentsAndTutorsConnected": "students and tutors connected",
   "broadcastBtn": "Broadcast",
   "editCourseTitle": "Edit Course",
+  "courseDetailsOption": "Course details",
+  "courseDetailsTitle": "Course details",
+  "courseDetailsStudents": "Active students",
+  "courseDetailsExpectedIncome": "Expected monthly income",
+  "courseDetailsWeeklyHours": "Hours per week",
+  "courseDetailsAttendance": "Course attendance",
+  "courseDetailsPendingPayments": "Students with pending payment",
+  "courseDetailsHoursValue": "{hours} h",
+  "@courseDetailsHoursValue": {
+    "placeholders": { "hours": { "type": "String" } }
+  },
+  "courseDetailsAttendanceValue": "{percent}%",
+  "@courseDetailsAttendanceValue": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "courseDetailsNoAttendanceYet": "No attendance recorded yet",
+  "courseDetailsSuggestionTitle": "Suggestion",
+  "courseDetailsSuggestionNone": "There are no students with long overdue payments right now.",
+  "courseDetailsSuggestionBody": "Consider deactivating {names}: they have about two months or more of overdue fees.",
+  "@courseDetailsSuggestionBody": {
+    "placeholders": { "names": { "type": "String" } }
+  },
   "createCourseTitle": "Create New Course",
   "courseNameLabel": "Course Name *",
   "sessionsLabel": "Total Sessions *",

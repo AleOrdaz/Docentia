@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../courses/models/course_icon_helper.dart';
 import '../../courses/models/course_model.dart';
@@ -109,8 +110,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   .read(studentsForCourseProvider(widget.courseId).notifier)
                   .deactivateStudent(student.id);
               if (!mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.studentDeactivated)),
+              showAppSnackBar(
+                context,
+                message: l10n.studentDeactivated,
+                kind: AppSnackKind.info,
               );
             },
             child: Text(l10n.confirmDeactivate),

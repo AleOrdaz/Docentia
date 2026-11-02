@@ -31,7 +31,27 @@ class ReportPdfService {
         _kvGrid([
           (l10n.reportSchedule, data.schedule),
           (l10n.reportMonthlyCost, formatCurrency(data.cost)),
-          (l10n.studentListTitle, '${data.studentCount}'),
+          (l10n.courseDetailsStudents, '${data.studentCount}'),
+          (l10n.courseDetailsExpectedIncome, formatCurrency(data.expectedIncome)),
+          (
+            l10n.courseDetailsWeeklyHours,
+            data.weeklyHours <= 0
+                ? '—'
+                : l10n.courseDetailsHoursValue(
+                    data.weeklyHours.toStringAsFixed(
+                      data.weeklyHours == data.weeklyHours.roundToDouble() ? 0 : 1,
+                    ),
+                  ),
+          ),
+          (
+            l10n.courseDetailsAttendance,
+            data.attendancePercent == null
+                ? l10n.courseDetailsNoAttendanceYet
+                : l10n.courseDetailsAttendanceValue(
+                    data.attendancePercent!.toStringAsFixed(0),
+                  ),
+          ),
+          (l10n.courseDetailsPendingPayments, '${data.pendingPaymentStudents}'),
           (l10n.classesLabel, '${data.sessionCount}'),
         ]),
         pw.SizedBox(height: 14),
@@ -50,6 +70,16 @@ class ReportPdfService {
           (l10n.financeExpenses, formatCurrency(data.expenses)),
           (l10n.financeRealProfit, formatCurrency(data.profit)),
         ]),
+        pw.SizedBox(height: 14),
+        _sectionTitle(l10n.courseDetailsSuggestionTitle),
+        pw.Text(
+          data.deactivationSuggestions.isEmpty
+              ? l10n.courseDetailsSuggestionNone
+              : l10n.courseDetailsSuggestionBody(
+                  data.deactivationSuggestions.join(', '),
+                ),
+          style: const pw.TextStyle(fontSize: 11, color: PdfColors.blueGrey700),
+        ),
         pw.SizedBox(height: 16),
         _sectionTitle(l10n.studentListTitle),
         pw.SizedBox(height: 8),

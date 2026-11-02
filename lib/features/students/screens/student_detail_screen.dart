@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../core/services/whatsapp_service.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
@@ -34,8 +35,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
   void _openWhatsApp(String phone, String studentName, String tutorName) async {
     final l10n = AppLocalizations.of(context)!;
     if (phone.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.noTutorPhone)),
+      showAppSnackBar(
+        context,
+        message: l10n.noTutorPhone,
+        kind: AppSnackKind.warning,
       );
       return;
     }
@@ -44,8 +47,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
     final success = await WhatsAppService.openWhatsApp(phone: phone, message: message);
     if (!success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.whatsappOpenError)),
+      showAppSnackBar(
+        context,
+        message: l10n.whatsappOpenError,
+        kind: AppSnackKind.error,
       );
     }
   }
@@ -78,10 +83,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
 
               if (context.mounted) {
                 context.pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.studentDeactivated),
-                  ),
+                showAppSnackBar(
+                  context,
+                  message: l10n.studentDeactivated,
+                  kind: AppSnackKind.info,
                 );
               }
             },
@@ -303,23 +308,12 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                                   ? l10n.proratedAlreadyExists
                                   : l10n.proratedOnBillingDay;
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Row(
-                                    children: [
-                                      Icon(
-                                        result.success ? Icons.check_circle : Icons.warning_amber_rounded,
-                                        color: result.success ? AppColors.secondaryFixed : Colors.amber,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(child: Text(message)),
-                                    ],
-                                  ),
-                                  backgroundColor: AppColors.inverseSurface,
-                                  behavior: SnackBarBehavior.floating,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-                                ),
+                              showAppSnackBar(
+                                context,
+                                message: message,
+                                kind: result.success
+                                    ? AppSnackKind.success
+                                    : AppSnackKind.warning,
                               );
                             },
                             child: Text(l10n.createProratedFee, style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -428,13 +422,10 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         .updatePaymentDueDate(payment.id, selectedOption);
 
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10n.dueDateUpdated(formattedDueDate)),
-                          backgroundColor: AppColors.inverseSurface,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-                        ),
+                      showAppSnackBar(
+                        context,
+                        message: l10n.dueDateUpdated(formattedDueDate),
+                        kind: AppSnackKind.success,
                       );
                     }
                   },
@@ -543,22 +534,13 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                   .confirmPayment(payment.id, paidAmount: amountDue, paidDate: now);
 
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Row(
-                      children: [
-                        const Icon(Icons.check_circle, color: AppColors.secondaryFixed, size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            l10n.paymentConfirmed(formatCurrency(amountDue), studentName),
-                          ),
-                        ),
-                      ],
-                    ),
-                    backgroundColor: AppColors.inverseSurface,
-                    behavior: SnackBarBehavior.floating,
+                showAppSnackBar(
+                  context,
+                  message: l10n.paymentConfirmed(
+                    formatCurrency(amountDue),
+                    studentName,
                   ),
+                  kind: AppSnackKind.success,
                 );
               }
             },

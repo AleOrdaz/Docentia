@@ -146,6 +146,10 @@ void main() {
     expect(data.presents, 2);
     expect(data.lates, 1);
     expect(data.absences, 1);
+    expect(data.expectedIncome, 17000);
+    expect(data.weeklyHours, closeTo(1.5, 0.01));
+    expect(data.attendancePercent, closeTo(75, 0.01));
+    expect(data.pendingPaymentStudents, 2);
     expect(data.collected, 8500);
     expect(data.overdue, 8500);
     expect(data.expenses, 500);
@@ -265,5 +269,50 @@ void main() {
       FinanceWindow.range(DateTime(2026, 10, 1), DateTime(2026, 10, 15)).includesDate('2026-10-16'),
       isFalse,
     );
+  });
+
+  test('sugiere baja con dos cuotas vencidas o atraso de 60 días', () {
+    final ana = student('a', 'Ana', 'López');
+    final luis = student('b', 'Luis', 'Pérez');
+    final now = DateTime(2026, 11, 2);
+    final names = studentsSuggestedForDeactivation(
+      students: [ana, luis],
+      now: now,
+      payments: const [
+        Payment(
+          id: 'p1',
+          studentId: 'a',
+          courseId: 'c1',
+          amount: 8500,
+          dueDate: '2026-08-15',
+          periodMonth: 8,
+          periodYear: 2026,
+          status: PaymentStatus.overdue,
+        ),
+        Payment(
+          id: 'p2',
+          studentId: 'b',
+          courseId: 'c1',
+          amount: 8500,
+          dueDate: '2026-09-15',
+          periodMonth: 9,
+          periodYear: 2026,
+          status: PaymentStatus.overdue,
+        ),
+        Payment(
+          id: 'p3',
+          studentId: 'b',
+          courseId: 'c1',
+          amount: 8500,
+          dueDate: '2026-10-15',
+          periodMonth: 10,
+          periodYear: 2026,
+          status: PaymentStatus.overdue,
+        ),
+      ],
+    );
+
+    expect(names, ['Ana López', 'Luis Pérez']);
+    expect(courseWeeklyHours(course), closeTo(1.5, 0.01));
   });
 }

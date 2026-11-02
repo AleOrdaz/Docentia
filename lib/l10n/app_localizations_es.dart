@@ -306,6 +306,53 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editCourseTitle => 'Editar curso';
 
   @override
+  String get courseDetailsOption => 'Detalles del curso';
+
+  @override
+  String get courseDetailsTitle => 'Detalles del curso';
+
+  @override
+  String get courseDetailsStudents => 'Alumnos activos';
+
+  @override
+  String get courseDetailsExpectedIncome => 'Ingreso esperado del mes';
+
+  @override
+  String get courseDetailsWeeklyHours => 'Horas a la semana';
+
+  @override
+  String get courseDetailsAttendance => 'Asistencia del curso';
+
+  @override
+  String get courseDetailsPendingPayments => 'Alumnos con pago pendiente';
+
+  @override
+  String courseDetailsHoursValue(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String courseDetailsAttendanceValue(String percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get courseDetailsNoAttendanceYet =>
+      'Aún no hay asistencias registradas';
+
+  @override
+  String get courseDetailsSuggestionTitle => 'Sugerencia';
+
+  @override
+  String get courseDetailsSuggestionNone =>
+      'Por ahora no hay alumnos con atrasos de pago prolongados.';
+
+  @override
+  String courseDetailsSuggestionBody(String names) {
+    return 'Considera dar de baja a $names: llevan cerca de dos meses o más con cuotas vencidas.';
+  }
+
+  @override
   String get createCourseTitle => 'Crear nuevo curso';
 
   @override

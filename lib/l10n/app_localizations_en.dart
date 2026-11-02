@@ -306,6 +306,52 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editCourseTitle => 'Edit Course';
 
   @override
+  String get courseDetailsOption => 'Course details';
+
+  @override
+  String get courseDetailsTitle => 'Course details';
+
+  @override
+  String get courseDetailsStudents => 'Active students';
+
+  @override
+  String get courseDetailsExpectedIncome => 'Expected monthly income';
+
+  @override
+  String get courseDetailsWeeklyHours => 'Hours per week';
+
+  @override
+  String get courseDetailsAttendance => 'Course attendance';
+
+  @override
+  String get courseDetailsPendingPayments => 'Students with pending payment';
+
+  @override
+  String courseDetailsHoursValue(String hours) {
+    return '$hours h';
+  }
+
+  @override
+  String courseDetailsAttendanceValue(String percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get courseDetailsNoAttendanceYet => 'No attendance recorded yet';
+
+  @override
+  String get courseDetailsSuggestionTitle => 'Suggestion';
+
+  @override
+  String get courseDetailsSuggestionNone =>
+      'There are no students with long overdue payments right now.';
+
+  @override
+  String courseDetailsSuggestionBody(String names) {
+    return 'Consider deactivating $names: they have about two months or more of overdue fees.';
+  }
+
+  @override
   String get createCourseTitle => 'Create New Course';
 
   @override

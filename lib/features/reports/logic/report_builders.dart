@@ -46,6 +46,21 @@ class CourseReportData {
   final double profit;
   final List<CourseStudentReportRow> students;
 
+  /// Ingreso mensual esperado si todos pagan: alumnos × costo.
+  final double expectedIncome;
+
+  /// Horas de clase por semana según días y horario.
+  final double weeklyHours;
+
+  /// Porcentaje de asistencia del curso (presentes + retardos / marcados).
+  final double? attendancePercent;
+
+  /// Alumnos con al menos una cuota pendiente o vencida.
+  final int pendingPaymentStudents;
+
+  /// Nombres sugeridos para baja por atraso prolongado (~2 meses).
+  final List<String> deactivationSuggestions;
+
   const CourseReportData({
     required this.courseName,
     required this.schedule,
@@ -61,7 +76,14 @@ class CourseReportData {
     required this.expenses,
     required this.profit,
     required this.students,
+    required this.expectedIncome,
+    required this.weeklyHours,
+    required this.attendancePercent,
+    required this.pendingPaymentStudents,
+    required this.deactivationSuggestions,
   });
+
+  int get markedAttendance => presents + lates + absences;
 }
 
 class CourseIncomeRow {
@@ -178,6 +200,20 @@ CourseReportData buildCourseReport({
       ),
   ]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
+  final marked = presents + lates + absences;
+  final coursePayments =
+      payments.where((payment) => payment.courseId == course.id);
+  final pendingPaymentStudents = students.where((student) {
+    final studentPayments =
+        coursePayments.where((payment) => payment.studentId == student.id);
+    if (studentPayments.isEmpty) return false;
+    return studentPayments.any(
+      (payment) =>
+          payment.status == PaymentStatus.pending ||
+          payment.status == PaymentStatus.overdue,
+    );
+  }).length;
+
   return CourseReportData(
     courseName: course.name,
     schedule: course.formattedSchedule,
@@ -193,7 +229,78 @@ CourseReportData buildCourseReport({
     expenses: expenseSum,
     profit: realProfit(totals.collected, expenseSum),
     students: rows,
+    expectedIncome: students.length * course.cost,
+    weeklyHours: courseWeeklyHours(course),
+    attendancePercent: marked == 0 ? null : ((presents + lates) * 100 / marked),
+    pendingPaymentStudents: pendingPaymentStudents,
+    deactivationSuggestions: studentsSuggestedForDeactivation(
+      students: students,
+      payments: payments.where((payment) => payment.courseId == course.id),
+    ),
   );
+}
+
+TimeOfDayMinutes? _parseCourseTime(String raw) {
+  final clean = raw.trim().toUpperCase();
+  if (clean.isEmpty) return null;
+  final isPm = clean.contains('PM');
+  final isAm = clean.contains('AM');
+  final digits = clean.replaceAll(RegExp(r'[^0-9:]'), '');
+  final parts = digits.split(':');
+  if (parts.length < 2) return null;
+  var hour = int.tryParse(parts[0]);
+  final minute = int.tryParse(parts[1]);
+  if (hour == null || minute == null) return null;
+  if (isPm && hour < 12) hour += 12;
+  if (isAm && hour == 12) hour = 0;
+  return TimeOfDayMinutes(hour: hour, minute: minute);
+}
+
+class TimeOfDayMinutes {
+  final int hour;
+  final int minute;
+  const TimeOfDayMinutes({required this.hour, required this.minute});
+  int get totalMinutes => hour * 60 + minute;
+}
+
+double courseWeeklyHours(Course course) {
+  final start = _parseCourseTime(course.startTime);
+  final end = _parseCourseTime(course.endTime);
+  if (start == null || end == null || course.classDays.isEmpty) return 0;
+  var minutes = end.totalMinutes - start.totalMinutes;
+  if (minutes <= 0) minutes += 24 * 60;
+  return course.classDays.length * minutes / 60.0;
+}
+
+/// Alumnos con ~2 meses o más de atraso (2+ cuotas vencidas o vencimiento ≥ 60 días).
+List<String> studentsSuggestedForDeactivation({
+  required List<Student> students,
+  required Iterable<Payment> payments,
+  DateTime? now,
+}) {
+  final today = now ?? DateTime.now();
+  final names = <String>[];
+  for (final student in students) {
+    final overdue = payments
+        .where(
+          (payment) =>
+              payment.studentId == student.id &&
+              payment.status == PaymentStatus.overdue,
+        )
+        .toList();
+    if (overdue.length >= 2) {
+      names.add(student.fullName);
+      continue;
+    }
+    final hasLongOverdue = overdue.any((payment) {
+      final due = DateTime.tryParse(payment.dueDate);
+      if (due == null) return false;
+      return today.difference(due).inDays >= 60;
+    });
+    if (hasLongOverdue) names.add(student.fullName);
+  }
+  names.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+  return names;
 }
 
 FinanceReportData buildFinanceReport({

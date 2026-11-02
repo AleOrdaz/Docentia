@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
+import '../../../app/widgets/app_snackbars.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
@@ -237,10 +238,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: '$subject\n\n$body'));
                           Navigator.of(ctx).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.noticeCopied),
-                            ),
+                          showAppSnackBar(
+                            context,
+                            message: l10n.noticeCopied,
+                            kind: AppSnackKind.success,
                           );
                         },
                         icon: const Icon(Icons.copy, size: 16),
@@ -274,11 +275,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             await launchUrl(uri);
                           } else {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      l10n.noMailClient),
-                                ),
+                              showAppSnackBar(
+                                context,
+                                message: l10n.noMailClient,
+                                kind: AppSnackKind.warning,
                               );
                             }
                           }
@@ -1155,8 +1155,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   ref
                       .read(calendarEventsProvider.notifier)
                       .deleteEvent(event.id);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.eventDeleted)),
+                  showAppSnackBar(
+                    context,
+                    message: l10n.eventDeleted,
+                    kind: AppSnackKind.info,
                   );
                 },
                 itemBuilder: (context) => [

@@ -668,6 +668,84 @@ abstract class AppLocalizations {
   /// **'Editar curso'**
   String get editCourseTitle;
 
+  /// No description provided for @courseDetailsOption.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles del curso'**
+  String get courseDetailsOption;
+
+  /// No description provided for @courseDetailsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Detalles del curso'**
+  String get courseDetailsTitle;
+
+  /// No description provided for @courseDetailsStudents.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumnos activos'**
+  String get courseDetailsStudents;
+
+  /// No description provided for @courseDetailsExpectedIncome.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingreso esperado del mes'**
+  String get courseDetailsExpectedIncome;
+
+  /// No description provided for @courseDetailsWeeklyHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas a la semana'**
+  String get courseDetailsWeeklyHours;
+
+  /// No description provided for @courseDetailsAttendance.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencia del curso'**
+  String get courseDetailsAttendance;
+
+  /// No description provided for @courseDetailsPendingPayments.
+  ///
+  /// In es, this message translates to:
+  /// **'Alumnos con pago pendiente'**
+  String get courseDetailsPendingPayments;
+
+  /// No description provided for @courseDetailsHoursValue.
+  ///
+  /// In es, this message translates to:
+  /// **'{hours} h'**
+  String courseDetailsHoursValue(String hours);
+
+  /// No description provided for @courseDetailsAttendanceValue.
+  ///
+  /// In es, this message translates to:
+  /// **'{percent}%'**
+  String courseDetailsAttendanceValue(String percent);
+
+  /// No description provided for @courseDetailsNoAttendanceYet.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay asistencias registradas'**
+  String get courseDetailsNoAttendanceYet;
+
+  /// No description provided for @courseDetailsSuggestionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sugerencia'**
+  String get courseDetailsSuggestionTitle;
+
+  /// No description provided for @courseDetailsSuggestionNone.
+  ///
+  /// In es, this message translates to:
+  /// **'Por ahora no hay alumnos con atrasos de pago prolongados.'**
+  String get courseDetailsSuggestionNone;
+
+  /// No description provided for @courseDetailsSuggestionBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Considera dar de baja a {names}: llevan cerca de dos meses o más con cuotas vencidas.'**
+  String courseDetailsSuggestionBody(String names);
+
   /// No description provided for @createCourseTitle.
   ///
   /// In es, this message translates to:
