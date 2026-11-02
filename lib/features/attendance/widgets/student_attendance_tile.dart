@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../students/models/student_model.dart';
 import '../models/attendance_model.dart';
@@ -431,6 +432,7 @@ class StudentAttendanceTile extends StatelessWidget {
             const SizedBox(height: 12),
             TextField(
               controller: textController,
+              textCapitalization: appDefaultTextCapitalization(),
               decoration: InputDecoration(
                 labelText: l10n.noteReasonLabel,
                 hintText: l10n.noteHint,

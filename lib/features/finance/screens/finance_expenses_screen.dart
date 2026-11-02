@@ -130,7 +130,6 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                       AppTextField(
                         label: l10n.expenseDescriptionLabel,
                         controller: _descriptionController,
-                        textCapitalization: TextCapitalization.sentences,
                         validator: (value) => value == null || value.trim().isEmpty ? l10n.required : null,
                       ),
                       const SizedBox(height: 12),

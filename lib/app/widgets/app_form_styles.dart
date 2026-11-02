@@ -33,6 +33,21 @@ class AppFieldLabel extends StatelessWidget {
   }
 }
 
+/// Mayúscula al inicio de cada palabra, salvo teclados numéricos/email/teléfono.
+TextCapitalization appDefaultTextCapitalization([TextInputType? keyboardType]) {
+  switch (keyboardType?.name) {
+    case 'number':
+    case 'phone':
+    case 'emailAddress':
+    case 'url':
+    case 'visiblePassword':
+    case 'datetime':
+      return TextCapitalization.none;
+    default:
+      return TextCapitalization.words;
+  }
+}
+
 class AppTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
@@ -42,7 +57,7 @@ class AppTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatters;
   final int maxLines;
-  final TextCapitalization textCapitalization;
+  final TextCapitalization? textCapitalization;
   final ValueChanged<String>? onChanged;
 
   const AppTextField({
@@ -55,7 +70,7 @@ class AppTextField extends StatelessWidget {
     this.validator,
     this.inputFormatters,
     this.maxLines = 1,
-    this.textCapitalization = TextCapitalization.none,
+    this.textCapitalization,
     this.onChanged,
   });
 
@@ -74,7 +89,8 @@ class AppTextField extends StatelessWidget {
           validator: validator,
           inputFormatters: inputFormatters,
           maxLines: maxLines,
-          textCapitalization: textCapitalization,
+          textCapitalization:
+              textCapitalization ?? appDefaultTextCapitalization(keyboardType),
           onChanged: onChanged,
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
           decoration: InputDecoration(

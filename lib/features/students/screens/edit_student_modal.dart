@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/student_model.dart';
 import '../providers/students_provider.dart';
@@ -227,6 +228,7 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
+          textCapitalization: appDefaultTextCapitalization(keyboardType),
           validator: validator,
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
           decoration: InputDecoration(

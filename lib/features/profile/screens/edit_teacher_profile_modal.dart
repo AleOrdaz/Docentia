@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/providers/auth_provider.dart';
 
@@ -117,7 +118,6 @@ class _EditTeacherProfileModalState
               _buildTextField(
                 label: l10n.profileTitle,
                 controller: _nameCtrl,
-                textCapitalization: TextCapitalization.words,
               ),
               const SizedBox(height: 12),
               _buildTextField(
@@ -184,7 +184,7 @@ class _EditTeacherProfileModalState
     required String label,
     required TextEditingController controller,
     TextInputType? keyboardType,
-    TextCapitalization textCapitalization = TextCapitalization.none,
+    TextCapitalization? textCapitalization,
     Widget? prefixIcon,
     int maxLines = 1,
   }) {
@@ -200,7 +200,8 @@ class _EditTeacherProfileModalState
         TextField(
           controller: controller,
           keyboardType: keyboardType,
-          textCapitalization: textCapitalization,
+          textCapitalization:
+              textCapitalization ?? appDefaultTextCapitalization(keyboardType),
           maxLines: maxLines,
           style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
           decoration: InputDecoration(

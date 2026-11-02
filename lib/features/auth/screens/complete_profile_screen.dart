@@ -149,7 +149,6 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
               label: l10n.completeProfileNameLabel,
               controller: _nameCtrl,
               hint: l10n.completeProfileNameHint,
-              textCapitalization: TextCapitalization.words,
               onChanged: (_) => setState(() {}),
               validator: (value) {
                 final name = value?.trim() ?? '';

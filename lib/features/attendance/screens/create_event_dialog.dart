@@ -222,7 +222,6 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                 label: l10n.eventTitleLabel,
                 controller: _titleController,
                 hint: l10n.eventTitleHint,
-                textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 14),
 
@@ -402,7 +401,6 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                 controller: _descController,
                 hint: l10n.descriptionHint,
                 maxLines: 3,
-                textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: 16),
 
