@@ -133,7 +133,7 @@ class Student {
       courseId: (map['courseId'] as String?) ?? '',
       name: (map['name'] as String?) ?? '',
       lastName: (map['lastName'] as String?) ?? '',
-      age: (map['age'] as num?)?.toInt() ?? 16,
+      age: (map['age'] as num?)?.toInt() ?? 0,
       avatarUrl: map['avatarUrl'] as String?,
       assignedLevel: map['assignedLevel'] as String?,
       tutorRelationship: TutorRelationship.fromValue(map['tutorRelationship'] as String?),

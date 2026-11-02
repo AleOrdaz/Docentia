@@ -62,22 +62,38 @@ void main() {
       );
     });
 
-    test('due periods include the current month after the billing day', () {
+    test('prepaid due periods charge the next service month after billing day', () {
       final periods = FeeCycle.duePeriods(
         PaymentSchedule.firstHalf,
         DateTime(2026, 10, 16),
       );
-      expect(periods.map((p) => p.month), containsAll([10, 9]));
-      expect(periods.first.billingDate, DateTime(2026, 10, 15));
+      // Billing 15 Oct → Nov; billing 15 Sep → Oct
+      expect(periods.map((p) => p.month), containsAll([11, 10]));
+      expect(
+        periods.firstWhere((p) => p.month == 11).billingDate,
+        DateTime(2026, 10, 15),
+      );
     });
 
-    test('due periods skip the current month before the billing day', () {
+    test('prepaid due periods skip unreached billing days', () {
       final periods = FeeCycle.duePeriods(
         PaymentSchedule.firstHalf,
         DateTime(2026, 10, 10),
       );
-      expect(periods.map((p) => p.month), isNot(contains(10)));
-      expect(periods.map((p) => p.month), contains(9));
+      // Only Sep 15 billing has passed → service month Oct
+      expect(periods.map((p) => p.month), contains(10));
+      expect(periods.map((p) => p.month), isNot(contains(11)));
+    });
+
+    test('service period for billing is the following month', () {
+      expect(
+        FeeCycle.servicePeriodForBilling(DateTime(2026, 10, 31)),
+        DateTime(2026, 11, 1),
+      );
+      expect(
+        FeeCycle.servicePeriodForBilling(DateTime(2026, 12, 15)),
+        DateTime(2027, 1, 1),
+      );
     });
 
     test('students created after the billing day are not auto-enrolled', () {

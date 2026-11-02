@@ -627,6 +627,7 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
     final surfaceMid = AppColors.surfaceMid(context);
     final textPrimary = AppColors.textPrimary(context);
     final textSecondary = AppColors.textSecondary(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final studentsAsync = ref.watch(studentsForCourseProvider(courseId));
     final student = studentsAsync.value
@@ -719,19 +720,34 @@ class _StudentDetailScreenState extends ConsumerState<StudentDetailScreen> {
                         ),
                         const SizedBox(height: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: student.active
-                                ? AppColors.secondaryFixed.withValues(alpha: 0.3)
-                                : AppColors.errorContainer,
+                                ? (isDark
+                                    ? AppColors.secondaryFixed.withValues(alpha: 0.18)
+                                    : AppColors.secondaryFixed.withValues(alpha: 0.35))
+                                : (isDark
+                                    ? AppColors.error.withValues(alpha: 0.22)
+                                    : AppColors.errorContainer),
                             borderRadius: BorderRadius.circular(100),
                           ),
                           child: Text(
-                            student.active ? l10n.regularStudent : l10n.deactivatedStudent,
+                            student.active
+                                ? l10n.regularStudent
+                                : l10n.deactivatedStudent,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: student.active ? AppColors.secondary : AppColors.error,
+                              color: student.active
+                                  ? (isDark
+                                      ? AppColors.secondaryFixed
+                                      : AppColors.secondary)
+                                  : (isDark
+                                      ? const Color(0xFFFFB4AB)
+                                      : AppColors.error),
                             ),
                           ),
                         ),

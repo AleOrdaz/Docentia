@@ -333,13 +333,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthlyCostLabel => 'Monthly Fee (\$) *';
 
   @override
-  String get paymentScheduleLabel => 'Billing Schedule';
+  String get paymentScheduleLabel => 'Advance billing day';
 
   @override
-  String get scheduleFirstHalf => 'First Half (Day 1-15)';
+  String get scheduleFirstHalf => 'Mid-month (day 15)';
 
   @override
-  String get scheduleEndOfMonth => 'End of Month (Day 25-30)';
+  String get scheduleEndOfMonth => 'End of month (last day)';
 
   @override
   String get chooseIconLabel => 'Select Course Icon';
@@ -703,16 +703,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstNamesLabel => 'First name *';
 
   @override
-  String get firstNameHint => 'E.g. Camila';
+  String get firstNameHint => 'First name(s)';
 
   @override
   String get lastNamesLabel => 'Last name *';
 
   @override
-  String get lastNameHint => 'E.g. Morales Díaz';
+  String get lastNameHint => 'Last name(s)';
 
   @override
   String get ageLabel => 'Age';
+
+  @override
+  String get ageHint => 'Years';
 
   @override
   String get relationshipLabel => 'Relationship';
@@ -730,7 +733,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tutorNameLabel => 'Tutor name';
 
   @override
-  String get tutorNameHint => 'E.g. Patricia Díaz';
+  String get tutorNameHint => 'Full name';
 
   @override
   String get tutorPhoneRequiredLabel => 'Mobile phone (WhatsApp) *';
@@ -739,10 +742,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get phoneRequiredWhatsapp => 'Phone is required for WhatsApp';
 
   @override
+  String get phoneHint => 'WhatsApp number';
+
+  @override
+  String get pickFromContacts => 'Choose from contacts';
+
+  @override
   String get emailLabel => 'Email';
 
   @override
-  String get emailHint => 'tutor@example.com';
+  String get emailHint => 'name@email.com';
 
   @override
   String get tutorFallback => 'Tutor';
@@ -777,7 +786,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get feeConfigHelp =>
-      'For students who return mid-cycle. Only the days left until the next automatic charge are billed.';
+      'They pay today for the days left until the next charge. On that day they pay the full next-month fee in advance.';
 
   @override
   String get returnDateLabel => 'Return date';
@@ -792,7 +801,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String proratedBreakdown(int remaining, int cycle) {
-    return '$remaining of $cycle days in the cycle';
+    return '$remaining of $cycle days in the month';
   }
 
   @override
@@ -800,7 +809,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proratedOnBillingDay =>
-      'Today is this course\'s billing day. The monthly fee is generated automatically.';
+      'Today is the advance billing day. Next month\'s fee is generated automatically.';
 
   @override
   String proratedFeeCreated(int days) {
@@ -947,6 +956,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get metricsError => 'Could not calculate metrics';
+
+  @override
+  String get personalDataTitle => 'Personal details';
+
+  @override
+  String get familyParentsTitle => 'Parents / guardians';
 
   @override
   String get tutorDataTitle => 'Tutor details';

@@ -371,6 +371,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
         );
         if (!FeeCycle.isSameDay(billing, day)) continue;
 
+        // Cobro adelantado: el día de cobro genera la mensualidad del mes siguiente.
+        final service = FeeCycle.servicePeriodForBilling(billing);
+
         final enrolled = students.where(
           (student) =>
               student.active &&
@@ -383,8 +386,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 (payment) =>
                     payment.studentId == student.id &&
                     payment.courseId == course.id &&
-                    payment.periodYear == billing.year &&
-                    payment.periodMonth == billing.month,
+                    !payment.isProrated &&
+                    payment.periodYear == service.year &&
+                    payment.periodMonth == service.month,
               )
               .firstOrNull;
           if (existing != null) {
@@ -393,11 +397,12 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           }
           addFee(
             Payment(
-              id: 'scheduled-${student.id}-${course.id}-${billing.year}-${billing.month}',
+              id: 'scheduled-${student.id}-${course.id}-${service.year}-${service.month}',
               studentId: student.id,
               courseId: course.id,
-              periodMonth: billing.month,
-              periodYear: billing.year,
+              period: Payment.formatPeriodName(service.year, service.month),
+              periodMonth: service.month,
+              periodYear: service.year,
               amount: course.cost,
               dueDate: FeeCycle.formatDate(billing),
               status: PaymentStatus.pending,

@@ -9,7 +9,7 @@ extension PaymentScheduleExtension on PaymentSchedule {
   String get displayName {
     switch (this) {
       case PaymentSchedule.firstHalf:
-        return 'Primera quincena';
+        return 'A mitad de mes';
       case PaymentSchedule.endOfMonth:
         return 'Fin de mes';
     }
@@ -19,9 +19,9 @@ extension PaymentScheduleExtension on PaymentSchedule {
     final isEn = Localizations.localeOf(context).languageCode == 'en';
     switch (this) {
       case PaymentSchedule.firstHalf:
-        return isEn ? 'First half (1-15)' : 'Primera quincena (1-15)';
+        return isEn ? 'Mid-month (day 15)' : 'A mitad de mes (día 15)';
       case PaymentSchedule.endOfMonth:
-        return isEn ? 'End of month (25-30)' : 'Fin de mes (25-30)';
+        return isEn ? 'End of month (last day)' : 'Fin de mes (último día)';
     }
   }
 }
@@ -268,7 +268,7 @@ class Course {
       duration: (map['duration'] as String?) ?? '32 sesiones',
       currentSession: (map['currentSession'] as num?)?.toInt() ?? 1,
       totalSessions: (map['totalSessions'] as num?)?.toInt() ?? 32,
-      cost: (map['cost'] as num?)?.toDouble() ?? 45000.0,
+      cost: (map['cost'] as num?)?.toDouble() ?? 0,
       capacity: (map['capacity'] as num?)?.toInt() ?? 30,
       paymentSchedule: (map['paymentSchedule'] as String?) == 'endOfMonth'
           ? PaymentSchedule.endOfMonth

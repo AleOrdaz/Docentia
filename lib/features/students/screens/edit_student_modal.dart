@@ -160,8 +160,9 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
                 _buildTextField(
                   label: l10n.ageLabel,
                   controller: _ageController,
-                  hint: '16',
+                  hint: l10n.ageHint,
                   keyboardType: TextInputType.number,
+                  required: true,
                   validator: (value) {
                     final age = int.tryParse(value?.trim() ?? '');
                     if (age == null || age <= 0) return l10n.required;
@@ -215,6 +216,7 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
     required TextEditingController controller,
     String? hint,
     TextInputType? keyboardType,
+    bool required = false,
     String? Function(String?)? validator,
   }) {
     final textPrimary = AppColors.textPrimary(context);
@@ -223,7 +225,12 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelMedium.copyWith(color: textSecondary)),
+        appFormLabel(
+          context,
+          label,
+          required: required,
+          style: AppTextStyles.labelMedium.copyWith(color: textSecondary),
+        ),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,

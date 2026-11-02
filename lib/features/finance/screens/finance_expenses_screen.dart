@@ -130,6 +130,7 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                       AppTextField(
                         label: l10n.expenseDescriptionLabel,
                         controller: _descriptionController,
+                        required: true,
                         validator: (value) => value == null || value.trim().isEmpty ? l10n.required : null,
                       ),
                       const SizedBox(height: 12),
@@ -138,6 +139,7 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                         controller: _amountController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                        required: true,
                         validator: (value) {
                           final amount = double.tryParse(value?.trim() ?? '');
                           if (amount == null || amount <= 0) return l10n.required;
@@ -145,7 +147,7 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                         },
                       ),
                       const SizedBox(height: 12),
-                      AppFieldLabel(l10n.financeExpenseCategory),
+                      AppFieldLabel(l10n.financeExpenseCategory, required: true),
                       const SizedBox(height: 4),
                       _DropdownBox(
                         child: DropdownButtonFormField<String>(

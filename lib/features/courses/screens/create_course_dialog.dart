@@ -150,7 +150,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
     _nameController = TextEditingController(text: edit?.name ?? '');
     _costController = TextEditingController(
-      text: _formatCost(edit?.cost ?? 45000),
+      text: edit != null ? _formatCost(edit.cost) : '',
     );
 
     _paymentSchedule = edit?.paymentSchedule ?? PaymentSchedule.firstHalf;
@@ -305,14 +305,15 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
       return;
     }
 
+    final name = _nameController.text.trim();
+    final cost = double.tryParse(
+      _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
+    );
+    if (cost == null || cost <= 0) return;
+
     setState(() => _isSaving = true);
 
     try {
-      final name = _nameController.text.trim();
-      final cost = double.tryParse(
-            _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
-          ) ??
-          45000.0;
       final startTimeStr = _formatTime12(_startTime);
       final endTimeStr = _formatTime12(_endTime);
 
@@ -465,7 +466,8 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                     const SizedBox(height: 14),
 
                     // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
-                    Text(
+                    appFormLabel(
+                      context,
                       l10n?.classDaysLabel ?? 'Días de clase (al menos 1) *',
                       style: _inputLabelStyle,
                     ),
@@ -507,8 +509,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                     const SizedBox(height: 16),
 
                     // SECCIÓN: Horario de clase (Inicio y Fin independientes)
-                    Text(
+                    appFormLabel(
+                      context,
                       l10n?.classScheduleLabel ?? 'Horario de clase',
+                      required: true,
                       style: _inputLabelStyle,
                     ),
                     const SizedBox(height: 8),
@@ -533,9 +537,12 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                                     children: [
                                       Icon(Icons.schedule, size: 14, color: primaryColor),
                                       const SizedBox(width: 4),
-                                      Text(
-                                        (l10n?.startTimeLabel ?? 'Inicio').replaceAll('*', '').trim(),
-                                        style: _inputLabelStyle,
+                                      Flexible(
+                                        child: appFormLabel(
+                                          context,
+                                          l10n?.startTimeLabel ?? 'Hora de inicio *',
+                                          style: _inputLabelStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -572,9 +579,12 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                                     children: [
                                       Icon(Icons.timer_outlined, size: 14, color: primaryColor),
                                       const SizedBox(width: 4),
-                                      Text(
-                                        (l10n?.endTimeLabel ?? 'Fin').replaceAll('*', '').trim(),
-                                        style: _inputLabelStyle,
+                                      Flexible(
+                                        child: appFormLabel(
+                                          context,
+                                          l10n?.endTimeLabel ?? 'Hora de fin *',
+                                          style: _inputLabelStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -602,12 +612,21 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                       hint: '45,000',
                       keyboardType: TextInputType.number,
                       inputFormatters: const [_ThousandsSeparatorInputFormatter()],
+                      validator: (v) {
+                        final parsed = double.tryParse(
+                          (v ?? '').replaceAll(RegExp(r'[^0-9.]'), ''),
+                        );
+                        if (parsed == null || parsed <= 0) {
+                          return l10n?.required ?? 'Requerido';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 14),
 
                     // Vencimiento de cuota
                     Text(
-                      l10n?.paymentScheduleLabel ?? 'Esquema de cobro mensual',
+                      l10n?.paymentScheduleLabel ?? 'Día de cobro adelantado',
                       style: _inputLabelStyle,
                     ),
                     const SizedBox(height: 6),
@@ -615,7 +634,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                       children: [
                         Expanded(
                           child: ChoiceChip(
-                            label: Text(l10n?.scheduleFirstHalf ?? 'Primera quincena (día 1-15)'),
+                            label: Text(l10n?.scheduleFirstHalf ?? 'A mitad de mes (día 15)'),
                             selected: _paymentSchedule == PaymentSchedule.firstHalf,
                             selectedColor: primaryColor,
                             backgroundColor: panelColor,
@@ -637,7 +656,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: ChoiceChip(
-                            label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (día 25-30)'),
+                            label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (último día)'),
                             selected: _paymentSchedule == PaymentSchedule.endOfMonth,
                             selectedColor: primaryColor,
                             backgroundColor: panelColor,
@@ -855,14 +874,17 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     TextInputType? keyboardType,
     TextCapitalization? textCapitalization,
     List<TextInputFormatter>? inputFormatters,
+    bool required = false,
     String? Function(String?)? validator,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        appFormLabel(
+          context,
           label,
+          required: required,
           style: _inputLabelStyle,
         ),
         const SizedBox(height: 4),

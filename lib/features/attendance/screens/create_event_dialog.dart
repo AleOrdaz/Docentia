@@ -222,10 +222,11 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                 label: l10n.eventTitleLabel,
                 controller: _titleController,
                 hint: l10n.eventTitleHint,
+                required: true,
               ),
               const SizedBox(height: 14),
 
-              AppFieldLabel(l10n.activityType),
+              AppFieldLabel(l10n.activityType, required: true),
               const SizedBox(height: 8),
               const SizedBox(height: 4),
               DropdownButtonFormField<String>(
@@ -401,6 +402,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                 controller: _descController,
                 hint: l10n.descriptionHint,
                 maxLines: 3,
+                required: true,
               ),
               const SizedBox(height: 16),
 

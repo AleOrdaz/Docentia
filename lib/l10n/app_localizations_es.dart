@@ -333,13 +333,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get monthlyCostLabel => 'Costo mensual (\$) *';
 
   @override
-  String get paymentScheduleLabel => 'Esquema de cobro mensual';
+  String get paymentScheduleLabel => 'Día de cobro adelantado';
 
   @override
-  String get scheduleFirstHalf => 'Primera quincena (día 1-15)';
+  String get scheduleFirstHalf => 'A mitad de mes (día 15)';
 
   @override
-  String get scheduleEndOfMonth => 'Fin de mes (día 25-30)';
+  String get scheduleEndOfMonth => 'Fin de mes (último día)';
 
   @override
   String get chooseIconLabel => 'Seleccionar icono representativo';
@@ -704,16 +704,19 @@ class AppLocalizationsEs extends AppLocalizations {
   String get firstNamesLabel => 'Nombres *';
 
   @override
-  String get firstNameHint => 'Ej. Camila';
+  String get firstNameHint => 'Nombre(s)';
 
   @override
   String get lastNamesLabel => 'Apellidos *';
 
   @override
-  String get lastNameHint => 'Ej. Morales Díaz';
+  String get lastNameHint => 'Apellido(s)';
 
   @override
   String get ageLabel => 'Edad';
+
+  @override
+  String get ageHint => 'Años';
 
   @override
   String get relationshipLabel => 'Parentesco';
@@ -731,7 +734,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tutorNameLabel => 'Nombre del tutor';
 
   @override
-  String get tutorNameHint => 'Ej. Patricia Díaz';
+  String get tutorNameHint => 'Nombre completo';
 
   @override
   String get tutorPhoneRequiredLabel => 'Teléfono móvil (WhatsApp) *';
@@ -740,10 +743,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get phoneRequiredWhatsapp => 'Teléfono requerido para WhatsApp';
 
   @override
+  String get phoneHint => 'Número de WhatsApp';
+
+  @override
+  String get pickFromContacts => 'Elegir de contactos';
+
+  @override
   String get emailLabel => 'Correo electrónico';
 
   @override
-  String get emailHint => 'tutor@ejemplo.com';
+  String get emailHint => 'nombre@correo.com';
 
   @override
   String get tutorFallback => 'Tutor';
@@ -779,7 +788,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get feeConfigHelp =>
-      'Para alumnos que regresan a mitad de ciclo. Se cobra solo los días que faltan hasta el próximo cobro automático.';
+      'Pagan hoy los días que faltan hasta el próximo cobro. Ese día pagan la mensualidad completa del mes siguiente por adelantado.';
 
   @override
   String get returnDateLabel => 'Fecha de reingreso';
@@ -794,7 +803,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String proratedBreakdown(int remaining, int cycle) {
-    return '$remaining de $cycle días del ciclo';
+    return '$remaining de $cycle días del mes';
   }
 
   @override
@@ -802,7 +811,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proratedOnBillingDay =>
-      'Hoy es el día de cobro de este curso. La cuota mensual se genera sola.';
+      'Hoy es el día de cobro adelantado. La mensualidad del mes siguiente se genera sola.';
 
   @override
   String proratedFeeCreated(int days) {
@@ -950,6 +959,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get metricsError => 'Error al calcular las métricas';
+
+  @override
+  String get personalDataTitle => 'Datos personales';
+
+  @override
+  String get familyParentsTitle => 'Padres de familia';
 
   @override
   String get tutorDataTitle => 'Datos del tutor';

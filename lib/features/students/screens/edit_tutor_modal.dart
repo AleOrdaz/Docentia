@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../core/services/contact_picker_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/student_model.dart';
 import '../providers/students_provider.dart';
@@ -54,9 +55,7 @@ class _EditTutorModalState extends ConsumerState<EditTutorModal> {
     try {
       final updated = widget.student.copyWith(
         tutorRelationship: _relationship,
-        tutorName: _nameController.text.trim().isNotEmpty
-            ? _nameController.text.trim()
-            : l10n.tutorFallback,
+        tutorName: _nameController.text.trim(),
         tutorPhone: _phoneController.text.trim(),
         tutorEmail: _emailController.text.trim(),
         secondaryPhone: _secondaryPhoneController.text.trim(),
@@ -148,6 +147,7 @@ class _EditTutorModalState extends ConsumerState<EditTutorModal> {
                   label: l10n.tutorNameLabel,
                   controller: _nameController,
                   hint: l10n.tutorNameHint,
+                  requiredField: true,
                   validator: (value) =>
                   (value == null || value.trim().isEmpty) ? l10n.required : null,
                 ),
@@ -155,9 +155,10 @@ class _EditTutorModalState extends ConsumerState<EditTutorModal> {
                 _buildTextField(
                   label: l10n.tutorPhoneRequiredLabel,
                   controller: _phoneController,
-                  hint: '+54 9 11 4522 8901',
+                  hint: l10n.phoneHint,
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                  allowContactPicker: true,
                   validator: (value) =>
                   (value == null || value.trim().isEmpty) ? l10n.phoneRequiredWhatsapp : null,
                 ),
@@ -172,8 +173,9 @@ class _EditTutorModalState extends ConsumerState<EditTutorModal> {
                 _buildTextField(
                   label: l10n.secondaryPhone,
                   controller: _secondaryPhoneController,
-                  hint: l10n.mobilePhone,
+                  hint: l10n.phoneHint,
                   keyboardType: TextInputType.phone,
+                  allowContactPicker: true,
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -253,21 +255,36 @@ class _EditTutorModalState extends ConsumerState<EditTutorModal> {
     );
   }
 
+  Future<void> _pickPhoneInto(TextEditingController controller) async {
+    final phone = await ContactPickerService.pickPhoneNumber();
+    if (!mounted || phone == null) return;
+    setState(() => controller.text = phone);
+  }
+
   Widget _buildTextField({
     required String label,
     required TextEditingController controller,
     String? hint,
     TextInputType? keyboardType,
     Widget? prefixIcon,
+    bool allowContactPicker = false,
+    bool requiredField = false,
     String? Function(String?)? validator,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final textPrimary = AppColors.textPrimary(context);
     final textSecondary = AppColors.textSecondary(context);
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelMedium.copyWith(color: textSecondary)),
+        appFormLabel(
+          context,
+          label,
+          required: requiredField,
+          style: AppTextStyles.labelMedium.copyWith(color: textSecondary),
+        ),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
@@ -283,6 +300,13 @@ class _EditTutorModalState extends ConsumerState<EditTutorModal> {
             filled: true,
             fillColor: AppColors.surfaceLow(context),
             prefixIcon: prefixIcon,
+            suffixIcon: allowContactPicker
+                ? IconButton(
+                    tooltip: l10n.pickFromContacts,
+                    onPressed: () => _pickPhoneInto(controller),
+                    icon: Icon(Icons.contacts_outlined, color: primaryColor, size: 22),
+                  )
+                : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,

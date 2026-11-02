@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../core/services/contact_picker_service.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/student_model.dart';
 import '../providers/students_provider.dart';
@@ -25,7 +26,7 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _lastNameController = TextEditingController();
-  final _ageController = TextEditingController(text: '16');
+  final _ageController = TextEditingController();
   final _tutorNameController = TextEditingController();
   final _tutorPhoneController = TextEditingController();
   final _tutorEmailController = TextEditingController();
@@ -54,6 +55,9 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final age = int.tryParse(_ageController.text.trim());
+    if (age == null || age <= 0) return;
+
     setState(() => _isSubmitting = true);
 
     final l10n = AppLocalizations.of(context)!;
@@ -63,15 +67,11 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
           .addStudent(
         name: _nameController.text.trim(),
         lastName: _lastNameController.text.trim(),
-        age: int.tryParse(_ageController.text) ?? 16,
+        age: age,
         tutorRelationship: _relationship,
-        tutorName: _tutorNameController.text.trim().isNotEmpty
-            ? _tutorNameController.text.trim()
-            : l10n.tutorFallback,
+        tutorName: _tutorNameController.text.trim(),
         tutorPhone: _tutorPhoneController.text.trim(),
-        tutorEmail: _tutorEmailController.text.trim().isNotEmpty
-            ? _tutorEmailController.text.trim()
-            : l10n.emailHint,
+        tutorEmail: _tutorEmailController.text.trim(),
         secondaryPhone: _secondaryPhoneController.text.trim(),
         emergencyName: _emergencyNameController.text.trim(),
         emergencyRelationship: _emergencyRelationship,
@@ -166,8 +166,14 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                   l10n.addStudentDesc(widget.courseName),
                   style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
+                _buildSectionHeader(
+                  icon: Icons.badge_outlined,
+                  title: l10n.personalDataTitle,
+                  color: primaryColor,
+                ),
+                const SizedBox(height: 12),
                 Row(
                   children: [
                     Expanded(
@@ -192,16 +198,34 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                   ],
                 ),
                 const SizedBox(height: 12),
+                _buildTextField(
+                  label: l10n.ageLabel,
+                  controller: _ageController,
+                  hint: l10n.ageHint,
+                  keyboardType: TextInputType.number,
+                  required: true,
+                  validator: (v) {
+                    final age = int.tryParse(v?.trim() ?? '');
+                    if (age == null || age <= 0) return l10n.required;
+                    return null;
+                  },
+                ),
 
+                const SizedBox(height: 22),
+                _buildSectionHeader(
+                  icon: Icons.family_restroom,
+                  title: l10n.familyParentsTitle,
+                  color: primaryColor,
+                ),
+                const SizedBox(height: 12),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: _buildTextField(
-                        label: l10n.ageLabel,
-                        controller: _ageController,
-                        hint: '16',
-                        keyboardType: TextInputType.number,
+                        label: l10n.tutorNameLabel,
+                        controller: _tutorNameController,
+                        hint: l10n.tutorNameHint,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -215,35 +239,29 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                   ],
                 ),
                 const SizedBox(height: 12),
-
-                _buildTextField(
-                  label: l10n.tutorNameLabel,
-                  controller: _tutorNameController,
-                  hint: l10n.tutorNameHint,
-                ),
-                const SizedBox(height: 12),
-
                 _buildTextField(
                   label: l10n.tutorPhoneRequiredLabel,
                   controller: _tutorPhoneController,
-                  hint: '+54 9 11 4522 8901',
+                  hint: l10n.phoneHint,
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                  allowContactPicker: true,
                   validator: (v) =>
                   (v == null || v.trim().isEmpty) ? l10n.phoneRequiredWhatsapp : null,
                 ),
                 const SizedBox(height: 12),
-
                 _buildTextField(
                   label: l10n.emailLabel,
                   controller: _tutorEmailController,
                   hint: l10n.emailHint,
                   keyboardType: TextInputType.emailAddress,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.emergencyContactTitle,
-                  style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+
+                const SizedBox(height: 22),
+                _buildSectionHeader(
+                  icon: Icons.health_and_safety_outlined,
+                  title: l10n.emergencyContactTitle,
+                  color: primaryColor,
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -261,7 +279,8 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                       child: _buildRelationshipField(
                         l10n,
                         value: _emergencyRelationship,
-                        onChanged: (value) => setState(() => _emergencyRelationship = value),
+                        onChanged: (value) =>
+                            setState(() => _emergencyRelationship = value),
                       ),
                     ),
                   ],
@@ -270,9 +289,10 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
                 _buildTextField(
                   label: l10n.mobilePhone,
                   controller: _emergencyPhoneController,
-                  hint: '+54 9 11 4522 8901',
+                  hint: l10n.phoneHint,
                   keyboardType: TextInputType.phone,
                   prefixIcon: const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                  allowContactPicker: true,
                 ),
                 const SizedBox(height: 20),
 
@@ -314,6 +334,37 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionHeader({
+    required IconData icon,
+    required String title,
+    required Color color,
+  }) {
+    final textPrimary = AppColors.textPrimary(context);
+    return Row(
+      children: [
+        Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 18, color: color),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            title,
+            style: AppTextStyles.titleSmall.copyWith(
+              color: textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -366,21 +417,36 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
     );
   }
 
+  Future<void> _pickPhoneInto(TextEditingController controller) async {
+    final phone = await ContactPickerService.pickPhoneNumber();
+    if (!mounted || phone == null) return;
+    setState(() => controller.text = phone);
+  }
+
   Widget _buildTextField({
     required String label,
     required TextEditingController controller,
     String? hint,
     TextInputType? keyboardType,
     Widget? prefixIcon,
+    bool allowContactPicker = false,
+    bool required = false,
     String? Function(String?)? validator,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final textPrimary = AppColors.textPrimary(context);
     final textSecondary = AppColors.textSecondary(context);
+    final primaryColor = Theme.of(context).colorScheme.primary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelMedium.copyWith(color: textSecondary)),
+        appFormLabel(
+          context,
+          label,
+          required: required,
+          style: AppTextStyles.labelMedium.copyWith(color: textSecondary),
+        ),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
@@ -396,6 +462,13 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
             filled: true,
             fillColor: AppColors.surfaceLow(context),
             prefixIcon: prefixIcon,
+            suffixIcon: allowContactPicker
+                ? IconButton(
+                    tooltip: l10n.pickFromContacts,
+                    onPressed: () => _pickPhoneInto(controller),
+                    icon: Icon(Icons.contacts_outlined, color: primaryColor, size: 22),
+                  )
+                : null,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,

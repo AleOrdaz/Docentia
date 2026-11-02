@@ -725,19 +725,19 @@ abstract class AppLocalizations {
   /// No description provided for @paymentScheduleLabel.
   ///
   /// In es, this message translates to:
-  /// **'Esquema de cobro mensual'**
+  /// **'Día de cobro adelantado'**
   String get paymentScheduleLabel;
 
   /// No description provided for @scheduleFirstHalf.
   ///
   /// In es, this message translates to:
-  /// **'Primera quincena (día 1-15)'**
+  /// **'A mitad de mes (día 15)'**
   String get scheduleFirstHalf;
 
   /// No description provided for @scheduleEndOfMonth.
   ///
   /// In es, this message translates to:
-  /// **'Fin de mes (día 25-30)'**
+  /// **'Fin de mes (último día)'**
   String get scheduleEndOfMonth;
 
   /// No description provided for @chooseIconLabel.
@@ -1403,7 +1403,7 @@ abstract class AppLocalizations {
   /// No description provided for @firstNameHint.
   ///
   /// In es, this message translates to:
-  /// **'Ej. Camila'**
+  /// **'Nombre(s)'**
   String get firstNameHint;
 
   /// No description provided for @lastNamesLabel.
@@ -1415,7 +1415,7 @@ abstract class AppLocalizations {
   /// No description provided for @lastNameHint.
   ///
   /// In es, this message translates to:
-  /// **'Ej. Morales Díaz'**
+  /// **'Apellido(s)'**
   String get lastNameHint;
 
   /// No description provided for @ageLabel.
@@ -1423,6 +1423,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Edad'**
   String get ageLabel;
+
+  /// No description provided for @ageHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Años'**
+  String get ageHint;
 
   /// No description provided for @relationshipLabel.
   ///
@@ -1457,7 +1463,7 @@ abstract class AppLocalizations {
   /// No description provided for @tutorNameHint.
   ///
   /// In es, this message translates to:
-  /// **'Ej. Patricia Díaz'**
+  /// **'Nombre completo'**
   String get tutorNameHint;
 
   /// No description provided for @tutorPhoneRequiredLabel.
@@ -1472,6 +1478,18 @@ abstract class AppLocalizations {
   /// **'Teléfono requerido para WhatsApp'**
   String get phoneRequiredWhatsapp;
 
+  /// No description provided for @phoneHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Número de WhatsApp'**
+  String get phoneHint;
+
+  /// No description provided for @pickFromContacts.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir de contactos'**
+  String get pickFromContacts;
+
   /// No description provided for @emailLabel.
   ///
   /// In es, this message translates to:
@@ -1481,7 +1499,7 @@ abstract class AppLocalizations {
   /// No description provided for @emailHint.
   ///
   /// In es, this message translates to:
-  /// **'tutor@ejemplo.com'**
+  /// **'nombre@correo.com'**
   String get emailHint;
 
   /// No description provided for @tutorFallback.
@@ -1541,7 +1559,7 @@ abstract class AppLocalizations {
   /// No description provided for @feeConfigHelp.
   ///
   /// In es, this message translates to:
-  /// **'Para alumnos que regresan a mitad de ciclo. Se cobra solo los días que faltan hasta el próximo cobro automático.'**
+  /// **'Pagan hoy los días que faltan hasta el próximo cobro. Ese día pagan la mensualidad completa del mes siguiente por adelantado.'**
   String get feeConfigHelp;
 
   /// No description provided for @returnDateLabel.
@@ -1565,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @proratedBreakdown.
   ///
   /// In es, this message translates to:
-  /// **'{remaining} de {cycle} días del ciclo'**
+  /// **'{remaining} de {cycle} días del mes'**
   String proratedBreakdown(int remaining, int cycle);
 
   /// No description provided for @proratedBadge.
@@ -1577,7 +1595,7 @@ abstract class AppLocalizations {
   /// No description provided for @proratedOnBillingDay.
   ///
   /// In es, this message translates to:
-  /// **'Hoy es el día de cobro de este curso. La cuota mensual se genera sola.'**
+  /// **'Hoy es el día de cobro adelantado. La mensualidad del mes siguiente se genera sola.'**
   String get proratedOnBillingDay;
 
   /// No description provided for @proratedFeeCreated.
@@ -1843,6 +1861,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error al calcular las métricas'**
   String get metricsError;
+
+  /// No description provided for @personalDataTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos personales'**
+  String get personalDataTitle;
+
+  /// No description provided for @familyParentsTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Padres de familia'**
+  String get familyParentsTitle;
 
   /// No description provided for @tutorDataTitle.
   ///

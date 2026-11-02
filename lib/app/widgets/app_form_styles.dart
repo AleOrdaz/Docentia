@@ -22,26 +22,60 @@ TextStyle appInputLabelStyle(BuildContext context) {
   );
 }
 
+/// Etiqueta con asterisco rojo si el campo es obligatorio (o si el texto ya trae `*`).
+Widget appFormLabel(
+  BuildContext context,
+  String text, {
+  bool required = false,
+  TextStyle? style,
+}) {
+  final base = style ?? appInputLabelStyle(context);
+  final trimmed = text.trimRight();
+  final hasStar = trimmed.endsWith('*');
+  final clean = hasStar
+      ? trimmed.substring(0, trimmed.length - 1).trimRight()
+      : trimmed;
+  final showRequired = required || hasStar;
+
+  return Text.rich(
+    TextSpan(
+      style: base,
+      children: [
+        TextSpan(text: clean),
+        if (showRequired)
+          const TextSpan(
+            text: ' *',
+            style: TextStyle(
+              color: AppColors.error,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+      ],
+    ),
+  );
+}
+
 class AppFieldLabel extends StatelessWidget {
   final String text;
+  final bool required;
 
-  const AppFieldLabel(this.text, {super.key});
+  const AppFieldLabel(this.text, {super.key, this.required = false});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: appInputLabelStyle(context));
+    return appFormLabel(context, text, required: required);
   }
 }
 
 /// Mayúscula al inicio de cada palabra, salvo teclados numéricos/email/teléfono.
 TextCapitalization appDefaultTextCapitalization([TextInputType? keyboardType]) {
-  switch (keyboardType?.name) {
-    case 'number':
-    case 'phone':
-    case 'emailAddress':
-    case 'url':
-    case 'visiblePassword':
-    case 'datetime':
+  switch (keyboardType?.index) {
+    case 2: // number / numberWithOptions
+    case 3: // phone
+    case 4: // datetime
+    case 5: // emailAddress
+    case 6: // url
+    case 7: // visiblePassword
       return TextCapitalization.none;
     default:
       return TextCapitalization.words;
@@ -59,6 +93,7 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final TextCapitalization? textCapitalization;
   final ValueChanged<String>? onChanged;
+  final bool required;
 
   const AppTextField({
     super.key,
@@ -72,6 +107,7 @@ class AppTextField extends StatelessWidget {
     this.maxLines = 1,
     this.textCapitalization,
     this.onChanged,
+    this.required = false,
   });
 
   @override
@@ -81,7 +117,7 @@ class AppTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppFieldLabel(label),
+        AppFieldLabel(label, required: required),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
