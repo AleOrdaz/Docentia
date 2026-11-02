@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
 import '../providers/courses_provider.dart';
@@ -236,6 +237,11 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
         ),
       );
       return;
+    }
+
+    if (widget.courseToEdit == null) {
+      final allowed = await ensureCanCreateCourse(context, ref);
+      if (!allowed || !mounted) return;
     }
 
     setState(() => _isSaving = true);

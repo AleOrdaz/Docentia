@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../models/student_model.dart';
 import '../providers/students_provider.dart';
 
@@ -52,6 +53,9 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final allowed = await ensureCanAddStudent(context, ref);
+    if (!allowed || !mounted) return;
 
     setState(() => _isSubmitting = true);
 

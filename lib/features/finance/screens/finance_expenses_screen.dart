@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../courses/models/course_model.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../logic/finance_fees.dart';
 import '../models/expense_model.dart';
 import '../providers/finance_catalog_provider.dart';
@@ -26,6 +28,12 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
   String _category = 'Materiales';
   DateTime? _date;
   bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    guardProRoute(context, ref, feature: ProFeature.expenses);
+  }
 
   @override
   void dispose() {

@@ -7,12 +7,18 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/theme/theme_provider.dart';
+import '../../../app/widgets/app_snackbars.dart';
+import '../../../core/utils/legal_links.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../auth/models/teacher_model.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/utils/teacher_photo.dart';
 import '../../auth/widgets/teacher_avatar.dart';
 import '../../courses/providers/courses_provider.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/models/subscription_status.dart';
+import '../../subscription/providers/subscription_provider.dart';
+import '../../subscription/widgets/paywall_sheet.dart';
 
 class TeacherProfileScreen extends ConsumerWidget {
   const TeacherProfileScreen({super.key});
@@ -91,6 +97,7 @@ class TeacherProfileScreen extends ConsumerWidget {
     final currentLocale = ref.watch(localeProvider);
     final coursesAsync = ref.watch(coursesProvider);
     final courses = coursesAsync.value ?? [];
+    final subscription = ref.watch(subscriptionProvider);
 
     final cardBg = AppColors.cardBg(context);
     final cardBorder = AppColors.cardBorder(context);
@@ -213,6 +220,24 @@ class TeacherProfileScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(height: 16),
+
+            // SECCIÓN: Plan Free / Pro
+            _PlanCard(
+              subscription: subscription,
+              primaryColor: primaryColor,
+              cardBg: cardBg,
+              cardBorder: cardBorder,
+              textPrimary: textPrimary,
+              textSecondary: textSecondary,
+              l10n: l10n,
+              onUpgrade: () => showPaywallSheet(
+                context,
+                feature: ProFeature.courseLimit,
+              ),
+              onDowngrade: () =>
+                  ref.read(subscriptionProvider.notifier).downgradeToFree(),
             ),
             const SizedBox(height: 16),
 
@@ -458,10 +483,166 @@ class TeacherProfileScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 16),
+
+            // SECCIÓN: Legal y soporte (requisito App Store / Play)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cardBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.gavel_outlined, color: primaryColor, size: 20),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.legalSectionTitle,
+                        style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  _LegalTile(
+                    label: l10n.privacyLink,
+                    onTap: openPrivacyPolicy,
+                    textPrimary: textPrimary,
+                  ),
+                  _LegalTile(
+                    label: l10n.termsLink,
+                    onTap: openTermsOfUse,
+                    textPrimary: textPrimary,
+                  ),
+                  _LegalTile(
+                    label: l10n.legalSupport,
+                    onTap: openSupport,
+                    textPrimary: textPrimary,
+                  ),
+                  _LegalTile(
+                    label: l10n.legalManageSubscription,
+                    onTap: openStoreSubscriptionsManager,
+                    textPrimary: textPrimary,
+                  ),
+                  _LegalTile(
+                    label: l10n.paywallRestorePurchases,
+                    onTap: () async {
+                      final result = await ref
+                          .read(subscriptionProvider.notifier)
+                          .restorePurchases();
+                      if (!context.mounted) return;
+                      if (result.isSuccess &&
+                          ref.read(subscriptionProvider).isPro) {
+                        showAppSnackBar(
+                          context,
+                          message: l10n.paywallActivatedPro,
+                          kind: AppSnackKind.success,
+                        );
+                      } else {
+                        showAppSnackBar(
+                          context,
+                          message: l10n.paywallRestoreEmpty,
+                          kind: AppSnackKind.info,
+                        );
+                      }
+                    },
+                    textPrimary: textPrimary,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // SECCIÓN: Eliminar cuenta
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: cardBg,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: cardBorder),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.deleteAccountTitle,
+                    style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    l10n.deleteAccountBody,
+                    style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton(
+                    onPressed: () => _confirmDeleteAccount(context, ref),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.error,
+                      side: const BorderSide(color: AppColors.error),
+                      shape: const StadiumBorder(),
+                    ),
+                    child: Text(l10n.deleteAccountTitle),
+                  ),
+                  TextButton(
+                    onPressed: openAccountDeletionWeb,
+                    child: Text(
+                      l10n.deleteAccountWebLink,
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.deleteAccountTitle),
+        content: Text(l10n.deleteAccountBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.deleteAccountConfirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final error = await ref.read(authProvider.notifier).deleteAccount();
+    if (!context.mounted) return;
+    if (error != null) {
+      showAppSnackBar(context, message: error, kind: AppSnackKind.error);
+      return;
+    }
+    showAppSnackBar(
+      context,
+      message: l10n.deleteAccountSuccess,
+      kind: AppSnackKind.success,
+    );
+    context.go('/login');
   }
 
   Widget _buildLanguageOption({
@@ -551,6 +732,172 @@ class TeacherProfileScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _LegalTile extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  final Color textPrimary;
+
+  const _LegalTile({
+    required this.label,
+    required this.onTap,
+    required this.textPrimary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      dense: true,
+      title: Text(
+        label,
+        style: TextStyle(
+          color: textPrimary,
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+        ),
+      ),
+      trailing: Icon(Icons.open_in_new, size: 16, color: textPrimary.withValues(alpha: 0.5)),
+      onTap: onTap,
+    );
+  }
+}
+
+class _PlanCard extends StatelessWidget {
+  final SubscriptionStatus subscription;
+  final Color primaryColor;
+  final Color cardBg;
+  final Color cardBorder;
+  final Color textPrimary;
+  final Color textSecondary;
+  final AppLocalizations l10n;
+  final VoidCallback onUpgrade;
+  final VoidCallback onDowngrade;
+
+  const _PlanCard({
+    required this.subscription,
+    required this.primaryColor,
+    required this.cardBg,
+    required this.cardBorder,
+    required this.textPrimary,
+    required this.textSecondary,
+    required this.l10n,
+    required this.onUpgrade,
+    required this.onDowngrade,
+  });
+
+  String get _title =>
+      subscription.isPro ? l10n.planProLabel : l10n.planFreeLabel;
+
+  String get _description {
+    if (!subscription.isPro) {
+      return l10n.planFreeDesc(
+        SubscriptionConfig.freeMaxCourses,
+        SubscriptionConfig.freeMaxStudents,
+      );
+    }
+    if (subscription.isOnTrial && subscription.trialEndsAt != null) {
+      final days =
+          subscription.trialEndsAt!.difference(DateTime.now()).inDays.clamp(0, 99);
+      return l10n.planProTrialDesc(days);
+    }
+    if (subscription.billingPeriod == BillingPeriod.yearly) {
+      return l10n.planProYearlyDesc;
+    }
+    if (subscription.billingPeriod == BillingPeriod.monthly) {
+      return l10n.planProMonthlyDesc;
+    }
+    return l10n.planProDesc;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cardBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.workspace_premium_outlined,
+                  color: primaryColor, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.planSectionTitle,
+                  style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: primaryColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  _title,
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _description,
+            style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+          ),
+          const SizedBox(height: 14),
+          if (!subscription.isPro)
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: onUpgrade,
+                style: FilledButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: const StadiumBorder(),
+                ),
+                icon: const Icon(Icons.bolt_rounded, size: 18),
+                label: Text(l10n.planUpgradeCta),
+              ),
+            )
+          else ...[
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: onUpgrade,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  side: BorderSide(color: primaryColor),
+                  shape: const StadiumBorder(),
+                ),
+                child: Text(l10n.planManageCta),
+              ),
+            ),
+            TextButton(
+              onPressed: onDowngrade,
+              child: Text(
+                l10n.planDowngradeCta,
+                style: TextStyle(color: textSecondary),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }

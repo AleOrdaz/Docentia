@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
+import '../../../core/utils/legal_links.dart';
 import '../../../l10n/app_localizations.dart';
 import '../providers/auth_provider.dart';
 
@@ -180,22 +181,30 @@ class LoginScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        l10n.termsLink,
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
+                      GestureDetector(
+                        onTap: openTermsOfUse,
+                        child: Text(
+                          l10n.termsLink,
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                       Text(
                         ' • ',
                         style: AppTextStyles.labelSmall.copyWith(color: textSecondary),
                       ),
-                      Text(
-                        l10n.privacyLink,
-                        style: AppTextStyles.labelSmall.copyWith(
-                          color: primaryColor,
-                          fontWeight: FontWeight.bold,
+                      GestureDetector(
+                        onTap: openPrivacyPolicy,
+                        child: Text(
+                          l10n.privacyLink,
+                          style: AppTextStyles.labelSmall.copyWith(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ],

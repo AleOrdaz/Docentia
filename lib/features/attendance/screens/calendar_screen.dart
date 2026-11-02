@@ -16,6 +16,8 @@ import '../../students/providers/students_provider.dart';
 import '../../payments/models/payment_model.dart';
 import '../../payments/providers/payments_provider.dart';
 import '../../payments/services/fee_generation_service.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../models/calendar_event_model.dart';
 import '../providers/calendar_events_provider.dart';
 import 'create_event_dialog.dart';
@@ -69,7 +71,17 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   }
 
   // --- Modal para Notificar Evento a Padres de Familia ---
-  void _openShareEventDialog(BuildContext context, CalendarEvent event) {
+  Future<void> _openShareEventDialog(
+    BuildContext context,
+    CalendarEvent event,
+  ) async {
+    final allowed = await ensureProFeature(
+      context,
+      ref,
+      feature: ProFeature.notifyParents,
+    );
+    if (!allowed || !context.mounted) return;
+
     final l10n = AppLocalizations.of(context)!;
     final authState = ref.read(authProvider);
     final teacherName = authState.teacher?.name ?? l10n.principalTeacher;

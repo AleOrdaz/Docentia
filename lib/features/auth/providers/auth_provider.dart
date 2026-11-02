@@ -133,6 +133,29 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> signOut() => _auth.signOut();
 
+  /// Elimina la cuenta Firebase Auth + datos locales (requisito App Store / Play).
+  ///
+  /// Puede fallar con `requires-recent-login`; en ese caso el UI debe pedir
+  /// volver a autenticarse y reintentar.
+  Future<String?> deleteAccount() async {
+    final user = _auth.currentUser;
+    if (user == null) return 'No hay sesión activa.';
+    final uid = user.uid;
+    try {
+      await StorageService.clearAllUserData(teacherId: uid);
+      await user.delete();
+      state = const AuthState(isAuthenticated: false);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        return 'Por seguridad, vuelve a iniciar sesión e intenta borrar la cuenta otra vez.';
+      }
+      return 'No se pudo eliminar la cuenta (${e.code}).';
+    } catch (_) {
+      return 'No se pudo eliminar la cuenta.';
+    }
+  }
+
   Future<void> updateProfile({
     String? name,
     String? phone,

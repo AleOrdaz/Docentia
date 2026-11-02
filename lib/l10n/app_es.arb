@@ -747,5 +747,87 @@
       "amount": { "type": "String" },
       "due": { "type": "String" }
     }
-  }
+  },
+  "planSectionTitle": "Plan Docentia",
+  "planFreeLabel": "Free",
+  "planProLabel": "Pro",
+  "planFreeDesc": "Hasta {courses} cursos y {students} alumnos. Ideal para empezar.",
+  "@planFreeDesc": {
+    "placeholders": {
+      "courses": { "type": "int" },
+      "students": { "type": "int" }
+    }
+  },
+  "planProDesc": "Ilimitado + certificados, finanzas avanzadas y PDFs.",
+  "planProTrialDesc": "Prueba Pro activa. Termina en {days} días.",
+  "@planProTrialDesc": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "planProMonthlyDesc": "Pro mensual activo (simulado).",
+  "planProYearlyDesc": "Pro anual activo (simulado).",
+  "planUpgradeCta": "Mejorar a Pro",
+  "planManageCta": "Ver planes",
+  "planDowngradeCta": "Volver a Free",
+  "paywallTitle": "Docentia Pro",
+  "paywallSubtitle": "Desbloquea tu operación completa",
+  "paywallReasonCourses": "El plan Free incluye hasta {count} cursos activos.",
+  "@paywallReasonCourses": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "paywallReasonStudents": "El plan Free incluye hasta {count} alumnos activos.",
+  "@paywallReasonStudents": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "paywallReasonCertificates": "Los certificados PDF forman parte de Docentia Pro.",
+  "paywallReasonCoursePdf": "Exportar el informe del curso a PDF es una función Pro.",
+  "paywallReasonFinanceReports": "Los reportes financieros avanzados son Pro.",
+  "paywallReasonExpenses": "El control de gastos y utilidad es una función Pro.",
+  "paywallReasonReminders": "Los recordatorios de cobro son una función Pro.",
+  "paywallReasonNotifyParents": "Avisar a tutores por correo es una función Pro.",
+  "paywallBenefitUnlimited": "Cursos y alumnos ilimitados",
+  "paywallBenefitCertificates": "Certificados con estilos y folio",
+  "paywallBenefitFinance": "Gastos, recordatorios y reportes financieros",
+  "paywallBenefitPdfs": "Exportar informes y reportes en PDF",
+  "paywallChoosePlan": "Elige tu plan",
+  "paywallYearlyTitle": "Anual",
+  "paywallMonthlyTitle": "Mensual",
+  "paywallBestValue": "Mejor valor",
+  "paywallYearlyFootnote": "Ahorras ${amount} MXN vs pagar mes a mes",
+  "@paywallYearlyFootnote": {
+    "placeholders": { "amount": { "type": "int" } }
+  },
+  "paywallMonthlyFootnote": "Cancela cuando quieras",
+  "paywallContinuePro": "Continuar con Pro · {price}",
+  "@paywallContinuePro": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "paywallStartTrial": "Probar {days} días gratis",
+  "@paywallStartTrial": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallActivatedPro": "¡Docentia Pro activado!",
+  "paywallTrialStarted": "Prueba Pro de {days} días iniciada",
+  "@paywallTrialStarted": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallSimulatedNote": "Por ahora la compra es simulada en el dispositivo. La facturación real de App Store / Google Play se integrará después.",
+  "paywallBillingNote": "El pago se procesa de forma segura con App Store o Google Play. Los precios pueden variar según tu tienda y país.",
+  "paywallStoreUnavailable": "La tienda de compras no está disponible en este dispositivo.",
+  "paywallProductMissing": "Los productos Pro aún no están configurados en la tienda. Créalos en App Store Connect / Play Console.",
+  "paywallPurchasePending": "Tu compra está pendiente de confirmación.",
+  "paywallPurchaseError": "No se pudo completar la compra. Inténtalo de nuevo.",
+  "proBadge": "Pro",
+  "paywallAutoRenewDisclosure": "La suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del fin del periodo. El cobro se realiza en tu cuenta de Apple o Google. Puedes gestionar o cancelar en la configuración de suscripciones de la tienda.",
+  "paywallRestorePurchases": "Restaurar compras",
+  "paywallRestoreEmpty": "No hay compras de Docentia Pro para restaurar en esta cuenta.",
+  "paywallLegalTerms": "Términos de uso",
+  "paywallLegalPrivacy": "Privacidad",
+  "legalSectionTitle": "Legal y soporte",
+  "legalSupport": "Soporte",
+  "legalManageSubscription": "Gestionar suscripción",
+  "deleteAccountTitle": "Eliminar cuenta",
+  "deleteAccountBody": "Se borrará tu cuenta de Docentia y los datos locales (cursos, alumnos, pagos, etc.). Esta acción no se puede deshacer. Si tienes una suscripción activa, cancélala en la tienda para evitar cobros futuros.",
+  "deleteAccountConfirm": "Eliminar definitivamente",
+  "deleteAccountSuccess": "Cuenta eliminada",
+  "deleteAccountWebLink": "También puedes solicitar el borrado en la web"
 }

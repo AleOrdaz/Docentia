@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../payments/models/payment_model.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../logic/finance_fees.dart';
 import '../providers/finance_catalog_provider.dart';
 import '../widgets/finance_sheets.dart';
@@ -170,17 +172,44 @@ class _Dashboard extends ConsumerWidget {
                 _QuickAction(
                   icon: Icons.notifications_none,
                   label: l10n.financeReminders,
-                  onTap: () => context.push('/finance/reminders'),
+                  onTap: () async {
+                    final ok = await ensureProFeature(
+                      context,
+                      ref,
+                      feature: ProFeature.reminders,
+                    );
+                    if (ok && context.mounted) {
+                      context.push('/finance/reminders');
+                    }
+                  },
                 ),
                 _QuickAction(
                   icon: Icons.bar_chart_rounded,
                   label: l10n.financeReports,
-                  onTap: () => context.push('/finance/reports'),
+                  onTap: () async {
+                    final ok = await ensureProFeature(
+                      context,
+                      ref,
+                      feature: ProFeature.financeReports,
+                    );
+                    if (ok && context.mounted) {
+                      context.push('/finance/reports');
+                    }
+                  },
                 ),
                 _QuickAction(
                   icon: Icons.receipt_long_outlined,
                   label: l10n.financeExpenses,
-                  onTap: () => context.push('/finance/expenses'),
+                  onTap: () async {
+                    final ok = await ensureProFeature(
+                      context,
+                      ref,
+                      feature: ProFeature.expenses,
+                    );
+                    if (ok && context.mounted) {
+                      context.push('/finance/expenses');
+                    }
+                  },
                 ),
               ],
             ),

@@ -747,5 +747,87 @@
       "amount": { "type": "String" },
       "due": { "type": "String" }
     }
-  }
+  },
+  "planSectionTitle": "Docentia plan",
+  "planFreeLabel": "Free",
+  "planProLabel": "Pro",
+  "planFreeDesc": "Up to {courses} courses and {students} students. Great to get started.",
+  "@planFreeDesc": {
+    "placeholders": {
+      "courses": { "type": "int" },
+      "students": { "type": "int" }
+    }
+  },
+  "planProDesc": "Unlimited + certificates, advanced finance, and PDFs.",
+  "planProTrialDesc": "Pro trial active. Ends in {days} days.",
+  "@planProTrialDesc": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "planProMonthlyDesc": "Monthly Pro active (simulated).",
+  "planProYearlyDesc": "Yearly Pro active (simulated).",
+  "planUpgradeCta": "Upgrade to Pro",
+  "planManageCta": "View plans",
+  "planDowngradeCta": "Switch to Free",
+  "paywallTitle": "Docentia Pro",
+  "paywallSubtitle": "Unlock your full teaching ops",
+  "paywallReasonCourses": "The Free plan includes up to {count} active courses.",
+  "@paywallReasonCourses": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "paywallReasonStudents": "The Free plan includes up to {count} active students.",
+  "@paywallReasonStudents": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "paywallReasonCertificates": "PDF certificates are part of Docentia Pro.",
+  "paywallReasonCoursePdf": "Exporting the course report as PDF is a Pro feature.",
+  "paywallReasonFinanceReports": "Advanced finance reports are Pro.",
+  "paywallReasonExpenses": "Expense tracking and net profit is a Pro feature.",
+  "paywallReasonReminders": "Payment reminders are a Pro feature.",
+  "paywallReasonNotifyParents": "Emailing tutors about events is a Pro feature.",
+  "paywallBenefitUnlimited": "Unlimited courses and students",
+  "paywallBenefitCertificates": "Certificates with styles and folio",
+  "paywallBenefitFinance": "Expenses, reminders, and finance reports",
+  "paywallBenefitPdfs": "Export course and finance reports as PDF",
+  "paywallChoosePlan": "Choose your plan",
+  "paywallYearlyTitle": "Yearly",
+  "paywallMonthlyTitle": "Monthly",
+  "paywallBestValue": "Best value",
+  "paywallYearlyFootnote": "Save ${amount} MXN vs paying monthly",
+  "@paywallYearlyFootnote": {
+    "placeholders": { "amount": { "type": "int" } }
+  },
+  "paywallMonthlyFootnote": "Cancel anytime",
+  "paywallContinuePro": "Continue with Pro · {price}",
+  "@paywallContinuePro": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "paywallStartTrial": "Try {days} days free",
+  "@paywallStartTrial": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallActivatedPro": "Docentia Pro activated!",
+  "paywallTrialStarted": "{days}-day Pro trial started",
+  "@paywallTrialStarted": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "paywallSimulatedNote": "Purchases are simulated on-device for now. Real App Store / Google Play billing will be added later.",
+  "paywallBillingNote": "Payment is processed securely by the App Store or Google Play. Prices may vary by store and country.",
+  "paywallStoreUnavailable": "In-app purchases are not available on this device.",
+  "paywallProductMissing": "Pro products are not configured in the store yet. Create them in App Store Connect / Play Console.",
+  "paywallPurchasePending": "Your purchase is pending confirmation.",
+  "paywallPurchaseError": "Could not complete the purchase. Please try again.",
+  "proBadge": "Pro",
+  "paywallAutoRenewDisclosure": "The subscription renews automatically unless you cancel at least 24 hours before the end of the period. You will be charged through your Apple or Google account. Manage or cancel in your store subscription settings.",
+  "paywallRestorePurchases": "Restore purchases",
+  "paywallRestoreEmpty": "There are no Docentia Pro purchases to restore for this account.",
+  "paywallLegalTerms": "Terms of Use",
+  "paywallLegalPrivacy": "Privacy",
+  "legalSectionTitle": "Legal & support",
+  "legalSupport": "Support",
+  "legalManageSubscription": "Manage subscription",
+  "deleteAccountTitle": "Delete account",
+  "deleteAccountBody": "Your Docentia account and local data (courses, students, payments, etc.) will be deleted. This cannot be undone. If you have an active subscription, cancel it in the store to avoid future charges.",
+  "deleteAccountConfirm": "Delete permanently",
+  "deleteAccountSuccess": "Account deleted",
+  "deleteAccountWebLink": "You can also request deletion on the web"
 }

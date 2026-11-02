@@ -59,6 +59,20 @@ Proyecto nativo Flutter y Dart completo para Android e iOS, fiel al diseño de G
   flutter build ios --release
   ```
 
+## 💳 Monetización (Free / Pro)
+
+- Guía comercial: [`docs/MONETIZACION.md`](docs/MONETIZACION.md)
+- Setup IAP tiendas: [`docs/IAP_SETUP.md`](docs/IAP_SETUP.md)
+- Free: hasta 2 cursos y 20 alumnos + operación diaria
+- Pro: `$129` MXN/mes o `$899` MXN/año vía App Store / Play Billing (`in_app_purchase`)
+- Product IDs: `docentia_pro_monthly` · `docentia_pro_yearly`
+
+## 🏪 Publicación App Store / Play Store
+
+- Checklist: [`docs/STORE_CHECKLIST.md`](docs/STORE_CHECKLIST.md)
+- Páginas legales listas: carpeta [`legal/`](legal/) (ver `legal/README.md`)
+- URLs en app: `lib/core/constants/legal_urls.dart` → cambia `siteBase` tras hostear
+
 ## 🏗️ Arquitectura del Proyecto
 
 ```text
