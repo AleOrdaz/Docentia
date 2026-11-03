@@ -75,7 +75,11 @@ class HomeScreen extends ConsumerWidget {
       body: coursesAsync.when(
         data: (courses) {
           final activeCourses = courses.where((c) => c.active).toList();
-          final totalStudentsCount = allStudentsAsync.value?.length ?? 0;
+          final activeCourseIds = {for (final course in activeCourses) course.id};
+          final totalStudentsCount = allStudentsAsync.value
+                  ?.where((s) => activeCourseIds.contains(s.courseId))
+                  .length ??
+              0;
           final now = DateTime.now();
           final todayCourses =
               activeCourses.where((c) => c.isClassDay(now)).toList();

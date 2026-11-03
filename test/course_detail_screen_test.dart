@@ -160,6 +160,8 @@ class _StudentsRepo implements StudentsRepository {
   @override
   Future<void> deactivateStudent(String id) async {}
   @override
+  Future<void> deactivateStudentsForCourse(String courseId) async {}
+  @override
   Future<List<Student>> getAllStudents() async => students;
   @override
   Future<Student?> getStudentById(String id) async =>

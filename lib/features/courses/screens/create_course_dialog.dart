@@ -5,6 +5,7 @@ import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../students/providers/students_provider.dart';
 import '../../subscription/utils/subscription_gate.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
@@ -77,6 +78,11 @@ Future<void> showDeleteCourseConfirmation({
               if (closeParent && context.mounted) {
                 Navigator.of(context).pop();
               }
+              await ref
+                  .read(studentsRepositoryProvider)
+                  .deactivateStudentsForCourse(course.id);
+              ref.read(studentsRevisionProvider.notifier).state++;
+              ref.invalidate(allActiveStudentsProvider);
               await ref.read(coursesProvider.notifier).deleteCourse(course.id);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(

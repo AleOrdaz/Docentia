@@ -17,6 +17,8 @@ Future<void> showPaywallSheet(
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
+    isDismissible: true,
+    enableDrag: true,
     useSafeArea: true,
     backgroundColor: Colors.transparent,
     builder: (_) => PaywallSheet(feature: feature),
@@ -244,6 +246,11 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
                           ),
                         ],
                       ),
+                    ),
+                    IconButton(
+                      tooltip: l10n.close,
+                      icon: Icon(Icons.close, color: textSecondary),
+                      onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
                 ),
