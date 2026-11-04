@@ -67,12 +67,6 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
     return '$y-$m-$d';
   }
 
-  String _formatSheetTime(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
-
   InputDecoration _sheetInputDecoration(BuildContext context) {
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
@@ -142,8 +136,8 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
       type: eventType,
       description: desc,
       date: _toDateStr(_eventDate),
-      startTime: _formatSheetTime(_startTime),
-      endTime: _formatSheetTime(_endTime),
+      startTime: formatTimeOfDay24(_startTime),
+      endTime: formatTimeOfDay24(_endTime),
       courseId: _selectedCourseId.isEmpty ? null : _selectedCourseId,
     );
 
@@ -340,24 +334,26 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
               const SizedBox(height: 14),
 
               AppFieldLabel(l10n.timeLabel),
-              const SizedBox(height: 4),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Expanded(
-                    child: _sheetTapField(
-                      context: context,
-                      icon: Icons.access_time,
-                      value: _formatSheetTime(_startTime),
+                    child: AppTimePickerField(
+                      label: l10n.startTimeLabel.replaceAll('*', '').trim(),
+                      time: _startTime,
                       onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
+                        final picked = await pickAppTime(
+                          context,
                           initialTime: _startTime,
+                          helpText: l10n.selectStartTime,
                         );
                         if (picked == null) return;
                         setState(() {
                           _startTime = picked;
-                          final startMinutes = picked.hour * 60 + picked.minute;
-                          final endMinutes = _endTime.hour * 60 + _endTime.minute;
+                          final startMinutes =
+                              picked.hour * 60 + picked.minute;
+                          final endMinutes =
+                              _endTime.hour * 60 + _endTime.minute;
                           if (endMinutes <= startMinutes) {
                             final next = startMinutes + 60;
                             _endTime = TimeOfDay(
@@ -369,27 +365,20 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: Text(
-                      '–',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.textSecondary(context),
-                      ),
-                    ),
-                  ),
+                  const SizedBox(width: 10),
                   Expanded(
-                    child: _sheetTapField(
-                      context: context,
-                      icon: Icons.access_time,
-                      value: _formatSheetTime(_endTime),
+                    child: AppTimePickerField(
+                      label: l10n.endTimeLabel.replaceAll('*', '').trim(),
+                      time: _endTime,
                       onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
+                        final picked = await pickAppTime(
+                          context,
                           initialTime: _endTime,
+                          helpText: l10n.selectEndTime,
                         );
-                        if (picked != null) setState(() => _endTime = picked);
+                        if (picked != null) {
+                          setState(() => _endTime = picked);
+                        }
                       },
                     ),
                   ),

@@ -178,19 +178,6 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     return fallback;
   }
 
-  String _formatTime12(TimeOfDay time) {
-    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
-    final minute = time.minute.toString().padLeft(2, '0');
-    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
-    return '$hour:$minute $period';
-  }
-
-  String _formatTime24(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
-
   @override
   void dispose() {
     _nameController.dispose();
@@ -199,12 +186,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   }
 
   Future<void> _pickStartTime() async {
-    final picked = await showTimePicker(
-      context: context,
+    final picked = await pickAppTime(
+      context,
       initialTime: _startTime,
       helpText: AppLocalizations.of(context)!.selectStartTime,
-      confirmText: AppLocalizations.of(context)!.accept,
-      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null) {
       setState(() => _startTime = picked);
@@ -212,12 +197,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   }
 
   Future<void> _pickEndTime() async {
-    final picked = await showTimePicker(
-      context: context,
+    final picked = await pickAppTime(
+      context,
       initialTime: _endTime,
       helpText: AppLocalizations.of(context)!.selectEndTime,
-      confirmText: AppLocalizations.of(context)!.accept,
-      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null) {
       setState(() => _endTime = picked);
@@ -246,8 +229,8 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
             _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
           ) ??
           45000.0;
-      final startTimeStr = _formatTime12(_startTime);
-      final endTimeStr = _formatTime12(_endTime);
+      final startTimeStr = formatTimeOfDay12(_startTime);
+      final endTimeStr = formatTimeOfDay12(_endTime);
 
       if (widget.courseToEdit != null) {
         // Modo Edición
@@ -447,81 +430,23 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        // Hora de inicio
                         Expanded(
-                          child: InkWell(
+                          child: AppTimePickerField(
+                            label: (l10n?.startTimeLabel ?? 'Inicio')
+                                .replaceAll('*', '')
+                                .trim(),
+                            time: _startTime,
                             onTap: _pickStartTime,
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: panelColor,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: panelBorder),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.schedule, size: 14, color: primaryColor),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        (l10n?.startTimeLabel ?? 'Inicio').replaceAll('*', '').trim(),
-                                        style: _inputLabelStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _formatTime12(_startTime),
-                                    style: AppTextStyles.titleMedium.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
-                        // Hora de finalización
                         Expanded(
-                          child: InkWell(
+                          child: AppTimePickerField(
+                            label: (l10n?.endTimeLabel ?? 'Fin')
+                                .replaceAll('*', '')
+                                .trim(),
+                            time: _endTime,
                             onTap: _pickEndTime,
-                            borderRadius: BorderRadius.circular(12),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: panelColor,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: panelBorder),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(Icons.timer_outlined, size: 14, color: primaryColor),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        (l10n?.endTimeLabel ?? 'Fin').replaceAll('*', '').trim(),
-                                        style: _inputLabelStyle,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _formatTime12(_endTime),
-                                    style: AppTextStyles.titleMedium.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ),
                         ),
                       ],

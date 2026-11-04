@@ -1,8 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
+
+/// Formato 12h canónico de los selectores de hora (ej. `5:00 PM`).
+String formatTimeOfDay12(TimeOfDay time) {
+  final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+  final minute = time.minute.toString().padLeft(2, '0');
+  final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+  return '$hour:$minute $period';
+}
+
+/// Formato 24h para persistencia (ej. `09:00`).
+String formatTimeOfDay24(TimeOfDay time) {
+  final hour = time.hour.toString().padLeft(2, '0');
+  final minute = time.minute.toString().padLeft(2, '0');
+  return '$hour:$minute';
+}
+
+/// `showTimePicker` con textos localizados (mismo patrón que el curso).
+Future<TimeOfDay?> pickAppTime(
+  BuildContext context, {
+  required TimeOfDay initialTime,
+  required String helpText,
+}) {
+  final l10n = AppLocalizations.of(context)!;
+  return showTimePicker(
+    context: context,
+    initialTime: initialTime,
+    helpText: helpText,
+    confirmText: l10n.accept,
+    cancelText: l10n.cancel,
+  );
+}
+
+/// Selector de hora con la UI canónica del inicio de curso.
+class AppTimePickerField extends StatelessWidget {
+  final String label;
+  final TimeOfDay time;
+  final VoidCallback onTap;
+  final IconData icon;
+
+  const AppTimePickerField({
+    super.key,
+    required this.label,
+    required this.time,
+    required this.onTap,
+    this.icon = Icons.schedule,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final panelColor =
+        isDark ? const Color(0xFF0F172A) : AppColors.surfaceContainerLow;
+    final panelBorder =
+        isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: panelColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: panelBorder),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 14, color: primaryColor),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    label,
+                    style: appInputLabelStyle(context),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              formatTimeOfDay12(time),
+              style: AppTextStyles.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 /// Fondo de las pantallas principales.
 Color appPageBackground(BuildContext context) {
