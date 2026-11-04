@@ -3,15 +3,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../payments/models/payment_model.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../providers/finance_catalog_provider.dart';
 import '../widgets/finance_sheets.dart';
 import '../widgets/finance_ui.dart';
 
-class FinanceRemindersScreen extends ConsumerWidget {
+class FinanceRemindersScreen extends ConsumerStatefulWidget {
   const FinanceRemindersScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FinanceRemindersScreen> createState() =>
+      _FinanceRemindersScreenState();
+}
+
+class _FinanceRemindersScreenState
+    extends ConsumerState<FinanceRemindersScreen> {
+  @override
+  void initState() {
+    super.initState();
+    guardProRoute(context, ref, feature: ProFeature.reminders);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primary = Theme.of(context).colorScheme.primary;
@@ -24,10 +39,14 @@ class FinanceRemindersScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: primary,
-        title: Text(l10n.financeReminders, style: TextStyle(fontWeight: FontWeight.w800, color: primary)),
+        title: Text(
+          l10n.financeReminders,
+          style: TextStyle(fontWeight: FontWeight.w800, color: primary),
+        ),
       ),
       body: catalog.when(
-        loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        loading: () =>
+            const Center(child: CircularProgressIndicator(strokeWidth: 2)),
         error: (_, __) => Padding(
           padding: const EdgeInsets.all(16),
           child: FinanceStateMessage(
@@ -50,7 +69,10 @@ class FinanceRemindersScreen extends ConsumerWidget {
             children: [
               Text(
                 l10n.financeReminderHint,
-                style: TextStyle(color: FinancePalette.muted(isDark), height: 1.35),
+                style: TextStyle(
+                  color: FinancePalette.muted(isDark),
+                  height: 1.35,
+                ),
               ),
               const SizedBox(height: 12),
               if (items.isEmpty)
@@ -66,7 +88,11 @@ class FinanceRemindersScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       for (var i = 0; i < items.length; i++) ...[
-                        if (i > 0) Divider(height: 1, color: FinancePalette.border(isDark)),
+                        if (i > 0)
+                          Divider(
+                            height: 1,
+                            color: FinancePalette.border(isDark),
+                          ),
                         Row(
                           children: [
                             Expanded(

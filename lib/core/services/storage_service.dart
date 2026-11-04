@@ -23,12 +23,18 @@ class StorageService {
   static const String _keyTeacherPrefix = 'docentia_teacher_';
   static const String _keyCertificates = 'docentia_certificates';
   static const String _keyFolioSequence = 'docentia_folio_sequence';
+  static const String _keySubscription = 'docentia_subscription';
 
   static SharedPreferences? _prefs;
 
   static Future<SharedPreferences> get _instance async {
     _prefs ??= await SharedPreferences.getInstance();
     return _prefs!;
+  }
+
+  /// Limpia la caché estática (solo tests).
+  static void resetCacheForTest() {
+    _prefs = null;
   }
 
   // --- Language (Default: Spanish 'es') ---
@@ -302,6 +308,52 @@ class StorageService {
         '$_keyTeacherPrefix${teacher.id}',
         jsonEncode(teacher.toMap()),
       );
+    } catch (_) {}
+  }
+
+  // --- Subscription (local / simulated until Store billing) ---
+  static Future<Map<String, dynamic>?> getSubscriptionMap() async {
+    try {
+      final prefs = await _instance;
+      final raw = prefs.getString(_keySubscription);
+      if (raw == null || raw.isEmpty) return null;
+      return jsonDecode(raw) as Map<String, dynamic>;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<void> saveSubscriptionMap(Map<String, dynamic> map) async {
+    try {
+      final prefs = await _instance;
+      await prefs.setString(_keySubscription, jsonEncode(map));
+    } catch (_) {}
+  }
+
+  static Future<void> clearSubscription() async {
+    try {
+      final prefs = await _instance;
+      await prefs.remove(_keySubscription);
+    } catch (_) {}
+  }
+
+  /// Borra datos locales del docente (cuenta / GDPR / tiendas).
+  static Future<void> clearAllUserData({String? teacherId}) async {
+    try {
+      final prefs = await _instance;
+      await prefs.remove(_keyCourses);
+      await prefs.remove(_keyStudents);
+      await prefs.remove(_keyAttendance);
+      await prefs.remove(_keyAttendanceSessions);
+      await prefs.remove(_keyPayments);
+      await prefs.remove(_keyExpenses);
+      await prefs.remove(_keyCalendarEvents);
+      await prefs.remove(_keyCertificates);
+      await prefs.remove(_keyFolioSequence);
+      await prefs.remove(_keySubscription);
+      if (teacherId != null && teacherId.isNotEmpty) {
+        await prefs.remove('$_keyTeacherPrefix$teacherId');
+      }
     } catch (_) {}
   }
 }

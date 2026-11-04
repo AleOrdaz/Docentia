@@ -13,6 +13,8 @@ import '../../auth/providers/auth_provider.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../../students/models/student_model.dart';
 import '../../students/providers/students_provider.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../models/certificate_model.dart';
 import '../services/certificate_pdf_service.dart';
 import '../services/certificate_service.dart';
@@ -39,6 +41,7 @@ class _IssueCertificatesScreenState
   @override
   void initState() {
     super.initState();
+    guardProRoute(context, ref, feature: ProFeature.certificates);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(selectedCourseIdProvider.notifier).state = widget.courseId;
     });

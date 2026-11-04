@@ -20,6 +20,8 @@ import '../../students/models/student_model.dart';
 import '../../students/providers/students_provider.dart';
 import '../../students/screens/add_student_modal.dart';
 import '../../students/screens/edit_student_modal.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 
 class CourseDetailScreen extends ConsumerStatefulWidget {
   final String courseId;
@@ -44,8 +46,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     super.dispose();
   }
 
-  void _openAddStudentModal(String courseName) {
-    showModalBottomSheet<void>(
+  Future<void> _openAddStudentModal(String courseName) async {
+    final allowed = await ensureCanAddStudent(context, ref);
+    if (!allowed || !mounted) return;
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -377,9 +381,19 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     child: _QuickAction(
                       icon: Icons.workspace_premium_outlined,
                       label: l10n.certificatesBtn,
-                      onTap: () {
-                        ref.read(selectedCourseIdProvider.notifier).state = widget.courseId;
-                        context.push('/course-detail/${widget.courseId}/certificates');
+                      onTap: () async {
+                        final ok = await ensureProFeature(
+                          context,
+                          ref,
+                          feature: ProFeature.certificates,
+                        );
+                        if (!ok || !mounted) return;
+                        ref.read(selectedCourseIdProvider.notifier).state =
+                            widget.courseId;
+                        if (!context.mounted) return;
+                        context.push(
+                          '/course-detail/${widget.courseId}/certificates',
+                        );
                       },
                     ),
                   ),

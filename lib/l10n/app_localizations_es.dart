@@ -1884,4 +1884,223 @@ class AppLocalizationsEs extends AppLocalizations {
       String period, String amount, String due) {
     return 'Hola $tutor, te contactamos de Docentia. La cuota de $student del curso $course ($period) es de $amount y vence el $due.';
   }
+
+  @override
+  String financeReminderOverdueMessage(String tutor, String student,
+      String course, String period, String amount, String due) {
+    return 'Hola $tutor, te contactamos de Docentia. La cuota de $student del curso $course ($period) es de $amount y venció el $due.';
+  }
+
+  @override
+  String get overdueFeesNotificationTitle => 'Cuotas vencidas';
+
+  @override
+  String overdueFeesNotificationBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Tienes $count cuotas vencidas por revisar.',
+      one: 'Tienes 1 cuota vencida por revisar.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planSectionTitle => 'Plan Docentia';
+
+  @override
+  String get planFreeLabel => 'Free';
+
+  @override
+  String get planProLabel => 'Pro';
+
+  @override
+  String planFreeDesc(int courses, int students) {
+    return 'Hasta $courses cursos y $students alumnos. Ideal para empezar.';
+  }
+
+  @override
+  String get planProDesc =>
+      'Ilimitado + certificados, finanzas avanzadas y PDFs.';
+
+  @override
+  String planProTrialDesc(int days) {
+    return 'Prueba Pro activa. Termina en $days días.';
+  }
+
+  @override
+  String get planProMonthlyDesc => 'Pro mensual activo (simulado).';
+
+  @override
+  String get planProYearlyDesc => 'Pro anual activo (simulado).';
+
+  @override
+  String get planUpgradeCta => 'Mejorar a Pro';
+
+  @override
+  String get planManageCta => 'Ver planes';
+
+  @override
+  String get planDowngradeCta => 'Volver a Free';
+
+  @override
+  String get paywallTitle => 'Docentia Pro';
+
+  @override
+  String get paywallSubtitle => 'Desbloquea tu operación completa';
+
+  @override
+  String paywallReasonCourses(int count) {
+    return 'El plan Free incluye hasta $count cursos activos.';
+  }
+
+  @override
+  String paywallReasonStudents(int count) {
+    return 'El plan Free incluye hasta $count alumnos activos.';
+  }
+
+  @override
+  String get paywallReasonCertificates =>
+      'Los certificados PDF forman parte de Docentia Pro.';
+
+  @override
+  String get paywallReasonCoursePdf =>
+      'Exportar el informe del curso a PDF es una función Pro.';
+
+  @override
+  String get paywallReasonFinanceReports =>
+      'Los reportes financieros avanzados son Pro.';
+
+  @override
+  String get paywallReasonExpenses =>
+      'El control de gastos y utilidad es una función Pro.';
+
+  @override
+  String get paywallReasonReminders =>
+      'Los recordatorios de cobro son una función Pro.';
+
+  @override
+  String get paywallReasonNotifyParents =>
+      'Avisar a tutores por correo es una función Pro.';
+
+  @override
+  String get paywallBenefitUnlimited => 'Cursos y alumnos ilimitados';
+
+  @override
+  String get paywallBenefitCertificates => 'Certificados con estilos y folio';
+
+  @override
+  String get paywallBenefitFinance =>
+      'Gastos, recordatorios y reportes financieros';
+
+  @override
+  String get paywallBenefitPdfs => 'Exportar informes y reportes en PDF';
+
+  @override
+  String get paywallChoosePlan => 'Elige tu plan';
+
+  @override
+  String get paywallYearlyTitle => 'Anual';
+
+  @override
+  String get paywallMonthlyTitle => 'Mensual';
+
+  @override
+  String get paywallBestValue => 'Mejor valor';
+
+  @override
+  String paywallYearlyFootnote(int amount) {
+    return 'Ahorras \$$amount MXN vs pagar mes a mes';
+  }
+
+  @override
+  String get paywallMonthlyFootnote => 'Cancela cuando quieras';
+
+  @override
+  String paywallContinuePro(String price) {
+    return 'Continuar con Pro · $price';
+  }
+
+  @override
+  String paywallStartTrial(int days) {
+    return 'Probar $days días gratis';
+  }
+
+  @override
+  String get paywallActivatedPro => '¡Docentia Pro activado!';
+
+  @override
+  String paywallTrialStarted(int days) {
+    return 'Prueba Pro de $days días iniciada';
+  }
+
+  @override
+  String get paywallSimulatedNote =>
+      'Por ahora la compra es simulada en el dispositivo. La facturación real de App Store / Google Play se integrará después.';
+
+  @override
+  String get paywallBillingNote =>
+      'El pago se procesa de forma segura con App Store o Google Play. Los precios pueden variar según tu tienda y país.';
+
+  @override
+  String get paywallStoreUnavailable =>
+      'La tienda de compras no está disponible en este dispositivo.';
+
+  @override
+  String get paywallProductMissing =>
+      'Los productos Pro aún no están configurados en la tienda. Créalos en App Store Connect / Play Console.';
+
+  @override
+  String get paywallPurchasePending =>
+      'Tu compra está pendiente de confirmación.';
+
+  @override
+  String get paywallPurchaseError =>
+      'No se pudo completar la compra. Inténtalo de nuevo.';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get paywallAutoRenewDisclosure =>
+      'La suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del fin del periodo. El cobro se realiza en tu cuenta de Apple o Google. Puedes gestionar o cancelar en la configuración de suscripciones de la tienda.';
+
+  @override
+  String get paywallRestorePurchases => 'Restaurar compras';
+
+  @override
+  String get paywallRestoreEmpty =>
+      'No hay compras de Docentia Pro para restaurar en esta cuenta.';
+
+  @override
+  String get paywallLegalTerms => 'Términos de uso';
+
+  @override
+  String get paywallLegalPrivacy => 'Privacidad';
+
+  @override
+  String get legalSectionTitle => 'Legal y soporte';
+
+  @override
+  String get legalSupport => 'Soporte';
+
+  @override
+  String get legalManageSubscription => 'Gestionar suscripción';
+
+  @override
+  String get deleteAccountTitle => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountBody =>
+      'Se borrará tu cuenta de Docentia y los datos locales (cursos, alumnos, pagos, etc.). Esta acción no se puede deshacer. Si tienes una suscripción activa, cancélala en la tienda para evitar cobros futuros.';
+
+  @override
+  String get deleteAccountConfirm => 'Eliminar definitivamente';
+
+  @override
+  String get deleteAccountSuccess => 'Cuenta eliminada';
+
+  @override
+  String get deleteAccountWebLink =>
+      'También puedes solicitar el borrado en la web';
 }

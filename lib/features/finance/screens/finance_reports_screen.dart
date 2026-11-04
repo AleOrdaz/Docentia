@@ -11,6 +11,8 @@ import '../../auth/utils/teacher_name.dart';
 import '../../payments/models/payment_model.dart';
 import '../../reports/logic/report_builders.dart';
 import '../../reports/services/report_pdf_service.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../logic/finance_fees.dart';
 import '../providers/finance_catalog_provider.dart';
 import '../providers/finance_provider.dart';
@@ -29,6 +31,12 @@ class FinanceReportsScreen extends ConsumerStatefulWidget {
 class _FinanceReportsScreenState extends ConsumerState<FinanceReportsScreen> {
   _ReportTab _tab = _ReportTab.income;
   bool _exporting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    guardProRoute(context, ref, feature: ProFeature.financeReports);
+  }
 
   Future<void> _export() async {
     if (_exporting) return;

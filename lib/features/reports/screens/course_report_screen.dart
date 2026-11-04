@@ -21,6 +21,8 @@ import '../../finance/widgets/finance_ui.dart';
 import '../../payments/models/payment_model.dart';
 import '../../payments/providers/payments_provider.dart';
 import '../../students/providers/students_provider.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../logic/report_builders.dart';
 import '../services/report_pdf_service.dart';
 
@@ -38,6 +40,13 @@ class _CourseReportScreenState extends ConsumerState<CourseReportScreen> {
 
   Future<void> _export(CourseReportData data) async {
     if (_exporting) return;
+    final allowed = await ensureProFeature(
+      context,
+      ref,
+      feature: ProFeature.courseReportPdf,
+    );
+    if (!allowed || !mounted) return;
+
     setState(() => _exporting = true);
     final l10n = AppLocalizations.of(context)!;
     final window = ref.read(financeWindowProvider);

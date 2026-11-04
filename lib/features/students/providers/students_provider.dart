@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../courses/providers/courses_provider.dart';
 import '../models/student_model.dart';
 import '../repositories/students_repository.dart';
 
@@ -119,6 +120,17 @@ final allActiveStudentsProvider = FutureProvider<List<Student>>((ref) async {
   // Al cambiar la versión de alumnos, se recalculan inmediatamente los totales de alumnos
   ref.watch(studentsRevisionProvider);
   final repo = ref.watch(studentsRepositoryProvider);
-  return repo.getAllStudents();
+  final coursesAsync = ref.watch(coursesProvider);
+  final students = await repo.getAllStudents();
+  final courses = coursesAsync.value;
+  // Sin cursos cargados aún no contamos huérfanos de cursos borrados.
+  if (courses == null) return const [];
+  final activeCourseIds = {
+    for (final course in courses)
+      if (course.active) course.id,
+  };
+  return students
+      .where((student) => activeCourseIds.contains(student.courseId))
+      .toList();
 });
 

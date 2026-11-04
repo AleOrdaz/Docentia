@@ -82,15 +82,7 @@ class PaymentsNotifier extends StateNotifier<AsyncValue<List<Payment>>> {
       int.parse(parts[1]),
       int.parse(parts[2]),
     );
-
-    PaymentStatus status;
-    if (now.isAfter(dueDateTime)) {
-      status = PaymentStatus.overdue;
-    } else if (dueDateTime.difference(now).inDays <= 5) {
-      status = PaymentStatus.upcoming;
-    } else {
-      status = PaymentStatus.pending;
-    }
+    final status = FeeCycle.statusForDueDate(now, dueDateTime);
 
     final periodName = Payment.formatPeriodName(targetYear, targetMonth);
 
@@ -243,7 +235,8 @@ final autoGenerateFeesProvider = FutureProvider<int>((ref) async {
     students: students,
     payments: payments,
   );
-  if (created > 0) {
+  final refreshed = await payments.refreshUnpaidStatuses();
+  if (created > 0 || refreshed > 0) {
     ref.read(paymentsRevisionProvider.notifier).state++;
   }
   return created;

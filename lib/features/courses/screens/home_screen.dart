@@ -12,6 +12,8 @@ import '../../payments/models/payment_model.dart';
 import '../../payments/providers/payments_provider.dart';
 import '../../students/providers/students_provider.dart';
 import '../../students/screens/add_student_modal.dart';
+import '../../subscription/models/subscription_config.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
 import '../providers/courses_provider.dart';
@@ -73,7 +75,11 @@ class HomeScreen extends ConsumerWidget {
       body: coursesAsync.when(
         data: (courses) {
           final activeCourses = courses.where((c) => c.active).toList();
-          final totalStudentsCount = allStudentsAsync.value?.length ?? 0;
+          final activeCourseIds = {for (final course in activeCourses) course.id};
+          final totalStudentsCount = allStudentsAsync.value
+                  ?.where((s) => activeCourseIds.contains(s.courseId))
+                  .length ??
+              0;
           final now = DateTime.now();
           final todayCourses =
               activeCourses.where((c) => c.isClassDay(now)).toList();
@@ -112,11 +118,20 @@ class HomeScreen extends ConsumerWidget {
                   isDark: isDark,
                   navy: navy,
                   l10n: l10n,
-                  onNewCourse: () => _openCreateCourse(context),
+                  onNewCourse: () => _openCreateCourse(context, ref),
                   onAddStudent: () =>
                       _openAddStudent(context, ref, activeCourses, l10n),
                   onNewEvent: () => showCreateEventSheet(context),
-                  onRecordExpense: () => context.push('/finance/expenses'),
+                  onRecordExpense: () async {
+                    final ok = await ensureProFeature(
+                      context,
+                      ref,
+                      feature: ProFeature.expenses,
+                    );
+                    if (ok && context.mounted) {
+                      context.push('/finance/expenses');
+                    }
+                  },
                 ),
                 const SizedBox(height: 26),
                 _SectionHeader(
@@ -156,8 +171,10 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _openCreateCourse(BuildContext context) {
-    showModalBottomSheet<Course>(
+  Future<void> _openCreateCourse(BuildContext context, WidgetRef ref) async {
+    final allowed = await ensureCanCreateCourse(context, ref);
+    if (!allowed || !context.mounted) return;
+    await showModalBottomSheet<Course>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -181,9 +198,12 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       );
-      _openCreateCourse(context);
+      await _openCreateCourse(context, ref);
       return;
     }
+
+    final canAdd = await ensureCanAddStudent(context, ref);
+    if (!canAdd || !context.mounted) return;
 
     Course? course = courses.length == 1 ? courses.first : null;
     course ??= await showModalBottomSheet<Course>(

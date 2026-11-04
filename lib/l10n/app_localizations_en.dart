@@ -1876,4 +1876,219 @@ class AppLocalizationsEn extends AppLocalizations {
       String period, String amount, String due) {
     return 'Hello $tutor, this is Docentia. $student\'s fee for $course ($period) is $amount and is due on $due.';
   }
+
+  @override
+  String financeReminderOverdueMessage(String tutor, String student,
+      String course, String period, String amount, String due) {
+    return 'Hello $tutor, this is Docentia. $student\'s fee for $course ($period) is $amount and was due on $due.';
+  }
+
+  @override
+  String get overdueFeesNotificationTitle => 'Overdue fees';
+
+  @override
+  String overdueFeesNotificationBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You have $count overdue fees to review.',
+      one: 'You have 1 overdue fee to review.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get planSectionTitle => 'Docentia plan';
+
+  @override
+  String get planFreeLabel => 'Free';
+
+  @override
+  String get planProLabel => 'Pro';
+
+  @override
+  String planFreeDesc(int courses, int students) {
+    return 'Up to $courses courses and $students students. Great to get started.';
+  }
+
+  @override
+  String get planProDesc =>
+      'Unlimited + certificates, advanced finance, and PDFs.';
+
+  @override
+  String planProTrialDesc(int days) {
+    return 'Pro trial active. Ends in $days days.';
+  }
+
+  @override
+  String get planProMonthlyDesc => 'Monthly Pro active (simulated).';
+
+  @override
+  String get planProYearlyDesc => 'Yearly Pro active (simulated).';
+
+  @override
+  String get planUpgradeCta => 'Upgrade to Pro';
+
+  @override
+  String get planManageCta => 'View plans';
+
+  @override
+  String get planDowngradeCta => 'Switch to Free';
+
+  @override
+  String get paywallTitle => 'Docentia Pro';
+
+  @override
+  String get paywallSubtitle => 'Unlock your full teaching ops';
+
+  @override
+  String paywallReasonCourses(int count) {
+    return 'The Free plan includes up to $count active courses.';
+  }
+
+  @override
+  String paywallReasonStudents(int count) {
+    return 'The Free plan includes up to $count active students.';
+  }
+
+  @override
+  String get paywallReasonCertificates =>
+      'PDF certificates are part of Docentia Pro.';
+
+  @override
+  String get paywallReasonCoursePdf =>
+      'Exporting the course report as PDF is a Pro feature.';
+
+  @override
+  String get paywallReasonFinanceReports => 'Advanced finance reports are Pro.';
+
+  @override
+  String get paywallReasonExpenses =>
+      'Expense tracking and net profit is a Pro feature.';
+
+  @override
+  String get paywallReasonReminders => 'Payment reminders are a Pro feature.';
+
+  @override
+  String get paywallReasonNotifyParents =>
+      'Emailing tutors about events is a Pro feature.';
+
+  @override
+  String get paywallBenefitUnlimited => 'Unlimited courses and students';
+
+  @override
+  String get paywallBenefitCertificates => 'Certificates with styles and folio';
+
+  @override
+  String get paywallBenefitFinance =>
+      'Expenses, reminders, and finance reports';
+
+  @override
+  String get paywallBenefitPdfs => 'Export course and finance reports as PDF';
+
+  @override
+  String get paywallChoosePlan => 'Choose your plan';
+
+  @override
+  String get paywallYearlyTitle => 'Yearly';
+
+  @override
+  String get paywallMonthlyTitle => 'Monthly';
+
+  @override
+  String get paywallBestValue => 'Best value';
+
+  @override
+  String paywallYearlyFootnote(int amount) {
+    return 'Save \$$amount MXN vs paying monthly';
+  }
+
+  @override
+  String get paywallMonthlyFootnote => 'Cancel anytime';
+
+  @override
+  String paywallContinuePro(String price) {
+    return 'Continue with Pro · $price';
+  }
+
+  @override
+  String paywallStartTrial(int days) {
+    return 'Try $days days free';
+  }
+
+  @override
+  String get paywallActivatedPro => 'Docentia Pro activated!';
+
+  @override
+  String paywallTrialStarted(int days) {
+    return '$days-day Pro trial started';
+  }
+
+  @override
+  String get paywallSimulatedNote =>
+      'Purchases are simulated on-device for now. Real App Store / Google Play billing will be added later.';
+
+  @override
+  String get paywallBillingNote =>
+      'Payment is processed securely by the App Store or Google Play. Prices may vary by store and country.';
+
+  @override
+  String get paywallStoreUnavailable =>
+      'In-app purchases are not available on this device.';
+
+  @override
+  String get paywallProductMissing =>
+      'Pro products are not configured in the store yet. Create them in App Store Connect / Play Console.';
+
+  @override
+  String get paywallPurchasePending => 'Your purchase is pending confirmation.';
+
+  @override
+  String get paywallPurchaseError =>
+      'Could not complete the purchase. Please try again.';
+
+  @override
+  String get proBadge => 'Pro';
+
+  @override
+  String get paywallAutoRenewDisclosure =>
+      'The subscription renews automatically unless you cancel at least 24 hours before the end of the period. You will be charged through your Apple or Google account. Manage or cancel in your store subscription settings.';
+
+  @override
+  String get paywallRestorePurchases => 'Restore purchases';
+
+  @override
+  String get paywallRestoreEmpty =>
+      'There are no Docentia Pro purchases to restore for this account.';
+
+  @override
+  String get paywallLegalTerms => 'Terms of Use';
+
+  @override
+  String get paywallLegalPrivacy => 'Privacy';
+
+  @override
+  String get legalSectionTitle => 'Legal & support';
+
+  @override
+  String get legalSupport => 'Support';
+
+  @override
+  String get legalManageSubscription => 'Manage subscription';
+
+  @override
+  String get deleteAccountTitle => 'Delete account';
+
+  @override
+  String get deleteAccountBody =>
+      'Your Docentia account and local data (courses, students, payments, etc.) will be deleted. This cannot be undone. If you have an active subscription, cancel it in the store to avoid future charges.';
+
+  @override
+  String get deleteAccountConfirm => 'Delete permanently';
+
+  @override
+  String get deleteAccountSuccess => 'Account deleted';
+
+  @override
+  String get deleteAccountWebLink => 'You can also request deletion on the web';
 }

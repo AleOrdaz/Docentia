@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../subscription/utils/subscription_gate.dart';
 import '../models/course_model.dart';
 import '../providers/courses_provider.dart';
 import '../widgets/course_summary_card.dart';
@@ -11,8 +12,10 @@ import 'create_course_dialog.dart';
 class CoursesListScreen extends ConsumerWidget {
   const CoursesListScreen({super.key});
 
-  void _openCreateCourseDialog(BuildContext context) {
-    showModalBottomSheet<Course>(
+  Future<void> _openCreateCourseDialog(BuildContext context, WidgetRef ref) async {
+    final allowed = await ensureCanCreateCourse(context, ref);
+    if (!allowed || !context.mounted) return;
+    await showModalBottomSheet<Course>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -49,7 +52,7 @@ class CoursesListScreen extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: FilledButton.icon(
-              onPressed: () => _openCreateCourseDialog(context),
+              onPressed: () => _openCreateCourseDialog(context, ref),
               style: FilledButton.styleFrom(
                 backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
@@ -107,7 +110,7 @@ class CoursesListScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     FilledButton.icon(
-                      onPressed: () => _openCreateCourseDialog(context),
+                      onPressed: () => _openCreateCourseDialog(context, ref),
                       style: FilledButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: Colors.white,

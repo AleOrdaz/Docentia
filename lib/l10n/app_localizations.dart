@@ -3519,6 +3519,355 @@ abstract class AppLocalizations {
   /// **'Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y vence el {due}.'**
   String financeReminderMessage(String tutor, String student, String course,
       String period, String amount, String due);
+
+  /// No description provided for @financeReminderOverdueMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola {tutor}, te contactamos de Docentia. La cuota de {student} del curso {course} ({period}) es de {amount} y venció el {due}.'**
+  String financeReminderOverdueMessage(String tutor, String student,
+      String course, String period, String amount, String due);
+
+  /// No description provided for @overdueFeesNotificationTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuotas vencidas'**
+  String get overdueFeesNotificationTitle;
+
+  /// No description provided for @overdueFeesNotificationBody.
+  ///
+  /// In es, this message translates to:
+  /// **'{count, plural, =1{Tienes 1 cuota vencida por revisar.} other{Tienes {count} cuotas vencidas por revisar.}}'**
+  String overdueFeesNotificationBody(int count);
+
+  /// No description provided for @planSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Plan Docentia'**
+  String get planSectionTitle;
+
+  /// No description provided for @planFreeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Free'**
+  String get planFreeLabel;
+
+  /// No description provided for @planProLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Pro'**
+  String get planProLabel;
+
+  /// No description provided for @planFreeDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta {courses} cursos y {students} alumnos. Ideal para empezar.'**
+  String planFreeDesc(int courses, int students);
+
+  /// No description provided for @planProDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Ilimitado + certificados, finanzas avanzadas y PDFs.'**
+  String get planProDesc;
+
+  /// No description provided for @planProTrialDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba Pro activa. Termina en {days} días.'**
+  String planProTrialDesc(int days);
+
+  /// No description provided for @planProMonthlyDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Pro mensual activo (simulado).'**
+  String get planProMonthlyDesc;
+
+  /// No description provided for @planProYearlyDesc.
+  ///
+  /// In es, this message translates to:
+  /// **'Pro anual activo (simulado).'**
+  String get planProYearlyDesc;
+
+  /// No description provided for @planUpgradeCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejorar a Pro'**
+  String get planUpgradeCta;
+
+  /// No description provided for @planManageCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver planes'**
+  String get planManageCta;
+
+  /// No description provided for @planDowngradeCta.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a Free'**
+  String get planDowngradeCta;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Docentia Pro'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquea tu operación completa'**
+  String get paywallSubtitle;
+
+  /// No description provided for @paywallReasonCourses.
+  ///
+  /// In es, this message translates to:
+  /// **'El plan Free incluye hasta {count} cursos activos.'**
+  String paywallReasonCourses(int count);
+
+  /// No description provided for @paywallReasonStudents.
+  ///
+  /// In es, this message translates to:
+  /// **'El plan Free incluye hasta {count} alumnos activos.'**
+  String paywallReasonStudents(int count);
+
+  /// No description provided for @paywallReasonCertificates.
+  ///
+  /// In es, this message translates to:
+  /// **'Los certificados PDF forman parte de Docentia Pro.'**
+  String get paywallReasonCertificates;
+
+  /// No description provided for @paywallReasonCoursePdf.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar el informe del curso a PDF es una función Pro.'**
+  String get paywallReasonCoursePdf;
+
+  /// No description provided for @paywallReasonFinanceReports.
+  ///
+  /// In es, this message translates to:
+  /// **'Los reportes financieros avanzados son Pro.'**
+  String get paywallReasonFinanceReports;
+
+  /// No description provided for @paywallReasonExpenses.
+  ///
+  /// In es, this message translates to:
+  /// **'El control de gastos y utilidad es una función Pro.'**
+  String get paywallReasonExpenses;
+
+  /// No description provided for @paywallReasonReminders.
+  ///
+  /// In es, this message translates to:
+  /// **'Los recordatorios de cobro son una función Pro.'**
+  String get paywallReasonReminders;
+
+  /// No description provided for @paywallReasonNotifyParents.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisar a tutores por correo es una función Pro.'**
+  String get paywallReasonNotifyParents;
+
+  /// No description provided for @paywallBenefitUnlimited.
+  ///
+  /// In es, this message translates to:
+  /// **'Cursos y alumnos ilimitados'**
+  String get paywallBenefitUnlimited;
+
+  /// No description provided for @paywallBenefitCertificates.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificados con estilos y folio'**
+  String get paywallBenefitCertificates;
+
+  /// No description provided for @paywallBenefitFinance.
+  ///
+  /// In es, this message translates to:
+  /// **'Gastos, recordatorios y reportes financieros'**
+  String get paywallBenefitFinance;
+
+  /// No description provided for @paywallBenefitPdfs.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar informes y reportes en PDF'**
+  String get paywallBenefitPdfs;
+
+  /// No description provided for @paywallChoosePlan.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige tu plan'**
+  String get paywallChoosePlan;
+
+  /// No description provided for @paywallYearlyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Anual'**
+  String get paywallYearlyTitle;
+
+  /// No description provided for @paywallMonthlyTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensual'**
+  String get paywallMonthlyTitle;
+
+  /// No description provided for @paywallBestValue.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejor valor'**
+  String get paywallBestValue;
+
+  /// No description provided for @paywallYearlyFootnote.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahorras \${amount} MXN vs pagar mes a mes'**
+  String paywallYearlyFootnote(int amount);
+
+  /// No description provided for @paywallMonthlyFootnote.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancela cuando quieras'**
+  String get paywallMonthlyFootnote;
+
+  /// No description provided for @paywallContinuePro.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar con Pro · {price}'**
+  String paywallContinuePro(String price);
+
+  /// No description provided for @paywallStartTrial.
+  ///
+  /// In es, this message translates to:
+  /// **'Probar {days} días gratis'**
+  String paywallStartTrial(int days);
+
+  /// No description provided for @paywallActivatedPro.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Docentia Pro activado!'**
+  String get paywallActivatedPro;
+
+  /// No description provided for @paywallTrialStarted.
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba Pro de {days} días iniciada'**
+  String paywallTrialStarted(int days);
+
+  /// No description provided for @paywallSimulatedNote.
+  ///
+  /// In es, this message translates to:
+  /// **'Por ahora la compra es simulada en el dispositivo. La facturación real de App Store / Google Play se integrará después.'**
+  String get paywallSimulatedNote;
+
+  /// No description provided for @paywallBillingNote.
+  ///
+  /// In es, this message translates to:
+  /// **'El pago se procesa de forma segura con App Store o Google Play. Los precios pueden variar según tu tienda y país.'**
+  String get paywallBillingNote;
+
+  /// No description provided for @paywallStoreUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'La tienda de compras no está disponible en este dispositivo.'**
+  String get paywallStoreUnavailable;
+
+  /// No description provided for @paywallProductMissing.
+  ///
+  /// In es, this message translates to:
+  /// **'Los productos Pro aún no están configurados en la tienda. Créalos en App Store Connect / Play Console.'**
+  String get paywallProductMissing;
+
+  /// No description provided for @paywallPurchasePending.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu compra está pendiente de confirmación.'**
+  String get paywallPurchasePending;
+
+  /// No description provided for @paywallPurchaseError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo completar la compra. Inténtalo de nuevo.'**
+  String get paywallPurchaseError;
+
+  /// No description provided for @proBadge.
+  ///
+  /// In es, this message translates to:
+  /// **'Pro'**
+  String get proBadge;
+
+  /// No description provided for @paywallAutoRenewDisclosure.
+  ///
+  /// In es, this message translates to:
+  /// **'La suscripción se renueva automáticamente salvo que la canceles al menos 24 horas antes del fin del periodo. El cobro se realiza en tu cuenta de Apple o Google. Puedes gestionar o cancelar en la configuración de suscripciones de la tienda.'**
+  String get paywallAutoRenewDisclosure;
+
+  /// No description provided for @paywallRestorePurchases.
+  ///
+  /// In es, this message translates to:
+  /// **'Restaurar compras'**
+  String get paywallRestorePurchases;
+
+  /// No description provided for @paywallRestoreEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay compras de Docentia Pro para restaurar en esta cuenta.'**
+  String get paywallRestoreEmpty;
+
+  /// No description provided for @paywallLegalTerms.
+  ///
+  /// In es, this message translates to:
+  /// **'Términos de uso'**
+  String get paywallLegalTerms;
+
+  /// No description provided for @paywallLegalPrivacy.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad'**
+  String get paywallLegalPrivacy;
+
+  /// No description provided for @legalSectionTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Legal y soporte'**
+  String get legalSectionTitle;
+
+  /// No description provided for @legalSupport.
+  ///
+  /// In es, this message translates to:
+  /// **'Soporte'**
+  String get legalSupport;
+
+  /// No description provided for @legalManageSubscription.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar suscripción'**
+  String get legalManageSubscription;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Se borrará tu cuenta de Docentia y los datos locales (cursos, alumnos, pagos, etc.). Esta acción no se puede deshacer. Si tienes una suscripción activa, cancélala en la tienda para evitar cobros futuros.'**
+  String get deleteAccountBody;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar definitivamente'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta eliminada'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountWebLink.
+  ///
+  /// In es, this message translates to:
+  /// **'También puedes solicitar el borrado en la web'**
+  String get deleteAccountWebLink;
 }
 
 class _AppLocalizationsDelegate

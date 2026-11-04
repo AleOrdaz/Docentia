@@ -8,6 +8,7 @@ abstract class StudentsRepository {
   Future<void> addStudent(Student student);
   Future<void> updateStudent(Student student);
   Future<void> deactivateStudent(String id);
+  Future<void> deactivateStudentsForCourse(String courseId);
 }
 
 class LocalStudentsRepository implements StudentsRepository {
@@ -69,5 +70,21 @@ class LocalStudentsRepository implements StudentsRepository {
       _cached = list;
       await StorageService.saveStudents(list);
     }
+  }
+
+  @override
+  Future<void> deactivateStudentsForCourse(String courseId) async {
+    final list = (await _all()).toList();
+    var changed = false;
+    for (var i = 0; i < list.length; i++) {
+      final student = list[i];
+      if (student.courseId == courseId && student.active) {
+        list[i] = student.copyWith(active: false);
+        changed = true;
+      }
+    }
+    if (!changed) return;
+    _cached = list;
+    await StorageService.saveStudents(list);
   }
 }

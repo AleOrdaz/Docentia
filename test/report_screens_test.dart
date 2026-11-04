@@ -186,6 +186,8 @@ class _StudentsRepo implements StudentsRepository {
   @override
   Future<void> deactivateStudent(String id) async {}
   @override
+  Future<void> deactivateStudentsForCourse(String courseId) async {}
+  @override
   Future<List<Student>> getAllStudents() async => students;
   @override
   Future<Student?> getStudentById(String id) async =>
@@ -228,7 +230,10 @@ class _PaymentsRepo implements PaymentsRepository {
   }) async => false;
   @override
   Future<void> updatePaymentDueDate(String paymentId, DueDateOption option) async {}
+  @override
+  Future<int> refreshUnpaidStatuses({DateTime? now}) async => 0;
 }
+
 
 class _AttendanceRepo implements AttendanceRepository {
   final List<ClassAttendanceSession> sessions;

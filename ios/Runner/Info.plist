@@ -44,12 +44,16 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>Docentia usa la cámara para tu foto de perfil.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Docentia usa tus fotos para personalizar tu perfil.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Docentia guarda tu foto de perfil en el dispositivo.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Docentia accede a tus contactos solo para rellenar el teléfono del tutor o contacto de emergencia al agregar un alumno.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

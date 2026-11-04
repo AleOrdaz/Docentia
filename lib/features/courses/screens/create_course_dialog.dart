@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
-import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
 import '../models/course_icon_helper.dart';
 import '../models/course_model.dart';
@@ -80,10 +78,11 @@ Future<void> showDeleteCourseConfirmation({
               }
               await ref.read(coursesProvider.notifier).deleteCourse(course.id);
               if (context.mounted) {
-                showAppSnackBar(
-                  context,
-                  message: l10n.courseDeletedSuccess(course.name),
-                  kind: AppSnackKind.error,
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.courseDeletedSuccess(course.name)),
+                    backgroundColor: const Color(0xFFD32F2F),
+                  ),
                 );
               }
             },
@@ -150,7 +149,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
     _nameController = TextEditingController(text: edit?.name ?? '');
     _costController = TextEditingController(
-      text: edit != null ? _formatCost(edit.cost) : '',
+      text: _formatCost(edit?.cost ?? 45000),
     );
 
     _paymentSchedule = edit?.paymentSchedule ?? PaymentSchedule.firstHalf;
@@ -199,82 +198,13 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     super.dispose();
   }
 
-  Future<TimeOfDay?> _pickTime({
-    required TimeOfDay initialTime,
-    required String helpText,
-  }) async {
-    final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final snappedMinute = (initialTime.minute / 5).round() * 5 % 60;
-    var selected = TimeOfDay(hour: initialTime.hour, minute: snappedMinute);
-
-    return showDialog<TimeOfDay>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            helpText,
-            style: AppTextStyles.titleMedium.copyWith(
-              color: AppColors.textPrimary(ctx),
-            ),
-          ),
-          content: SizedBox(
-            height: 180,
-            width: 280,
-            child: CupertinoTheme(
-              data: CupertinoThemeData(
-                brightness: isDark ? Brightness.dark : Brightness.light,
-                textTheme: CupertinoTextThemeData(
-                  dateTimePickerTextStyle: TextStyle(
-                    fontSize: 20,
-                    color: AppColors.textPrimary(ctx),
-                  ),
-                ),
-              ),
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.time,
-                use24hFormat: false,
-                initialDateTime: DateTime(
-                  2020,
-                  1,
-                  1,
-                  selected.hour,
-                  selected.minute,
-                ),
-                minuteInterval: 5,
-                onDateTimeChanged: (dateTime) {
-                  selected = TimeOfDay(
-                    hour: dateTime.hour,
-                    minute: dateTime.minute,
-                  );
-                },
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(selected),
-              child: Text(
-                l10n.accept,
-                style: TextStyle(color: Theme.of(ctx).colorScheme.primary),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> _pickStartTime() async {
-    final picked = await _pickTime(
+    final picked = await showTimePicker(
+      context: context,
       initialTime: _startTime,
       helpText: AppLocalizations.of(context)!.selectStartTime,
+      confirmText: AppLocalizations.of(context)!.accept,
+      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null) {
       setState(() => _startTime = picked);
@@ -282,9 +212,12 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   }
 
   Future<void> _pickEndTime() async {
-    final picked = await _pickTime(
+    final picked = await showTimePicker(
+      context: context,
       initialTime: _endTime,
       helpText: AppLocalizations.of(context)!.selectEndTime,
+      confirmText: AppLocalizations.of(context)!.accept,
+      cancelText: AppLocalizations.of(context)!.cancel,
     );
     if (picked != null) {
       setState(() => _endTime = picked);
@@ -296,23 +229,23 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
 
     if (_selectedDays.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
-      showAppSnackBar(
-        context,
-        message: l10n.selectAtLeastOneDay,
-        kind: AppSnackKind.error,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.selectAtLeastOneDay),
+          backgroundColor: AppColors.error,
+        ),
       );
       return;
     }
 
-    final name = _nameController.text.trim();
-    final cost = double.tryParse(
-      _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
-    );
-    if (cost == null || cost <= 0) return;
-
     setState(() => _isSaving = true);
 
     try {
+      final name = _nameController.text.trim();
+      final cost = double.tryParse(
+            _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
+          ) ??
+          45000.0;
       final startTimeStr = _formatTime12(_startTime);
       final endTimeStr = _formatTime12(_endTime);
 
@@ -331,15 +264,13 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
         await ref.read(coursesProvider.notifier).updateCourse(updatedCourse);
 
         if (mounted) {
-          final messenger = ScaffoldMessenger.of(context);
-          final message =
-              AppLocalizations.of(context)!.courseUpdatedSuccess(name);
           Navigator.of(context).pop(updatedCourse);
-          showAppSnackBar(
-            context,
-            message: message,
-            kind: AppSnackKind.success,
-            messenger: messenger,
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.courseUpdatedSuccess(name)),
+              backgroundColor: AppColors.inverseSurface,
+              behavior: SnackBarBehavior.floating,
+            ),
           );
         }
       } else {
@@ -359,15 +290,13 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
         ref.read(selectedCourseIdProvider.notifier).state = newCourse.id;
 
         if (mounted) {
-          final messenger = ScaffoldMessenger.of(context);
-          final message =
-              AppLocalizations.of(context)!.courseCreatedSuccess(name);
           Navigator.of(context).pop(newCourse);
-          showAppSnackBar(
-            context,
-            message: message,
-            kind: AppSnackKind.success,
-            messenger: messenger,
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.courseCreatedSuccess(name)),
+              backgroundColor: AppColors.inverseSurface,
+              behavior: SnackBarBehavior.floating,
+            ),
           );
         }
       }
@@ -469,8 +398,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                     const SizedBox(height: 14),
 
                     // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
-                    appFormLabel(
-                      context,
+                    Text(
                       l10n?.classDaysLabel ?? 'Días de clase (al menos 1) *',
                       style: _inputLabelStyle,
                     ),
@@ -512,10 +440,8 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                     const SizedBox(height: 16),
 
                     // SECCIÓN: Horario de clase (Inicio y Fin independientes)
-                    appFormLabel(
-                      context,
+                    Text(
                       l10n?.classScheduleLabel ?? 'Horario de clase',
-                      required: true,
                       style: _inputLabelStyle,
                     ),
                     const SizedBox(height: 8),
@@ -540,12 +466,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                                     children: [
                                       Icon(Icons.schedule, size: 14, color: primaryColor),
                                       const SizedBox(width: 4),
-                                      Flexible(
-                                        child: appFormLabel(
-                                          context,
-                                          l10n?.startTimeLabel ?? 'Hora de inicio *',
-                                          style: _inputLabelStyle,
-                                        ),
+                                      Text(
+                                        (l10n?.startTimeLabel ?? 'Inicio').replaceAll('*', '').trim(),
+                                        style: _inputLabelStyle,
                                       ),
                                     ],
                                   ),
@@ -582,12 +505,9 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                                     children: [
                                       Icon(Icons.timer_outlined, size: 14, color: primaryColor),
                                       const SizedBox(width: 4),
-                                      Flexible(
-                                        child: appFormLabel(
-                                          context,
-                                          l10n?.endTimeLabel ?? 'Hora de fin *',
-                                          style: _inputLabelStyle,
-                                        ),
+                                      Text(
+                                        (l10n?.endTimeLabel ?? 'Fin').replaceAll('*', '').trim(),
+                                        style: _inputLabelStyle,
                                       ),
                                     ],
                                   ),
@@ -615,21 +535,12 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                       hint: '45,000',
                       keyboardType: TextInputType.number,
                       inputFormatters: const [_ThousandsSeparatorInputFormatter()],
-                      validator: (v) {
-                        final parsed = double.tryParse(
-                          (v ?? '').replaceAll(RegExp(r'[^0-9.]'), ''),
-                        );
-                        if (parsed == null || parsed <= 0) {
-                          return l10n?.required ?? 'Requerido';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 14),
 
                     // Vencimiento de cuota
                     Text(
-                      l10n?.paymentScheduleLabel ?? 'Día de cobro adelantado',
+                      l10n?.paymentScheduleLabel ?? 'Esquema de cobro mensual',
                       style: _inputLabelStyle,
                     ),
                     const SizedBox(height: 6),
@@ -637,7 +548,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                       children: [
                         Expanded(
                           child: ChoiceChip(
-                            label: Text(l10n?.scheduleFirstHalf ?? 'A mitad de mes (día 15)'),
+                            label: Text(l10n?.scheduleFirstHalf ?? 'Primera quincena (día 1-15)'),
                             selected: _paymentSchedule == PaymentSchedule.firstHalf,
                             selectedColor: primaryColor,
                             backgroundColor: panelColor,
@@ -659,7 +570,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: ChoiceChip(
-                            label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (último día)'),
+                            label: Text(l10n?.scheduleEndOfMonth ?? 'Fin de mes (día 25-30)'),
                             selected: _paymentSchedule == PaymentSchedule.endOfMonth,
                             selectedColor: primaryColor,
                             backgroundColor: panelColor,
@@ -875,27 +786,21 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     required TextEditingController controller,
     String? hint,
     TextInputType? keyboardType,
-    TextCapitalization? textCapitalization,
     List<TextInputFormatter>? inputFormatters,
-    bool required = false,
     String? Function(String?)? validator,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        appFormLabel(
-          context,
+        Text(
           label,
-          required: required,
           style: _inputLabelStyle,
         ),
         const SizedBox(height: 4),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
-          textCapitalization:
-              textCapitalization ?? appDefaultTextCapitalization(keyboardType),
           inputFormatters: inputFormatters,
           validator: validator,
           style: AppTextStyles.bodyMedium.copyWith(

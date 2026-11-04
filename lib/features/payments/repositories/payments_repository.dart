@@ -1,5 +1,6 @@
 import '../../../core/services/storage_service.dart';
 import '../models/payment_model.dart';
+import '../services/fee_generation_service.dart';
 
 class DuplicateFeeException implements Exception {
   final String message;
@@ -27,6 +28,8 @@ abstract class PaymentsRepository {
   Future<void> confirmPayment(String paymentId, {double? paidAmount, DateTime? paidDate});
   Future<void> addPayment(Payment payment);
   Future<void> updatePaymentDueDate(String paymentId, DueDateOption option);
+  /// Recalcula pending/upcoming/overdue de cuotas no pagadas. Devuelve cuántas cambió.
+  Future<int> refreshUnpaidStatuses({DateTime? now});
 }
 
 class LocalPaymentsRepository implements PaymentsRepository {
@@ -133,13 +136,41 @@ class LocalPaymentsRepository implements PaymentsRepository {
     if (index != -1) {
       final current = list[index];
       final newDueDate = Payment.calculateDueDate(current.periodYear, current.periodMonth, option);
-      // Actualizar fecha sin crear otra cuota ni modificar el importe
+      final due = DateTime.tryParse(newDueDate) ?? DateTime.now();
+      final nextStatus = current.status == PaymentStatus.paid
+          ? PaymentStatus.paid
+          : FeeCycle.statusForDueDate(DateTime.now(), due);
       list[index] = current.copyWith(
         dueDate: newDueDate,
         dueOption: option,
+        status: nextStatus,
       );
       _cached = list;
       await StorageService.savePayments(list);
     }
+  }
+
+  @override
+  Future<int> refreshUnpaidStatuses({DateTime? now}) async {
+    final moment = now ?? DateTime.now();
+    final list = (await _all()).toList();
+    var changed = 0;
+
+    for (var i = 0; i < list.length; i++) {
+      final payment = list[i];
+      if (payment.status == PaymentStatus.paid) continue;
+      final due = DateTime.tryParse(payment.dueDate);
+      if (due == null) continue;
+      final next = FeeCycle.statusForDueDate(moment, due);
+      if (next == payment.status) continue;
+      list[i] = payment.copyWith(status: next);
+      changed++;
+    }
+
+    if (changed > 0) {
+      _cached = list;
+      await StorageService.savePayments(list);
+    }
+    return changed;
   }
 }
