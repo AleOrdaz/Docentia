@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import '../../../core/services/storage_service.dart';
 import '../models/subscription_config.dart';
@@ -224,6 +225,35 @@ class SubscriptionNotifier extends StateNotifier<SubscriptionStatus> {
       isSimulated: true,
     );
     await _persist();
+  }
+
+  /// Canjea un código validado atómicamente por Firebase y activa Pro 3 meses.
+  Future<PurchaseResult> redeemPromoCode(String code) async {
+    await ready();
+    if (code.trim().isEmpty) {
+      return const PurchaseResult(PurchaseOutcome.error, 'empty_code');
+    }
+    try {
+      final callable = FirebaseFunctions.instance.httpsCallable('redeemPromoCode');
+      final result = await callable.call<Map<String, dynamic>>({'code': code.trim()});
+      final expiry = DateTime.tryParse(result.data['expiresAt'] as String? ?? '');
+      if (expiry == null) {
+        return const PurchaseResult(PurchaseOutcome.error);
+      }
+      state = SubscriptionStatus(
+        tier: SubscriptionTier.pro,
+        billingPeriod: null,
+        trialEndsAt: expiry,
+        proExpiresAt: expiry,
+        isSimulated: false,
+      );
+      await _persist();
+      return const PurchaseResult(PurchaseOutcome.success);
+    } on FirebaseFunctionsException catch (e) {
+      return PurchaseResult(PurchaseOutcome.error, e.code);
+    } catch (_) {
+      return const PurchaseResult(PurchaseOutcome.error, 'unknown');
+    }
   }
 
   Future<void> downgradeToFree() async {

@@ -2091,4 +2091,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteAccountWebLink => 'You can also request deletion on the web';
+
+  @override
+  String get promoCodeTitle => 'Have a promo code?';
+
+  @override
+  String get promoCodeHint => 'Enter your code';
+
+  @override
+  String get promoCodeRedeem => 'Redeem';
+
+  @override
+  String get promoCodeActivated =>
+      'Code applied. You have Pro free for 3 months.';
+
+  @override
+  String get promoCodeEmpty => 'Enter a promo code.';
+
+  @override
+  String get promoCodeInvalid => 'This code is invalid.';
+
+  @override
+  String get promoCodeUnavailable =>
+      'This code has expired or reached its redemption limit.';
+
+  @override
+  String get promoCodeAlreadyUsed => 'You have already redeemed a promo code.';
+
+  @override
+  String get promoCodeSignInRequired => 'Sign in to redeem a code.';
+
+  @override
+  String get promoCodeError => 'Could not validate the code. Try again.';
 }

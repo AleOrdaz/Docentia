@@ -2103,4 +2103,37 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get deleteAccountWebLink =>
       'También puedes solicitar el borrado en la web';
+
+  @override
+  String get promoCodeTitle => '¿Tienes un código promocional?';
+
+  @override
+  String get promoCodeHint => 'Ingresa tu código';
+
+  @override
+  String get promoCodeRedeem => 'Canjear';
+
+  @override
+  String get promoCodeActivated =>
+      'Código aplicado. Tienes Pro gratis por 3 meses.';
+
+  @override
+  String get promoCodeEmpty => 'Ingresa un código promocional.';
+
+  @override
+  String get promoCodeInvalid => 'El código no es válido.';
+
+  @override
+  String get promoCodeUnavailable =>
+      'El código venció o ya alcanzó su límite de usos.';
+
+  @override
+  String get promoCodeAlreadyUsed => 'Ya canjeaste un código promocional.';
+
+  @override
+  String get promoCodeSignInRequired => 'Inicia sesión para canjear un código.';
+
+  @override
+  String get promoCodeError =>
+      'No se pudo validar el código. Intenta de nuevo.';
 }

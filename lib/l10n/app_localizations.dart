@@ -3868,6 +3868,66 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'También puedes solicitar el borrado en la web'**
   String get deleteAccountWebLink;
+
+  /// No description provided for @promoCodeTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Tienes un código promocional?'**
+  String get promoCodeTitle;
+
+  /// No description provided for @promoCodeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu código'**
+  String get promoCodeHint;
+
+  /// No description provided for @promoCodeRedeem.
+  ///
+  /// In es, this message translates to:
+  /// **'Canjear'**
+  String get promoCodeRedeem;
+
+  /// No description provided for @promoCodeActivated.
+  ///
+  /// In es, this message translates to:
+  /// **'Código aplicado. Tienes Pro gratis por 3 meses.'**
+  String get promoCodeActivated;
+
+  /// No description provided for @promoCodeEmpty.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un código promocional.'**
+  String get promoCodeEmpty;
+
+  /// No description provided for @promoCodeInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido.'**
+  String get promoCodeInvalid;
+
+  /// No description provided for @promoCodeUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'El código venció o ya alcanzó su límite de usos.'**
+  String get promoCodeUnavailable;
+
+  /// No description provided for @promoCodeAlreadyUsed.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya canjeaste un código promocional.'**
+  String get promoCodeAlreadyUsed;
+
+  /// No description provided for @promoCodeSignInRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia sesión para canjear un código.'**
+  String get promoCodeSignInRequired;
+
+  /// No description provided for @promoCodeError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo validar el código. Intenta de nuevo.'**
+  String get promoCodeError;
 }
 
 class _AppLocalizationsDelegate
