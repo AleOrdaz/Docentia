@@ -5,6 +5,12 @@ enum PaymentSchedule {
   endOfMonth,
 }
 
+/// Modalidad para distinguir grupos de servicios de atención individual.
+enum CourseType { group, individual }
+
+/// Frecuencia acordada para cobrar. Los cobros no mensuales se registran manualmente.
+enum BillingFrequency { monthly, perClass, weekly, biweekly }
+
 extension PaymentScheduleExtension on PaymentSchedule {
   String get displayName {
     switch (this) {
@@ -26,6 +32,9 @@ extension PaymentScheduleExtension on PaymentSchedule {
   }
 }
 
+T _enumValue<T extends Enum>(List<T> values, Object? name, T fallback) =>
+    values.firstWhere((value) => value.name == name, orElse: () => fallback);
+
 class Course {
   final String id;
   final String teacherId;
@@ -43,6 +52,8 @@ class Course {
   final String iconKey;
   final bool active;
   final DateTime createdAt;
+  final CourseType type;
+  final BillingFrequency billingFrequency;
 
   const Course({
     required this.id,
@@ -61,6 +72,8 @@ class Course {
     this.iconKey = 'robotics',
     required this.active,
     required this.createdAt,
+    this.type = CourseType.group,
+    this.billingFrequency = BillingFrequency.monthly,
   });
 
   /// Determina si una fecha específica (o la fecha actual) es un día de clase para este curso
@@ -95,7 +108,10 @@ class Course {
     final sorted = List<int>.from(classDays)..sort();
     if (sorted.isEmpty) return 'Sin días asignados';
     if (sorted.length == 1) return shortNames[sorted.first] ?? 'Día';
-    final prefix = sorted.sublist(0, sorted.length - 1).map((d) => shortNames[d] ?? '').join(', ');
+    final prefix = sorted
+        .sublist(0, sorted.length - 1)
+        .map((d) => shortNames[d] ?? '')
+        .join(', ');
     return '$prefix y ${shortNames[sorted.last] ?? ''}';
   }
 
@@ -103,11 +119,23 @@ class Course {
     final isEn = Localizations.localeOf(context).languageCode == 'en';
     final shortNames = isEn
         ? {1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat', 7: 'Sun'}
-        : {1: 'Lun', 2: 'Mar', 3: 'Mié', 4: 'Jue', 5: 'Vie', 6: 'Sáb', 7: 'Dom'};
+        : {
+            1: 'Lun',
+            2: 'Mar',
+            3: 'Mié',
+            4: 'Jue',
+            5: 'Vie',
+            6: 'Sáb',
+            7: 'Dom'
+          };
     final sorted = List<int>.from(classDays)..sort();
     if (sorted.isEmpty) return isEn ? 'No days assigned' : 'Sin días asignados';
-    if (sorted.length == 1) return shortNames[sorted.first] ?? (isEn ? 'Day' : 'Día');
-    final prefix = sorted.sublist(0, sorted.length - 1).map((d) => shortNames[d] ?? '').join(', ');
+    if (sorted.length == 1)
+      return shortNames[sorted.first] ?? (isEn ? 'Day' : 'Día');
+    final prefix = sorted
+        .sublist(0, sorted.length - 1)
+        .map((d) => shortNames[d] ?? '')
+        .join(', ');
     final conjunction = isEn ? '&' : 'y';
     return '$prefix $conjunction ${shortNames[sorted.last] ?? ''}';
   }
@@ -174,6 +202,8 @@ class Course {
     String? iconKey,
     bool? active,
     DateTime? createdAt,
+    CourseType? type,
+    BillingFrequency? billingFrequency,
   }) {
     return Course(
       id: id ?? this.id,
@@ -192,6 +222,8 @@ class Course {
       iconKey: iconKey ?? this.iconKey,
       active: active ?? this.active,
       createdAt: createdAt ?? this.createdAt,
+      type: type ?? this.type,
+      billingFrequency: billingFrequency ?? this.billingFrequency,
     );
   }
 
@@ -213,6 +245,8 @@ class Course {
       'iconKey': iconKey,
       'active': active,
       'createdAt': createdAt.toIso8601String(),
+      'type': type.name,
+      'billingFrequency': billingFrequency.name,
     };
   }
 
@@ -275,7 +309,11 @@ class Course {
           : PaymentSchedule.firstHalf,
       iconKey: (map['iconKey'] as String?) ?? 'robotics',
       active: (map['active'] as bool?) ?? true,
-      createdAt: DateTime.tryParse((map['createdAt'] as String?) ?? '') ?? DateTime.now(),
+      createdAt: DateTime.tryParse((map['createdAt'] as String?) ?? '') ??
+          DateTime.now(),
+      type: _enumValue(CourseType.values, map['type'], CourseType.group),
+      billingFrequency: _enumValue(BillingFrequency.values,
+          map['billingFrequency'], BillingFrequency.monthly),
     );
   }
 

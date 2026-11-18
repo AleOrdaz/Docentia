@@ -150,12 +150,14 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   leading: _StudentAvatar(initials: student.initials),
                   title: Text(
                     student.fullName,
-                    style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                    style:
+                        AppTextStyles.titleSmall.copyWith(color: textPrimary),
                   ),
                   subtitle: student.age > 0
                       ? Text(
                           l10n.yearsOld(student.age),
-                          style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                          style: AppTextStyles.bodySmall
+                              .copyWith(color: textSecondary),
                         )
                       : null,
                 ),
@@ -176,6 +178,23 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     _registerPayment(student, course);
                   },
                 ),
+                if (course != null &&
+                    (course.type == CourseType.individual ||
+                        course.billingFrequency != BillingFrequency.monthly))
+                  ListTile(
+                    leading: Icon(Icons.add_card_outlined, color: primary),
+                    title: const Text('Registrar cobro manual'),
+                    onTap: () {
+                      Navigator.of(ctx).pop();
+                      showManualChargeDialog(
+                        context: context,
+                        ref: ref,
+                        studentId: student.id,
+                        courseId: course.id,
+                        suggestedAmount: course.cost,
+                      );
+                    },
+                  ),
                 ListTile(
                   leading: Icon(Icons.event_available_outlined, color: primary),
                   title: Text(l10n.viewStudentAttendance),
@@ -193,7 +212,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.delete_outline, color: AppColors.error),
+                  leading:
+                      const Icon(Icons.delete_outline, color: AppColors.error),
                   title: Text(
                     l10n.deleteStudentAction,
                     style: const TextStyle(color: AppColors.error),
@@ -215,7 +235,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
   Widget build(BuildContext context) {
     final course = ref.watch(selectedCourseProvider);
     final studentsAsync = ref.watch(studentsForCourseProvider(widget.courseId));
-    final payments = ref.watch(paymentsForCourseProvider(widget.courseId)).value ?? [];
+    final payments =
+        ref.watch(paymentsForCourseProvider(widget.courseId)).value ?? [];
     final l10n = AppLocalizations.of(context)!;
     final courseName = course?.name ?? l10n.courseFallback;
     final textPrimary = AppColors.textPrimary(context);
@@ -244,7 +265,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, size: 22, color: textPrimary),
             tooltip: l10n.courseOptions,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             onSelected: (value) {
               if (value == 'edit') {
                 _openEditCourseDialog(course);
@@ -262,7 +284,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit_outlined, size: 20, color: AppColors.textPrimary(ctx)),
+                    Icon(Icons.edit_outlined,
+                        size: 20, color: AppColors.textPrimary(ctx)),
                     const SizedBox(width: 10),
                     Text(l10n.editCourseTitle),
                   ],
@@ -272,9 +295,11 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 value: 'delete',
                 child: Row(
                   children: [
-                    const Icon(Icons.delete_outline, size: 20, color: Color(0xFFD32F2F)),
+                    const Icon(Icons.delete_outline,
+                        size: 20, color: Color(0xFFD32F2F)),
                     const SizedBox(width: 10),
-                    Text(l10n.deleteCourseBtn, style: const TextStyle(color: Color(0xFFD32F2F))),
+                    Text(l10n.deleteCourseBtn,
+                        style: const TextStyle(color: Color(0xFFD32F2F))),
                   ],
                 ),
               ),
@@ -283,16 +308,20 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
         ],
       ),
       body: studentsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        loading: () =>
+            const Center(child: CircularProgressIndicator(strokeWidth: 2)),
         error: (err, _) => Center(child: Text(l10n.errorWithDetail('$err'))),
         data: (students) {
           final pendingStudents = students.where((student) {
-            final studentPayments =
-                payments.where((payment) => payment.studentId == student.id).toList();
+            final studentPayments = payments
+                .where((payment) => payment.studentId == student.id)
+                .toList();
             return !_isPaymentCurrent(studentPayments);
           }).toList();
           final visible = (_filterPendingOnly ? pendingStudents : students)
-              .where((student) => query.isEmpty || student.fullName.toLowerCase().contains(query))
+              .where((student) =>
+                  query.isEmpty ||
+                  student.fullName.toLowerCase().contains(query))
               .toList();
 
           return ListView(
@@ -329,7 +358,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                           const SizedBox(height: 2),
                           Text(
                             course.getLocalizedHeaderSchedule(context),
-                            style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                            style: AppTextStyles.bodySmall
+                                .copyWith(color: textSecondary),
                           ),
                         ],
                       ],
@@ -373,7 +403,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     child: _QuickAction(
                       icon: Icons.event_available_outlined,
                       label: l10n.attendanceAction,
-                      onTap: () => context.push('/course-detail/${widget.courseId}/attendance'),
+                      onTap: () => context
+                          .push('/course-detail/${widget.courseId}/attendance'),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -403,8 +434,10 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       icon: Icons.description_outlined,
                       label: l10n.courseReportBtn,
                       onTap: () {
-                        ref.read(selectedCourseIdProvider.notifier).state = widget.courseId;
-                        context.push('/course-detail/${widget.courseId}/report');
+                        ref.read(selectedCourseIdProvider.notifier).state =
+                            widget.courseId;
+                        context
+                            .push('/course-detail/${widget.courseId}/report');
                       },
                     ),
                   ),
@@ -416,7 +449,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   Expanded(
                     child: Text(
                       l10n.studentListTitle,
-                      style: AppTextStyles.titleMedium.copyWith(color: textPrimary),
+                      style: AppTextStyles.titleMedium
+                          .copyWith(color: textPrimary),
                     ),
                   ),
                   IconButton(
@@ -442,7 +476,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                   style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
                   decoration: InputDecoration(
                     hintText: l10n.searchStudentsHint,
-                    hintStyle: AppTextStyles.bodyMedium.copyWith(color: textSecondary),
+                    hintStyle:
+                        AppTextStyles.bodyMedium.copyWith(color: textSecondary),
                     filled: true,
                     fillColor: AppColors.surfaceLow(context),
                     prefixIcon: Icon(Icons.search, color: textSecondary),
@@ -450,7 +485,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -478,16 +514,21 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 28),
                   child: Text(
-                    query.isNotEmpty ? l10n.noStudentsSearch : l10n.allStudentsCurrent,
+                    query.isNotEmpty
+                        ? l10n.noStudentsSearch
+                        : l10n.allStudentsCurrent,
                     textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyMedium.copyWith(color: textSecondary),
+                    style:
+                        AppTextStyles.bodyMedium.copyWith(color: textSecondary),
                   ),
                 )
               else
                 for (final student in visible) ...[
                   _StudentTile(
                     student: student,
-                    payments: payments.where((payment) => payment.studentId == student.id).toList(),
+                    payments: payments
+                        .where((payment) => payment.studentId == student.id)
+                        .toList(),
                     onTap: () => _openStudent(student.id),
                     onMenu: () => _openStudentActions(student, course),
                   ),
@@ -504,7 +545,8 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     final next = course?.nextClassDate();
     if (next == null) return null;
     final locale = Localizations.localeOf(context).toString();
-    final raw = DateFormat('EEE, d MMM', locale).format(next).replaceAll('.', '');
+    final raw =
+        DateFormat('EEE, d MMM', locale).format(next).replaceAll('.', '');
     if (raw.isEmpty) return raw;
     return '${raw[0].toUpperCase()}${raw.substring(1)}';
   }
@@ -691,7 +733,8 @@ class _StudentTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final textPrimary = AppColors.textPrimary(context);
     final textSecondary = AppColors.textSecondary(context);
-    final style = _badgeStyle(l10n, payments, Theme.of(context).brightness == Brightness.dark);
+    final style = _badgeStyle(
+        l10n, payments, Theme.of(context).brightness == Brightness.dark);
 
     return Material(
       color: AppColors.cardBg(context),
@@ -716,7 +759,8 @@ class _StudentTile extends StatelessWidget {
                   children: [
                     Text(
                       student.fullName,
-                      style: AppTextStyles.titleSmall.copyWith(color: textPrimary),
+                      style:
+                          AppTextStyles.titleSmall.copyWith(color: textPrimary),
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
@@ -725,15 +769,18 @@ class _StudentTile extends StatelessWidget {
                         if (student.age > 0)
                           Text(
                             l10n.yearsOld(student.age),
-                            style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                            style: AppTextStyles.bodySmall
+                                .copyWith(color: textSecondary),
                           ),
-                        if (student.age > 0 && style != null) const SizedBox(width: 8),
+                        if (student.age > 0 && style != null)
+                          const SizedBox(width: 8),
                         if (style != null)
                           Flexible(
                             child: Align(
                               alignment: Alignment.centerRight,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: style.background,
                                   borderRadius: BorderRadius.circular(100),
@@ -741,7 +788,8 @@ class _StudentTile extends StatelessWidget {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(style.icon, size: 13, color: style.foreground),
+                                    Icon(style.icon,
+                                        size: 13, color: style.foreground),
                                     const SizedBox(width: 4),
                                     Flexible(
                                       child: Text(
@@ -779,7 +827,8 @@ class _StudentTile extends StatelessWidget {
     );
   }
 
-  _BadgeStyle? _badgeStyle(AppLocalizations l10n, List<Payment> payments, bool isDark) {
+  _BadgeStyle? _badgeStyle(
+      AppLocalizations l10n, List<Payment> payments, bool isDark) {
     if (payments.isEmpty) return null;
     if (payments.any((payment) => payment.status == PaymentStatus.overdue)) {
       return _BadgeStyle(

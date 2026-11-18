@@ -31,6 +31,8 @@ class CoursesNotifier extends StateNotifier<AsyncValue<List<Course>>> {
     required double cost,
     required int capacity,
     required PaymentSchedule paymentSchedule,
+    CourseType type = CourseType.group,
+    BillingFrequency billingFrequency = BillingFrequency.monthly,
     String iconKey = 'robotics',
   }) async {
     final tempCourse = Course(
@@ -50,6 +52,8 @@ class CoursesNotifier extends StateNotifier<AsyncValue<List<Course>>> {
       iconKey: iconKey,
       active: true,
       createdAt: DateTime.now(),
+      type: type,
+      billingFrequency: billingFrequency,
     );
 
     final newCourse = tempCourse.copyWith(
@@ -79,7 +83,7 @@ class CoursesNotifier extends StateNotifier<AsyncValue<List<Course>>> {
 }
 
 final coursesProvider =
-StateNotifierProvider<CoursesNotifier, AsyncValue<List<Course>>>((ref) {
+    StateNotifierProvider<CoursesNotifier, AsyncValue<List<Course>>>((ref) {
   final repo = ref.watch(coursesRepositoryProvider);
   return CoursesNotifier(repo);
 });

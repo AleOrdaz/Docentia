@@ -24,7 +24,7 @@ extension PaymentStatusExtension on PaymentStatus {
 
 enum DueDateOption {
   startOfMonth, // 1 del mes
-  endOfMonth,   // Último día del mes (28/29/30/31)
+  endOfMonth, // Último día del mes (28/29/30/31)
 }
 
 extension DueDateOptionExtension on DueDateOption {
@@ -44,7 +44,7 @@ class Payment {
   final String courseId;
   final String period; // Ej: "Octubre 2026"
   final int periodMonth; // 1 - 12
-  final int periodYear;  // Ej: 2026
+  final int periodYear; // Ej: 2026
   final double amount;
   final String dueDate; // Formato YYYY-MM-DD
   final DueDateOption dueOption;
@@ -52,6 +52,7 @@ class Payment {
   final DateTime? paidAt;
   final double? paidAmount;
   final bool isProrated;
+  final bool isManual;
 
   const Payment({
     required this.id,
@@ -67,6 +68,7 @@ class Payment {
     this.paidAt,
     this.paidAmount,
     this.isProrated = false,
+    this.isManual = false,
   });
 
   /// Clave única de negocio por Alumno + Curso + Año + Mes
@@ -108,6 +110,7 @@ class Payment {
     DateTime? paidAt,
     double? paidAmount,
     bool? isProrated,
+    bool? isManual,
   }) {
     return Payment(
       id: id ?? this.id,
@@ -123,6 +126,7 @@ class Payment {
       paidAt: paidAt ?? this.paidAt,
       paidAmount: paidAmount ?? this.paidAmount,
       isProrated: isProrated ?? this.isProrated,
+      isManual: isManual ?? this.isManual,
     );
   }
 
@@ -141,6 +145,7 @@ class Payment {
       'paidAt': paidAt?.toIso8601String(),
       'paidAmount': paidAmount,
       'isProrated': isProrated,
+      'isManual': isManual,
     };
   }
 
@@ -172,7 +177,8 @@ class Payment {
       }
     }
 
-    final periodStr = (map['period'] as String?) ?? formatPeriodName(pYear, pMonth);
+    final periodStr =
+        (map['period'] as String?) ?? formatPeriodName(pYear, pMonth);
     final paidAtRaw = map['paidAt'] as String?;
 
     return Payment(
@@ -183,12 +189,15 @@ class Payment {
       periodMonth: pMonth,
       periodYear: pYear,
       amount: (map['amount'] as num?)?.toDouble() ?? 0.0,
-      dueDate: dueDate.isNotEmpty ? dueDate : calculateDueDate(pYear, pMonth, parsedDueOption),
+      dueDate: dueDate.isNotEmpty
+          ? dueDate
+          : calculateDueDate(pYear, pMonth, parsedDueOption),
       dueOption: parsedDueOption,
       status: parsedStatus,
       paidAt: paidAtRaw != null ? DateTime.tryParse(paidAtRaw) : null,
       paidAmount: (map['paidAmount'] as num?)?.toDouble(),
       isProrated: (map['isProrated'] as bool?) ?? false,
+      isManual: (map['isManual'] as bool?) ?? false,
     );
   }
 
