@@ -1,0 +1,8 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Promo codes and redemption records are managed/read only by trusted server code.
+    match /promoCodes/{code} { allow read, write: if false; }
+    match /promoRedemptions/{uid} { allow read, write: if false; }
+  }
+}
