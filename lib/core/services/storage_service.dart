@@ -78,9 +78,16 @@ class StorageService {
       final raw = prefs.getString(_keyCourses);
       if (raw == null || raw.isEmpty) return [];
       final list = jsonDecode(raw) as List<dynamic>;
-      return list
+      final courses = list
           .map((item) => Course.fromMap(item as Map<String, dynamic>))
           .toList();
+      final needsScheduleMigration = list.any((item) {
+        if (item is! Map) return false;
+        final schedules = item['classSchedules'];
+        return schedules is! List || schedules.isEmpty;
+      });
+      if (needsScheduleMigration) await saveCourses(courses);
+      return courses;
     } catch (_) {
       return [];
     }
@@ -148,14 +155,16 @@ class StorageService {
       if (raw == null || raw.isEmpty) return [];
       final list = jsonDecode(raw) as List<dynamic>;
       return list
-          .map((item) => ClassAttendanceSession.fromMap(item as Map<String, dynamic>))
+          .map((item) =>
+              ClassAttendanceSession.fromMap(item as Map<String, dynamic>))
           .toList();
     } catch (_) {
       return [];
     }
   }
 
-  static Future<void> saveAttendanceSessions(List<ClassAttendanceSession> sessions) async {
+  static Future<void> saveAttendanceSessions(
+      List<ClassAttendanceSession> sessions) async {
     try {
       final prefs = await _instance;
       final raw = jsonEncode(sessions.map((s) => s.toMap()).toList());
@@ -269,14 +278,16 @@ class StorageService {
       if (raw == null || raw.isEmpty) return [];
       final list = jsonDecode(raw) as List<dynamic>;
       return list
-          .map((item) => IssuedCertificate.fromMap(item as Map<String, dynamic>))
+          .map(
+              (item) => IssuedCertificate.fromMap(item as Map<String, dynamic>))
           .toList();
     } catch (_) {
       return [];
     }
   }
 
-  static Future<void> saveCertificates(List<IssuedCertificate> certificates) async {
+  static Future<void> saveCertificates(
+      List<IssuedCertificate> certificates) async {
     try {
       final prefs = await _instance;
       final raw = jsonEncode(certificates.map((item) => item.toMap()).toList());
@@ -357,4 +368,3 @@ class StorageService {
     } catch (_) {}
   }
 }
-

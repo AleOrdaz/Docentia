@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
+import '../../../core/widgets/profile_avatar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../students/models/student_model.dart';
 import '../models/attendance_model.dart';
@@ -57,9 +58,6 @@ class StudentAttendanceTile extends StatelessWidget {
     final displayName = student?.fullName ?? name ?? '';
     final displayAge = student?.age ?? age ?? 0;
     final displayImageUrl = student?.avatarUrl ?? imageUrl;
-    final displayInitials = student?.initials ??
-        initials ??
-        (displayName.isNotEmpty ? displayName.substring(0, 1).toUpperCase() : 'AL');
     final displayNote = (note != null && note!.isNotEmpty)
         ? note
         : (student?.medicalNote ?? medicalNote);
@@ -76,8 +74,10 @@ class StudentAttendanceTile extends StatelessWidget {
     final bool isMarkedExcused = effectiveStatus == AttendanceStatus.excused;
 
     return Dismissible(
-      key: ValueKey('att_swipe_${student?.id ?? name}_${effectiveStatus?.name ?? "none"}'),
-      direction: isEditable ? DismissDirection.horizontal : DismissDirection.none,
+      key: ValueKey(
+          'att_swipe_${student?.id ?? name}_${effectiveStatus?.name ?? "none"}'),
+      direction:
+          isEditable ? DismissDirection.horizontal : DismissDirection.none,
       background: Container(
         margin: const EdgeInsets.symmetric(vertical: 2),
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -88,7 +88,8 @@ class StudentAttendanceTile extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Row(
           children: [
-            const Icon(Icons.check_circle_rounded, color: Color(0xFF00796B), size: 24),
+            const Icon(Icons.check_circle_rounded,
+                color: Color(0xFF00796B), size: 24),
             const SizedBox(width: 8),
             Text(
               l10n.presentStatus,
@@ -121,7 +122,8 @@ class StudentAttendanceTile extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.cancel_rounded, color: Color(0xFFBA1A1A), size: 24),
+            const Icon(Icons.cancel_rounded,
+                color: Color(0xFFBA1A1A), size: 24),
           ],
         ),
       ),
@@ -165,20 +167,14 @@ class StudentAttendanceTile extends StatelessWidget {
               child: Row(
                 children: [
                   // Avatar
-                  if (displayImageUrl != null && displayImageUrl.isNotEmpty)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.network(
-                        displayImageUrl,
-                        width: 44,
-                        height: 44,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
-                            _buildInitials(context, displayInitials, displayName),
-                      ),
-                    )
-                  else
-                    _buildInitials(context, displayInitials, displayName),
+                  ProfileAvatar(
+                    seed: student?.id.isNotEmpty == true
+                        ? student!.id
+                        : displayName,
+                    imageUrl: displayImageUrl,
+                    size: 44,
+                    semanticLabel: displayName,
+                  ),
 
                   const SizedBox(width: 12),
 
@@ -196,7 +192,8 @@ class StudentAttendanceTile extends StatelessWidget {
                         Row(
                           children: [
                             if (displayAge > 0) ...[
-                              Text(l10n.yearsOld(displayAge), style: AppTextStyles.bodySmall),
+                              Text(l10n.yearsOld(displayAge),
+                                  style: AppTextStyles.bodySmall),
                               const SizedBox(width: 6),
                               Text('•', style: AppTextStyles.bodySmall),
                               const SizedBox(width: 6),
@@ -233,7 +230,8 @@ class StudentAttendanceTile extends StatelessWidget {
 
                   // Chevron
                   IconButton(
-                    icon: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+                    icon: const Icon(Icons.chevron_right,
+                        color: AppColors.onSurfaceVariant),
                     onPressed: effectiveTap,
                   ),
                 ],
@@ -248,10 +246,13 @@ class StudentAttendanceTile extends StatelessWidget {
               children: [
                 if (displayNote != null && displayNote.isNotEmpty)
                   InkWell(
-                    onTap: isEditable ? () => _openNoteDialog(context, displayName) : null,
+                    onTap: isEditable
+                        ? () => _openNoteDialog(context, displayName)
+                        : null,
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: isMarkedExcused
                             ? AppColors.onSurfaceVariant
@@ -270,7 +271,9 @@ class StudentAttendanceTile extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            isMarkedExcused ? l10n.excusedStatus : l10n.viewNote,
+                            isMarkedExcused
+                                ? l10n.excusedStatus
+                                : l10n.viewNote,
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -298,12 +301,13 @@ class StudentAttendanceTile extends StatelessWidget {
                       Text(
                         isEditable
                             ? (effectiveStatus == null
-                            ? l10n.swipeMarkHint
-                            : l10n.swipeCorrectHint)
+                                ? l10n.swipeMarkHint
+                                : l10n.swipeCorrectHint)
                             : l10n.classDaysOnly,
                         style: AppTextStyles.labelSmall.copyWith(
                           color: isEditable
-                              ? AppColors.onSurfaceVariant.withValues(alpha: 0.8)
+                              ? AppColors.onSurfaceVariant
+                                  .withValues(alpha: 0.8)
                               : AppColors.outlineVariant,
                           fontSize: 11,
                         ),
@@ -313,24 +317,25 @@ class StudentAttendanceTile extends StatelessWidget {
 
                 // Indicador visual de estado
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                   decoration: BoxDecoration(
                     color: isMarkedPresent
                         ? const Color(0xFFD8F3DC)
                         : isMarkedAbsent
-                        ? const Color(0xFFFDE8E8)
-                        : isMarkedExcused
-                        ? const Color(0xFFEDE7F6)
-                        : AppColors.surfaceContainerLow,
+                            ? const Color(0xFFFDE8E8)
+                            : isMarkedExcused
+                                ? const Color(0xFFEDE7F6)
+                                : AppColors.surfaceContainerLow,
                     borderRadius: BorderRadius.circular(100),
                     border: Border.all(
                       color: isMarkedPresent
                           ? const Color(0xFFA7E9B8)
                           : isMarkedAbsent
-                          ? const Color(0xFFFAC4C4)
-                          : isMarkedExcused
-                          ? const Color(0xFFD1C4E9)
-                          : const Color(0xFFE2E6EF),
+                              ? const Color(0xFFFAC4C4)
+                              : isMarkedExcused
+                                  ? const Color(0xFFD1C4E9)
+                                  : const Color(0xFFE2E6EF),
                       width: 0.8,
                     ),
                   ),
@@ -420,14 +425,16 @@ class StudentAttendanceTile extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(l10n.noteTitle, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(l10n.noteTitle,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               studentName,
-              style: AppTextStyles.bodySmall.copyWith(color: AppColors.onSurfaceVariant),
+              style: AppTextStyles.bodySmall
+                  .copyWith(color: AppColors.onSurfaceVariant),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -459,27 +466,4 @@ class StudentAttendanceTile extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildInitials(BuildContext context, String initials, String name) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-        shape: BoxShape.circle,
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        initials.isNotEmpty
-            ? initials
-            : (name.isNotEmpty ? name.substring(0, 1).toUpperCase() : 'AL'),
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-      ),
-    );
-  }
 }
-

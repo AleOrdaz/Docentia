@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../app/theme/app_colors.dart';
+import '../../../core/widgets/profile_avatar.dart';
 import '../utils/teacher_photo.dart';
 
 class TeacherAvatar extends StatelessWidget {
@@ -23,15 +24,16 @@ class TeacherAvatar extends StatelessWidget {
     final image = teacherImageProvider(photoUrl);
     final avatar = CircleAvatar(
       radius: radius,
-      backgroundColor: Theme.of(context).colorScheme.primary,
+      backgroundColor: Colors.transparent,
       backgroundImage: image,
       child: image == null
-          ? Text(
-              teacherInitials(name),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w700,
-                fontSize: radius * 0.7,
+          ? ClipOval(
+              child: ProfileAvatar(
+                seed: (name?.trim().isNotEmpty ?? false)
+                    ? name!.trim()
+                    : 'docentia-teacher',
+                size: radius * 2,
+                semanticLabel: name,
               ),
             )
           : null,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/theme/app_colors.dart';
 import '../../../app/widgets/app_snackbars.dart';
 import '../../../core/services/whatsapp_service.dart';
 import '../../../l10n/app_localizations.dart';
@@ -19,7 +20,8 @@ Future<void> showFinancePeriodPicker(
   final months = financeMonthOptions(payments);
   final choice = await showModalBottomSheet<Object>(
     context: context,
-    backgroundColor: FinancePalette.card(Theme.of(context).brightness == Brightness.dark),
+    backgroundColor:
+        FinancePalette.card(Theme.of(context).brightness == Brightness.dark),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
@@ -32,13 +34,17 @@ Future<void> showFinancePeriodPicker(
             for (final month in months)
               ListTile(
                 title: Text(financeMonthName(ctx, month.year, month.month)),
-                trailing: !current.isRange && current.year == month.year && current.month == month.month
-                    ? Icon(Icons.check, color: Theme.of(ctx).colorScheme.primary)
+                trailing: !current.isRange &&
+                        current.year == month.year &&
+                        current.month == month.month
+                    ? const Icon(Icons.check, color: AppColors.iconDefault)
                     : null,
-                onTap: () => Navigator.of(ctx).pop(FinanceWindow.month(month.year, month.month)),
+                onTap: () => Navigator.of(ctx)
+                    .pop(FinanceWindow.month(month.year, month.month)),
               ),
             ListTile(
-              leading: const Icon(Icons.date_range_outlined),
+              leading: const Icon(Icons.date_range_outlined,
+                  color: AppColors.iconDefault),
               title: Text(l10n.financeDateRange),
               onTap: () => Navigator.of(ctx).pop('range'),
             ),
@@ -61,10 +67,12 @@ Future<void> showFinancePeriodPicker(
     locale: Localizations.localeOf(context),
   );
   if (range == null || !context.mounted) return;
-  ref.read(financeWindowProvider.notifier).state = FinanceWindow.range(range.start, range.end);
+  ref.read(financeWindowProvider.notifier).state =
+      FinanceWindow.range(range.start, range.end);
 }
 
-Future<void> showFinanceFilters(BuildContext context, WidgetRef ref, FinanceCatalog catalog) async {
+Future<void> showFinanceFilters(
+    BuildContext context, WidgetRef ref, FinanceCatalog catalog) async {
   final window = ref.read(financeWindowProvider);
   final query = ref.read(financeListQueryProvider);
   final result = await showModalBottomSheet<_FilterDraft>(
@@ -154,7 +162,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
+                  icon: Icon(Icons.close, color: AppColors.iconMuted(context)),
                 ),
               ],
             ),
@@ -164,7 +172,9 @@ class _FilterSheetState extends State<_FilterSheet> {
               DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
                   isExpanded: true,
-                  value: _window.isRange ? 'range' : '${_window.year}-${_window.month}',
+                  value: _window.isRange
+                      ? 'range'
+                      : '${_window.year}-${_window.month}',
                   items: [
                     if (_window.isRange)
                       DropdownMenuItem(
@@ -174,14 +184,16 @@ class _FilterSheetState extends State<_FilterSheet> {
                     for (final month in months)
                       DropdownMenuItem(
                         value: '${month.year}-${month.month}',
-                        child: Text(financeMonthName(context, month.year, month.month)),
+                        child: Text(
+                            financeMonthName(context, month.year, month.month)),
                       ),
                   ],
                   onChanged: (value) {
                     if (value == null || value == 'range') return;
                     final parts = value.split('-');
                     setState(() {
-                      _window = FinanceWindow.month(int.parse(parts[0]), int.parse(parts[1]));
+                      _window = FinanceWindow.month(
+                          int.parse(parts[0]), int.parse(parts[1]));
                     });
                   },
                 ),
@@ -195,9 +207,11 @@ class _FilterSheetState extends State<_FilterSheet> {
                   isExpanded: true,
                   value: _courseId,
                   items: [
-                    DropdownMenuItem(value: null, child: Text(l10n.financeAllCourses)),
+                    DropdownMenuItem(
+                        value: null, child: Text(l10n.financeAllCourses)),
                     for (final course in widget.catalog.courses)
-                      DropdownMenuItem(value: course.id, child: Text(course.name)),
+                      DropdownMenuItem(
+                          value: course.id, child: Text(course.name)),
                   ],
                   onChanged: (value) => setState(() => _courseId = value),
                 ),
@@ -211,9 +225,11 @@ class _FilterSheetState extends State<_FilterSheet> {
                   isExpanded: true,
                   value: _studentId,
                   items: [
-                    DropdownMenuItem(value: null, child: Text(l10n.financeAllStudents)),
+                    DropdownMenuItem(
+                        value: null, child: Text(l10n.financeAllStudents)),
                     for (final student in widget.catalog.students)
-                      DropdownMenuItem(value: student.id, child: Text(student.fullName)),
+                      DropdownMenuItem(
+                          value: student.id, child: Text(student.fullName)),
                   ],
                   onChanged: (value) => setState(() => _studentId = value),
                 ),
@@ -227,11 +243,21 @@ class _FilterSheetState extends State<_FilterSheet> {
                   isExpanded: true,
                   value: _status,
                   items: [
-                    DropdownMenuItem(value: FinanceListStatus.all, child: Text(l10n.financeAllStatuses)),
-                    DropdownMenuItem(value: FinanceListStatus.pending, child: Text(l10n.pendingStatus)),
-                    DropdownMenuItem(value: FinanceListStatus.upcoming, child: Text(l10n.financeUpcomingBadge)),
-                    DropdownMenuItem(value: FinanceListStatus.overdue, child: Text(l10n.financeOverdue)),
-                    DropdownMenuItem(value: FinanceListStatus.paid, child: Text(l10n.paidStatus)),
+                    DropdownMenuItem(
+                        value: FinanceListStatus.all,
+                        child: Text(l10n.financeAllStatuses)),
+                    DropdownMenuItem(
+                        value: FinanceListStatus.pending,
+                        child: Text(l10n.pendingStatus)),
+                    DropdownMenuItem(
+                        value: FinanceListStatus.upcoming,
+                        child: Text(l10n.financeUpcomingBadge)),
+                    DropdownMenuItem(
+                        value: FinanceListStatus.overdue,
+                        child: Text(l10n.financeOverdue)),
+                    DropdownMenuItem(
+                        value: FinanceListStatus.paid,
+                        child: Text(l10n.paidStatus)),
                   ],
                   onChanged: (value) {
                     if (value != null) setState(() => _status = value);
@@ -317,7 +343,8 @@ class _FilterSheetState extends State<_FilterSheet> {
   }
 }
 
-Future<void> showRegisterPaymentSheet(BuildContext context, WidgetRef ref, List<FeeEntry> unpaid) async {
+Future<void> showRegisterPaymentSheet(
+    BuildContext context, WidgetRef ref, List<FeeEntry> unpaid) async {
   final l10n = AppLocalizations.of(context)!;
   if (unpaid.isEmpty) {
     showAppSnackBar(
@@ -330,7 +357,8 @@ Future<void> showRegisterPaymentSheet(BuildContext context, WidgetRef ref, List<
   await showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: FinancePalette.card(Theme.of(context).brightness == Brightness.dark),
+    backgroundColor:
+        FinancePalette.card(Theme.of(context).brightness == Brightness.dark),
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
@@ -358,7 +386,8 @@ Future<void> showRegisterPaymentSheet(BuildContext context, WidgetRef ref, List<
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unpaid.length,
-                separatorBuilder: (_, __) => Divider(height: 1, color: FinancePalette.border(isDark)),
+                separatorBuilder: (_, __) =>
+                    Divider(height: 1, color: FinancePalette.border(isDark)),
                 itemBuilder: (_, index) {
                   final entry = unpaid[index];
                   return FinancePaymentTile(
@@ -378,10 +407,13 @@ Future<void> showRegisterPaymentSheet(BuildContext context, WidgetRef ref, List<
   );
 }
 
-Future<void> registerFinancePayment(BuildContext context, WidgetRef ref, FeeEntry entry) async {
+Future<void> registerFinancePayment(
+    BuildContext context, WidgetRef ref, FeeEntry entry) async {
   final l10n = AppLocalizations.of(context)!;
-  final student = entry.studentName.isEmpty ? l10n.studentFallback : entry.studentName;
-  final course = entry.courseName.isEmpty ? l10n.courseFallback : entry.courseName;
+  final student =
+      entry.studentName.isEmpty ? l10n.studentFallback : entry.studentName;
+  final course =
+      entry.courseName.isEmpty ? l10n.courseFallback : entry.courseName;
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -408,7 +440,9 @@ Future<void> registerFinancePayment(BuildContext context, WidgetRef ref, FeeEntr
         ],
       ),
       actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text(l10n.cancel)),
+        TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.cancel)),
         FilledButton(
           onPressed: () => Navigator.of(ctx).pop(true),
           child: Text(l10n.financeRegisterPayment),
@@ -417,7 +451,9 @@ Future<void> registerFinancePayment(BuildContext context, WidgetRef ref, FeeEntr
     ),
   );
   if (confirmed != true || !context.mounted) return;
-  await ref.read(paymentsForCourseProvider(entry.payment.courseId).notifier).confirmPayment(
+  await ref
+      .read(paymentsForCourseProvider(entry.payment.courseId).notifier)
+      .confirmPayment(
         entry.payment.id,
         paidAmount: entry.payment.amount,
         paidDate: DateTime.now(),
@@ -430,6 +466,110 @@ Future<void> registerFinancePayment(BuildContext context, WidgetRef ref, FeeEntr
   );
 }
 
+/// Captura un cobro puntual (clase, semana o quincena) sin generar una cuota mensual.
+Future<void> showManualChargeDialog({
+  required BuildContext context,
+  required WidgetRef ref,
+  required String studentId,
+  required String courseId,
+  required double suggestedAmount,
+}) async {
+  final amountController =
+      TextEditingController(text: suggestedAmount.toStringAsFixed(2));
+  final periodController = TextEditingController();
+  var chargeDate = DateTime.now();
+  var paid = true;
+  final result = await showDialog<bool>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setState) => AlertDialog(
+        title: const Text('Registrar cobro'),
+        content: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            TextField(
+                controller: periodController,
+                decoration: const InputDecoration(
+                    labelText: 'Concepto o periodo',
+                    hintText: 'Clase del 18 nov. / Semana 16–22 nov.')),
+            TextField(
+                controller: amountController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: 'Importe')),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Fecha del cobro'),
+              subtitle: Text(
+                  '${chargeDate.day.toString().padLeft(2, '0')}/${chargeDate.month.toString().padLeft(2, '0')}/${chargeDate.year}'),
+              trailing: const Icon(Icons.calendar_today_outlined,
+                  color: AppColors.iconDefault),
+              onTap: () async {
+                final picked = await showDatePicker(
+                    context: ctx,
+                    initialDate: chargeDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime(2100));
+                if (picked != null) setState(() => chargeDate = picked);
+              },
+            ),
+            SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Ya fue pagado'),
+                value: paid,
+                onChanged: (value) => setState(() => paid = value)),
+          ]),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancelar')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Guardar')),
+        ],
+      ),
+    ),
+  );
+  if (result != true || !context.mounted) {
+    amountController.dispose();
+    periodController.dispose();
+    return;
+  }
+  final amount =
+      double.tryParse(amountController.text.trim().replaceAll(',', '.'));
+  final period = periodController.text.trim();
+  amountController.dispose();
+  periodController.dispose();
+  if (amount == null || amount <= 0 || period.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Indica un concepto y un importe válido.')));
+    return;
+  }
+  final due =
+      '${chargeDate.year}-${chargeDate.month.toString().padLeft(2, '0')}-${chargeDate.day.toString().padLeft(2, '0')}';
+  final payment = Payment(
+    id: 'manual-${DateTime.now().microsecondsSinceEpoch}',
+    studentId: studentId,
+    courseId: courseId,
+    period: period,
+    periodMonth: chargeDate.month,
+    periodYear: chargeDate.year,
+    amount: amount,
+    dueDate: due,
+    dueOption: DueDateOption.endOfMonth,
+    status: paid ? PaymentStatus.paid : PaymentStatus.pending,
+    paidAt: paid ? chargeDate : null,
+    paidAmount: paid ? amount : null,
+    isManual: true,
+  );
+  await ref.read(paymentsRepositoryProvider).addPayment(payment);
+  ref.read(paymentsRevisionProvider.notifier).state++;
+  if (context.mounted) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('Cobro registrado.')));
+  }
+}
+
 Future<void> notifyTutor(BuildContext context, FeeEntry entry) async {
   final l10n = AppLocalizations.of(context)!;
   if (entry.tutorPhone.trim().isEmpty) {
@@ -440,11 +580,15 @@ Future<void> notifyTutor(BuildContext context, FeeEntry entry) async {
     );
     return;
   }
-  final student = entry.studentName.isEmpty ? l10n.studentFallback : entry.studentName;
-  final course = entry.courseName.isEmpty ? l10n.courseFallback : entry.courseName;
+  final student =
+      entry.studentName.isEmpty ? l10n.studentFallback : entry.studentName;
+  final course =
+      entry.courseName.isEmpty ? l10n.courseFallback : entry.courseName;
   final due = DateTime.tryParse(entry.payment.dueDate);
-  final dueLabel = due == null ? entry.payment.dueDate : financeDay(context, due);
-  final tutor = entry.tutorName.isEmpty ? l10n.studentFallback : entry.tutorName;
+  final dueLabel =
+      due == null ? entry.payment.dueDate : financeDay(context, due);
+  final tutor =
+      entry.tutorName.isEmpty ? l10n.studentFallback : entry.tutorName;
   final amount = financeMoney(entry.payment.amount);
   final message = entry.payment.status == PaymentStatus.overdue
       ? l10n.financeReminderOverdueMessage(

@@ -216,12 +216,13 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: primary.withValues(alpha: isDark ? 0.22 : 0.12),
+                        color: AppColors.iconDefault
+                            .withValues(alpha: isDark ? 0.22 : 0.12),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Icon(
                         Icons.workspace_premium_rounded,
-                        color: primary,
+                        color: AppColors.iconDefault,
                         size: 26,
                       ),
                     ),
@@ -249,7 +250,8 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
                     ),
                     IconButton(
                       tooltip: l10n.close,
-                      icon: Icon(Icons.close, color: textSecondary),
+                      icon: Icon(Icons.close,
+                          color: AppColors.iconMuted(context)),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -401,14 +403,14 @@ class _Benefit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final textPrimary = AppColors.textPrimary(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.check_circle_rounded, size: 18, color: primary),
+          const Icon(Icons.check_circle_rounded,
+              size: 18, color: AppColors.iconSuccess),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -469,10 +471,10 @@ class _PlanOption extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              selected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off,
-              color: selected ? primary : textSecondary,
+              selected ? Icons.radio_button_checked : Icons.radio_button_off,
+              color: selected
+                  ? AppColors.iconDefault
+                  : AppColors.iconMuted(context),
               size: 22,
             ),
             const SizedBox(width: 10),

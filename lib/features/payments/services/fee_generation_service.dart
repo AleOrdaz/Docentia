@@ -19,7 +19,8 @@ class FeePeriod {
 }
 
 class FeeCycle {
-  static DateTime dateOnly(DateTime date) => DateTime(date.year, date.month, date.day);
+  static DateTime dateOnly(DateTime date) =>
+      DateTime(date.year, date.month, date.day);
 
   static bool isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
@@ -58,7 +59,8 @@ class FeeCycle {
     return billingDate(schedule, nextMonth.year, nextMonth.month);
   }
 
-  static DateTime previousBillingDate(PaymentSchedule schedule, DateTime billing) {
+  static DateTime previousBillingDate(
+      PaymentSchedule schedule, DateTime billing) {
     final prevMonth = DateTime(billing.year, billing.month - 1, 1);
     return billingDate(schedule, prevMonth.year, prevMonth.month);
   }
@@ -140,7 +142,8 @@ class AutoFeeGenerator {
     final today = now ?? DateTime.now();
     var created = 0;
 
-    for (final course in courses.where((item) => item.active)) {
+    for (final course in courses.where((item) =>
+        item.active && item.billingFrequency == BillingFrequency.monthly)) {
       final courseStudents = students.where(
         (student) => student.active && student.courseId == course.id,
       );

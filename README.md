@@ -3,8 +3,8 @@
 Proyecto nativo Flutter y Dart completo para Android e iOS, fiel al diseño de Google Stitch.
 
 ## 📋 Requisitos
-- Flutter SDK 3.19.0 o superior (compatible con Flutter 3.24+)
-- Dart 3.3.0 o superior
+- Flutter SDK 3.27.0 o superior
+- Dart 3.6.0 o superior
 - Android Studio / VS Code con plugins oficiales de Flutter y Dart
 - Xcode 15+ (para compilar en iOS / macOS)
 - CocoaPods 1.13+ (para iOS)
