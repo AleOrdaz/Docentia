@@ -145,7 +145,8 @@ CourseReportData buildCourseReport({
   required List<Expense> expenses,
   required FinanceWindow window,
 }) {
-  final periodSessions = sessions.where((session) => window.includesDate(session.date)).toList();
+  final periodSessions =
+      sessions.where((session) => window.includesDate(session.date)).toList();
   final periodPayments = payments.where((payment) {
     return payment.courseId == course.id && window.includes(payment);
   }).toList();
@@ -165,20 +166,24 @@ CourseReportData buildCourseReport({
       switch (item.status) {
         case AttendanceStatus.present:
           presents++;
-          presentsByStudent[item.studentId] = (presentsByStudent[item.studentId] ?? 0) + 1;
+          presentsByStudent[item.studentId] =
+              (presentsByStudent[item.studentId] ?? 0) + 1;
         case AttendanceStatus.late:
           lates++;
-          latesByStudent[item.studentId] = (latesByStudent[item.studentId] ?? 0) + 1;
+          latesByStudent[item.studentId] =
+              (latesByStudent[item.studentId] ?? 0) + 1;
         case AttendanceStatus.absent:
         case AttendanceStatus.excused:
           absences++;
-          absencesByStudent[item.studentId] = (absencesByStudent[item.studentId] ?? 0) + 1;
+          absencesByStudent[item.studentId] =
+              (absencesByStudent[item.studentId] ?? 0) + 1;
       }
     }
   }
 
   final totals = financeTotals(periodPayments, window);
-  final expenseSum = periodExpenses.fold<double>(0, (sum, expense) => sum + expense.amount);
+  final expenseSum =
+      periodExpenses.fold<double>(0, (sum, expense) => sum + expense.amount);
 
   final rows = [
     for (final student in students)
@@ -192,10 +197,15 @@ CourseReportData buildCourseReport({
           periodPayments.where((payment) => payment.studentId == student.id),
         ),
         collected: periodPayments
-            .where((payment) => payment.studentId == student.id && payment.status == PaymentStatus.paid)
-            .fold<double>(0, (sum, payment) => sum + (payment.paidAmount ?? payment.amount)),
+            .where((payment) =>
+                payment.studentId == student.id &&
+                payment.status == PaymentStatus.paid)
+            .fold<double>(0,
+                (sum, payment) => sum + (payment.paidAmount ?? payment.amount)),
         outstanding: periodPayments
-            .where((payment) => payment.studentId == student.id && payment.status != PaymentStatus.paid)
+            .where((payment) =>
+                payment.studentId == student.id &&
+                payment.status != PaymentStatus.paid)
             .fold<double>(0, (sum, payment) => sum + payment.amount),
       ),
   ]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -264,12 +274,16 @@ class TimeOfDayMinutes {
 }
 
 double courseWeeklyHours(Course course) {
-  final start = _parseCourseTime(course.startTime);
-  final end = _parseCourseTime(course.endTime);
-  if (start == null || end == null || course.classDays.isEmpty) return 0;
-  var minutes = end.totalMinutes - start.totalMinutes;
-  if (minutes <= 0) minutes += 24 * 60;
-  return course.classDays.length * minutes / 60.0;
+  var totalMinutes = 0;
+  for (final schedule in course.effectiveClassSchedules) {
+    final start = _parseCourseTime(schedule.startTime);
+    final end = _parseCourseTime(schedule.endTime);
+    if (start == null || end == null) continue;
+    var minutes = end.totalMinutes - start.totalMinutes;
+    if (minutes <= 0) minutes += 24 * 60;
+    totalMinutes += minutes;
+  }
+  return totalMinutes / 60.0;
 }
 
 /// Alumnos con ~2 meses o más de atraso (2+ cuotas vencidas o vencimiento ≥ 60 días).
@@ -315,23 +329,29 @@ FinanceReportData buildFinanceReport({
   final amounts = <String, double>{};
 
   for (final entry in catalog.entries) {
-    if (!window.includes(entry.payment) || entry.payment.status != PaymentStatus.paid) {
+    if (!window.includes(entry.payment) ||
+        entry.payment.status != PaymentStatus.paid) {
       continue;
     }
     final name = entry.courseName.isEmpty ? fallbackCourse : entry.courseName;
-    amounts[name] = (amounts[name] ?? 0) + (entry.payment.paidAmount ?? entry.payment.amount);
+    amounts[name] = (amounts[name] ?? 0) +
+        (entry.payment.paidAmount ?? entry.payment.amount);
   }
 
   final byCourse = [
-    for (final entry in amounts.entries) CourseIncomeRow(courseName: entry.key, collected: entry.value),
+    for (final entry in amounts.entries)
+      CourseIncomeRow(courseName: entry.key, collected: entry.value),
   ]..sort((a, b) => b.collected.compareTo(a.collected));
 
   final unpaid = [
     for (final entry in catalog.entries)
-      if (window.includes(entry.payment) && entry.payment.status != PaymentStatus.paid)
+      if (window.includes(entry.payment) &&
+          entry.payment.status != PaymentStatus.paid)
         UnpaidRow(
-          studentName: entry.studentName.isEmpty ? fallbackStudent : entry.studentName,
-          courseName: entry.courseName.isEmpty ? fallbackCourse : entry.courseName,
+          studentName:
+              entry.studentName.isEmpty ? fallbackStudent : entry.studentName,
+          courseName:
+              entry.courseName.isEmpty ? fallbackCourse : entry.courseName,
           amount: entry.payment.amount,
           status: entry.payment.status,
         ),

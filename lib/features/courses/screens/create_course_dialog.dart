@@ -34,7 +34,7 @@ Future<void> showDeleteCourseConfirmation({
                 borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.warning_amber_rounded,
-                  color: Color(0xFFD32F2F), size: 24),
+                  color: AppColors.iconError, size: 24),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -123,27 +123,38 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   late List<int> _selectedDays;
   late TimeOfDay _startTime;
   late TimeOfDay _endTime;
+  late Map<int, _CourseDayScheduleDraft> _daySchedules;
+  bool _sameScheduleForAll = true;
   late String _selectedIconKey;
   bool _isSaving = false;
 
   static const List<int> _dayNumbers = [1, 2, 3, 4, 5, 6, 7];
 
-  String getWeekdayName(int day, AppLocalizations? l10n) {
+  String _weekdayAbbreviation(int day) {
+    const spanish = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+    const english = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    final abbreviations = Localizations.localeOf(context).languageCode == 'en'
+        ? english
+        : spanish;
+    return abbreviations[day - 1];
+  }
+
+  String _weekdayName(int day, AppLocalizations l10n) {
     switch (day) {
       case 1:
-        return l10n?.weekdayMonday ?? 'Lunes';
+        return l10n.weekdayMonday;
       case 2:
-        return l10n?.weekdayTuesday ?? 'Martes';
+        return l10n.weekdayTuesday;
       case 3:
-        return l10n?.weekdayWednesday ?? 'Miércoles';
+        return l10n.weekdayWednesday;
       case 4:
-        return l10n?.weekdayThursday ?? 'Jueves';
+        return l10n.weekdayThursday;
       case 5:
-        return l10n?.weekdayFriday ?? 'Viernes';
+        return l10n.weekdayFriday;
       case 6:
-        return l10n?.weekdaySaturday ?? 'Sábado';
+        return l10n.weekdaySaturday;
       case 7:
-        return l10n?.weekdaySunday ?? 'Domingo';
+        return l10n.weekdaySunday;
       default:
         return '';
     }
@@ -158,6 +169,8 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     _costController = TextEditingController(
       text: edit != null ? _formatCost(edit.cost) : '',
     );
+    _nameController.addListener(_refreshFormState);
+    _costController.addListener(_refreshFormState);
 
     _paymentSchedule = edit?.paymentSchedule ?? PaymentSchedule.firstHalf;
     _courseType = edit?.type ?? CourseType.group;
@@ -167,12 +180,47 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
         : [1, 3]; // Default Lun & Mié
     _selectedIconKey = edit?.iconKey ?? 'robotics';
 
-    _startTime = edit != null
-        ? _parseTime(edit.startTime, const TimeOfDay(hour: 17, minute: 0))
+    final savedSchedules = edit?.effectiveClassSchedules ?? const [];
+    _startTime = savedSchedules.isNotEmpty
+        ? _parseTime(savedSchedules.first.startTime,
+            const TimeOfDay(hour: 17, minute: 0))
         : const TimeOfDay(hour: 17, minute: 0);
-    _endTime = edit != null
-        ? _parseTime(edit.endTime, const TimeOfDay(hour: 18, minute: 30))
+    _endTime = savedSchedules.isNotEmpty
+        ? _parseTime(
+            savedSchedules.first.endTime, const TimeOfDay(hour: 18, minute: 30))
         : const TimeOfDay(hour: 18, minute: 30);
+    _daySchedules = {
+      for (final item in savedSchedules)
+        item.weekday: _CourseDayScheduleDraft(
+          startTime: _parseTime(item.startTime, _startTime),
+          endTime: _parseTime(item.endTime, _endTime),
+        ),
+    };
+    for (final day in _selectedDays) {
+      _daySchedules.putIfAbsent(
+        day,
+        () => _CourseDayScheduleDraft(
+          startTime: _startTime,
+          endTime: _endTime,
+        ),
+      );
+    }
+    if (savedSchedules.length > 1) {
+      _sameScheduleForAll = savedSchedules.every((item) =>
+          item.startTime == savedSchedules.first.startTime &&
+          item.endTime == savedSchedules.first.endTime);
+    }
+  }
+
+  void _refreshFormState() {
+    if (mounted) setState(() {});
+  }
+
+  bool get _isFormReady {
+    final cost = double.tryParse(
+      _costController.text.replaceAll(RegExp(r'[^0-9.]'), ''),
+    );
+    return _nameController.text.trim().isNotEmpty && cost != null && cost > 0;
   }
 
   TimeOfDay _parseTime(String timeStr, TimeOfDay fallback) {
@@ -286,30 +334,67 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     );
   }
 
-  Future<void> _pickStartTime() async {
+  Future<void> _pickStartTime({int? weekday}) async {
+    final time = weekday == null || _sameScheduleForAll
+        ? _startTime
+        : _daySchedules[weekday]!.startTime;
     final picked = await _pickTime(
-      initialTime: _startTime,
+      initialTime: time,
       helpText: AppLocalizations.of(context)!.selectStartTime,
     );
-    if (picked != null) {
-      setState(() => _startTime = picked);
-    }
+    if (picked == null) return;
+    setState(() {
+      if (weekday == null || _sameScheduleForAll) {
+        _startTime = picked;
+      } else {
+        _daySchedules[weekday]!.startTime = picked;
+      }
+    });
   }
 
-  Future<void> _pickEndTime() async {
+  Future<void> _pickEndTime({int? weekday}) async {
+    final time = weekday == null || _sameScheduleForAll
+        ? _endTime
+        : _daySchedules[weekday]!.endTime;
     final picked = await _pickTime(
-      initialTime: _endTime,
+      initialTime: time,
       helpText: AppLocalizations.of(context)!.selectEndTime,
     );
-    if (picked != null) {
-      setState(() => _endTime = picked);
-    }
+    if (picked == null) return;
+    setState(() {
+      if (weekday == null || _sameScheduleForAll) {
+        _endTime = picked;
+      } else {
+        _daySchedules[weekday]!.endTime = picked;
+      }
+    });
+  }
+
+  void _setSameScheduleForAll(bool value) {
+    setState(() {
+      if (value && _selectedDays.isNotEmpty) {
+        final first = _daySchedules[_selectedDays.first];
+        if (first != null) {
+          _startTime = first.startTime;
+          _endTime = first.endTime;
+        }
+      }
+      _sameScheduleForAll = value;
+      if (!value) {
+        for (final day in _selectedDays) {
+          _daySchedules[day] = _CourseDayScheduleDraft(
+            startTime: _startTime,
+            endTime: _endTime,
+          );
+        }
+      }
+    });
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (_selectedDays.isEmpty && _courseType == CourseType.group) {
+    if (_selectedDays.isEmpty) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -329,8 +414,22 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     setState(() => _isSaving = true);
 
     try {
-      final startTimeStr = _formatTime12(_startTime);
-      final endTimeStr = _formatTime12(_endTime);
+      final classSchedules = _selectedDays.map((day) {
+        final draft = _sameScheduleForAll
+            ? _CourseDayScheduleDraft(
+                startTime: _startTime,
+                endTime: _endTime,
+              )
+            : _daySchedules[day]!;
+        return CourseClassSchedule(
+          weekday: day,
+          startTime: _formatTime12(draft.startTime),
+          endTime: _formatTime12(draft.endTime),
+        );
+      }).toList()
+        ..sort((a, b) => a.weekday.compareTo(b.weekday));
+      final startTimeStr = classSchedules.first.startTime;
+      final endTimeStr = classSchedules.first.endTime;
 
       if (widget.courseToEdit != null) {
         // Modo Edición
@@ -339,6 +438,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
           classDays: _selectedDays,
           startTime: startTimeStr,
           endTime: endTimeStr,
+          classSchedules: classSchedules,
           cost: cost,
           paymentSchedule: _paymentSchedule,
           iconKey: _selectedIconKey,
@@ -366,6 +466,7 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
               classDays: _selectedDays,
               startTime: startTimeStr,
               endTime: endTimeStr,
+              classSchedules: classSchedules,
               totalSessions: 32,
               cost: cost,
               capacity: _courseType == CourseType.individual ? 1 : 30,
@@ -412,475 +513,340 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     final isDark = theme.brightness == Brightness.dark;
     final primaryColor = theme.colorScheme.primary;
     final isEditing = widget.courseToEdit != null;
-    final titleColor =
-        isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D);
-    final labelColor = isDark ? const Color(0xFFE2E8F0) : AppColors.onSurface;
-    final mutedColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final titleColor = AppColors.textPrimary(context);
     final panelColor =
-        isDark ? const Color(0xFF0F172A) : AppColors.surfaceContainerLow;
-    final panelBorder =
-        isDark ? const Color(0xFF334155) : AppColors.surfaceContainer;
+        isDark ? const Color(0xFF30343B) : const Color(0xFFF1F3F5);
+    final panelBorder = AppColors.cardBorder(context);
 
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: AppColors.surfaceLowest(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 12,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
       ),
-      child: SingleChildScrollView(
-        child: SafeArea(
-          top: false,
-          child: Form(
-            key: _formKey,
+      child: SafeArea(
+        top: false,
+        child: Form(
+          key: _formKey,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+            ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Handle de arrastre
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: panelBorder,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Cabecera
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(isEditing ? Icons.edit_note : Icons.school,
-                            color: primaryColor, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          isEditing
-                              ? (l10n?.editCourseTitle ?? 'Editar curso')
-                              : (l10n?.createCourseTitle ?? 'Crear curso'),
-                          style: AppTextStyles.titleLarge
-                              .copyWith(color: titleColor),
+                        Center(
+                          child: Container(
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: panelBorder,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: mutedColor),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                Text('Tipo de atención', style: _inputLabelStyle),
-                const SizedBox(height: 6),
-                SegmentedButton<CourseType>(
-                  segments: const [
-                    ButtonSegment(
-                        value: CourseType.group,
-                        label: Text('Curso grupal'),
-                        icon: Icon(Icons.groups_outlined)),
-                    ButtonSegment(
-                        value: CourseType.individual,
-                        label: Text('Individual'),
-                        icon: Icon(Icons.person_outline)),
-                  ],
-                  selected: {_courseType},
-                  onSelectionChanged: (value) =>
-                      setState(() => _courseType = value.first),
-                ),
-                const SizedBox(height: 14),
-
-                // Nombre del curso
-                _buildField(
-                  label: l10n?.courseNameLabel ?? 'Nombre del curso *',
-                  controller: _nameController,
-                  hint: l10n?.courseNameHint ?? 'Ej. Inglés avanzado B2',
-                  validator: (v) => (v == null || v.trim().isEmpty)
-                      ? (l10n?.courseNameRequired ?? 'Nombre obligatorio')
-                      : null,
-                ),
-                const SizedBox(height: 14),
-
-                // SECCIÓN: Días de clase (con Checkboxes para los 7 días)
-                appFormLabel(
-                  context,
-                  l10n?.classDaysLabel ?? 'Días de clase (al menos 1) *',
-                  style: _inputLabelStyle,
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: panelColor,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: panelBorder),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  child: Column(
-                    children: [
-                      for (int i = 0; i < _dayNumbers.length; i += 2)
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _buildDayCheckbox(
-                                dayNumber: _dayNumbers[i],
-                                dayName: getWeekdayName(_dayNumbers[i], l10n),
-                                primaryColor: primaryColor,
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          height: 48,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  isEditing
+                                      ? (l10n?.editCourseTitle ??
+                                          'Editar curso')
+                                      : (l10n?.createCourseTitle ??
+                                          'Crear curso'),
+                                  style: AppTextStyles.titleLarge
+                                      .copyWith(color: titleColor),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  icon: Icon(Icons.close_outlined,
+                                      color: AppColors.iconMuted(context)),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 360),
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: _CourseTypeSelector(
+                                value: _courseType,
+                                onChanged: (value) =>
+                                    setState(() => _courseType = value),
                               ),
                             ),
-                            if (i + 1 < _dayNumbers.length)
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        _sectionTitle('Datos del curso', Icons.school_outlined,
+                            AppColors.iconDefault, titleColor),
+                        const SizedBox(height: 12),
+                        _buildField(
+                          label: 'Nombre *',
+                          controller: _nameController,
+                          hint:
+                              l10n?.courseNameHint ?? 'Ej. Inglés avanzado B2',
+                          validator: (v) {
+                            final name = v?.trim() ?? '';
+                            if (name.isEmpty) {
+                              return l10n?.courseNameRequired ??
+                                  'Nombre obligatorio';
+                            }
+                            if (name.length < 2) {
+                              return Localizations.localeOf(context)
+                                          .languageCode ==
+                                      'en'
+                                  ? 'Enter at least 2 characters'
+                                  : 'Escribe al menos 2 caracteres';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 12),
+                        appFormLabel(
+                          context,
+                          l10n?.classDaysLabel ?? 'Días de clase *',
+                          style: _inputLabelStyle,
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: panelColor,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: panelBorder),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
+                          child: Row(
+                            children: [
+                              for (final day in _dayNumbers)
+                                Expanded(
+                                  child: _buildDayChip(
+                                    dayNumber: day,
+                                    dayLabel: _weekdayAbbreviation(day),
+                                    dayName: _weekdayName(day, l10n!),
+                                    primaryColor: primaryColor,
+                                    panelBorder: panelBorder,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        SwitchListTile.adaptive(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            l10n?.sameScheduleEveryDay ??
+                                'Mismo horario todos los días',
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: AppColors.textPrimary(context),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          value: _sameScheduleForAll,
+                          onChanged: _setSameScheduleForAll,
+                        ),
+                        if (_sameScheduleForAll)
+                          Row(
+                            children: [
                               Expanded(
-                                child: _buildDayCheckbox(
-                                  dayNumber: _dayNumbers[i + 1],
-                                  dayName:
-                                      getWeekdayName(_dayNumbers[i + 1], l10n),
-                                  primaryColor: primaryColor,
+                                child: _buildTimeInput(
+                                  icon: Icons.schedule,
+                                  label: l10n?.startTimeLabel ??
+                                      'Hora de inicio *',
+                                  value: _startTime,
+                                  onTap: _pickStartTime,
+                                  panelColor: panelColor,
+                                  panelBorder: panelBorder,
                                 ),
-                              )
-                            else
-                              const Spacer(),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // SECCIÓN: Horario de clase (Inicio y Fin independientes)
-                appFormLabel(
-                  context,
-                  l10n?.classScheduleLabel ?? 'Horario de clase',
-                  required: true,
-                  style: _inputLabelStyle,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    // Hora de inicio
-                    Expanded(
-                      child: InkWell(
-                        onTap: _pickStartTime,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: panelColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: panelBorder),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.schedule,
-                                      size: 14, color: primaryColor),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: appFormLabel(
-                                      context,
-                                      l10n?.startTimeLabel ??
-                                          'Hora de inicio *',
-                                      style: _inputLabelStyle,
-                                    ),
-                                  ),
-                                ],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _formatTime12(_startTime),
-                                style: AppTextStyles.titleMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: primaryColor,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: _buildTimeInput(
+                                  icon: Icons.schedule,
+                                  label: l10n?.endTimeLabel ?? 'Hora de fin *',
+                                  value: _endTime,
+                                  onTap: _pickEndTime,
+                                  panelColor: panelColor,
+                                  panelBorder: panelBorder,
                                 ),
                               ),
                             ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    // Hora de finalización
-                    Expanded(
-                      child: InkWell(
-                        onTap: _pickEndTime,
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: panelColor,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: panelBorder),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          )
+                        else
+                          Column(
                             children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.timer_outlined,
-                                      size: 14, color: primaryColor),
-                                  const SizedBox(width: 4),
-                                  Flexible(
-                                    child: appFormLabel(
-                                      context,
-                                      l10n?.endTimeLabel ?? 'Hora de fin *',
-                                      style: _inputLabelStyle,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                _formatTime12(_endTime),
-                                style: AppTextStyles.titleMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: primaryColor,
+                              for (final day in _selectedDays)
+                                _buildDayScheduleRow(
+                                  day: day,
+                                  dayName: _weekdayName(day, l10n!),
+                                  panelColor: panelColor,
+                                  panelBorder: panelBorder,
                                 ),
-                              ),
                             ],
                           ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
-
-                // Costo
-                _buildField(
-                  label: _billingFrequency == BillingFrequency.monthly
-                      ? (l10n?.monthlyCostLabel ?? 'Costo mensual (\$)')
-                      : 'Precio por periodo (\$)',
-                  controller: _costController,
-                  hint: '45,000',
-                  keyboardType: TextInputType.number,
-                  inputFormatters: const [_ThousandsSeparatorInputFormatter()],
-                  validator: (v) {
-                    final parsed = double.tryParse(
-                      (v ?? '').replaceAll(RegExp(r'[^0-9.]'), ''),
-                    );
-                    if (parsed == null || parsed <= 0) {
-                      return l10n?.required ?? 'Requerido';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 14),
-
-                Text('Frecuencia de cobro', style: _inputLabelStyle),
-                const SizedBox(height: 6),
-                DropdownButtonFormField<BillingFrequency>(
-                  value: _billingFrequency,
-                  decoration:
-                      const InputDecoration(border: OutlineInputBorder()),
-                  items: const [
-                    DropdownMenuItem(
-                        value: BillingFrequency.perClass,
-                        child: Text('Por clase / día')),
-                    DropdownMenuItem(
-                        value: BillingFrequency.weekly, child: Text('Semanal')),
-                    DropdownMenuItem(
-                        value: BillingFrequency.biweekly,
-                        child: Text('Quincenal')),
-                    DropdownMenuItem(
-                        value: BillingFrequency.monthly,
-                        child: Text('Mensual')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() => _billingFrequency = value);
-                    }
-                  },
-                ),
-                const SizedBox(height: 14),
-
-                // Vencimiento de cuota
-                Text(
-                  l10n?.paymentScheduleLabel ?? 'Día de cobro adelantado',
-                  style: _inputLabelStyle,
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ChoiceChip(
-                        label: Text(l10n?.scheduleFirstHalf ??
-                            'A mitad de mes (día 15)'),
-                        selected: _paymentSchedule == PaymentSchedule.firstHalf,
-                        selectedColor: primaryColor,
-                        backgroundColor: panelColor,
-                        side: BorderSide(color: panelBorder),
-                        labelStyle: TextStyle(
-                          color: _paymentSchedule == PaymentSchedule.firstHalf
-                              ? Colors.white
-                              : labelColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        onSelected: (val) {
-                          if (val) {
-                            setState(() =>
-                                _paymentSchedule = PaymentSchedule.firstHalf);
-                          }
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ChoiceChip(
-                        label: Text(l10n?.scheduleEndOfMonth ??
-                            'Fin de mes (último día)'),
-                        selected:
-                            _paymentSchedule == PaymentSchedule.endOfMonth,
-                        selectedColor: primaryColor,
-                        backgroundColor: panelColor,
-                        side: BorderSide(color: panelBorder),
-                        labelStyle: TextStyle(
-                          color: _paymentSchedule == PaymentSchedule.endOfMonth
-                              ? Colors.white
-                              : labelColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        onSelected: (val) {
-                          if (val) {
-                            setState(() =>
-                                _paymentSchedule = PaymentSchedule.endOfMonth);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-
-                // SECCIÓN: Icono del curso
-                Text(
-                  l10n?.chooseIconLabel ?? 'Seleccionar icono representativo',
-                  style: _inputLabelStyle,
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: panelColor,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: panelBorder),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: kCourseIconCategories.map((cat) {
-                      final isSelected = _selectedIconKey.toLowerCase() ==
-                          cat.key.toLowerCase();
-                      return InkWell(
-                        onTap: () {
-                          setState(() => _selectedIconKey = cat.key);
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          width: 44,
-                          height: 44,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? primaryColor
-                                : (isDark
-                                    ? const Color(0xFF1E293B)
-                                    : Colors.white),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: isSelected
-                                  ? primaryColor
-                                  : (isDark
-                                      ? const Color(0xFF334155)
-                                      : AppColors.surfaceContainerHigh),
-                              width: isSelected ? 1.5 : 1,
+                        const SizedBox(height: 28),
+                        _sectionTitle(
+                            'Cobro del curso',
+                            Icons.payments_outlined,
+                            AppColors.iconDefault,
+                            titleColor),
+                        const SizedBox(height: 12),
+                        appFormLabel(context, 'Frecuencia de cobro',
+                            style: _inputLabelStyle),
+                        const SizedBox(height: 6),
+                        DropdownButtonFormField<BillingFrequency>(
+                          value: _billingFrequency,
+                          isExpanded: true,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.textPrimary(context),
+                          ),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: panelColor,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
                             ),
-                          ),
-                          child: Icon(
-                            cat.icon,
-                            size: 22,
-                            color: isSelected ? Colors.white : primaryColor,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                const SizedBox(height: 22),
-
-                // Botones
-                Row(
-                  mainAxisAlignment: isEditing
-                      ? MainAxisAlignment.spaceBetween
-                      : MainAxisAlignment.end,
-                  children: [
-                    if (isEditing)
-                      TextButton(
-                        onPressed: _isSaving ? null : _confirmDeleteCourse,
-                        style: TextButton.styleFrom(
-                          foregroundColor: const Color(0xFFD32F2F),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                        ),
-                        child: Text(
-                          l10n?.deleteCourseBtn ?? 'Eliminar curso',
-                          style: const TextStyle(
-                            color: Color(0xFFD32F2F),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(l10n?.cancel ?? 'Cancelar'),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
                           ),
-                          onPressed: _isSaving ? null : _submit,
-                          child: _isSaving
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
+                          items: const [
+                            DropdownMenuItem(
+                                value: BillingFrequency.perClass,
+                                child: Text('Por clase / día')),
+                            DropdownMenuItem(
+                                value: BillingFrequency.weekly,
+                                child: Text('Semanal')),
+                            DropdownMenuItem(
+                                value: BillingFrequency.biweekly,
+                                child: Text('Quincenal')),
+                            DropdownMenuItem(
+                                value: BillingFrequency.monthly,
+                                child: Text('Mensual')),
+                          ],
+                          onChanged: (value) {
+                            if (value != null) {
+                              setState(() => _billingFrequency = value);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 14),
+                        _buildField(
+                          label: _billingFrequency == BillingFrequency.monthly
+                              ? (l10n?.monthlyCostLabel ?? 'Costo mensual (\$)')
+                              : 'Precio por periodo (\$)',
+                          controller: _costController,
+                          hint: '45,000',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: const [
+                            _ThousandsSeparatorInputFormatter()
+                          ],
+                          validator: (v) {
+                            final parsed = double.tryParse(
+                              (v ?? '').replaceAll(RegExp(r'[^0-9.]'), ''),
+                            );
+                            if (parsed == null || parsed <= 0) {
+                              return l10n?.required ?? 'Requerido';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 14),
+                        _sectionTitle(
+                            l10n?.chooseIconLabel ?? 'Icono del curso',
+                            Icons.palette_outlined,
+                            AppColors.iconDefault,
+                            titleColor),
+                        const SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: panelColor,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(color: panelBorder),
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: kCourseIconCategories.map((cat) {
+                              final isSelected =
+                                  _selectedIconKey.toLowerCase() ==
+                                      cat.key.toLowerCase();
+                              return InkWell(
+                                onTap: () {
+                                  setState(() => _selectedIconKey = cat.key);
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  width: 44,
+                                  height: 44,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? primaryColor
+                                        : (isDark
+                                            ? const Color(0xFF1E293B)
+                                            : Colors.white),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? primaryColor
+                                          : (isDark
+                                              ? const Color(0xFF334155)
+                                              : AppColors.surfaceContainerHigh),
+                                      width: isSelected ? 1.5 : 1,
+                                    ),
                                   ),
-                                )
-                              : Text(isEditing
-                                  ? (l10n?.save ?? 'Guardar')
-                                  : (l10n?.create ?? 'Crear')),
+                                  child: Icon(
+                                    cat.icon,
+                                    size: 22,
+                                    color: isSelected
+                                        ? AppColors.iconOnPrimary
+                                        : AppColors.iconDefault,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ],
                     ),
-                  ],
+                  ),
+                ),
+                _buildStickyFooter(
+                  context: context,
+                  isEditing: isEditing,
+                  primaryColor: primaryColor,
+                  titleColor: titleColor,
+                  cancelLabel: l10n?.cancel ?? 'Cancelar',
+                  actionLabel: isEditing
+                      ? (l10n?.save ?? 'Guardar')
+                      : (l10n?.create ?? 'Crear'),
+                  deleteLabel: l10n?.deleteCourseBtn ?? 'Eliminar curso',
                 ),
               ],
             ),
@@ -890,58 +856,200 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     );
   }
 
-  Widget _buildDayCheckbox({
+  Widget _buildStickyFooter({
+    required BuildContext context,
+    required bool isEditing,
+    required Color primaryColor,
+    required Color titleColor,
+    required String cancelLabel,
+    required String actionLabel,
+    required String deleteLabel,
+  }) {
+    final enabled = _isFormReady && !_isSaving;
+    final disabledColor = AppColors.outlineVariantAdaptive(context);
+    final buttonStyle = ElevatedButton.styleFrom(
+      backgroundColor: enabled ? primaryColor : disabledColor,
+      disabledBackgroundColor: disabledColor,
+      foregroundColor: enabled ? Colors.white : titleColor,
+      disabledForegroundColor: AppColors.textSecondary(context),
+      shape: const StadiumBorder(),
+    );
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: AppColors.cardBorder(context)),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: isEditing
+                ? ElevatedButton(
+                    onPressed: enabled ? _submit : null,
+                    style: buttonStyle,
+                    child: _isSaving
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(actionLabel),
+                  )
+                : ElevatedButton.icon(
+                    onPressed: enabled ? _submit : null,
+                    icon: _isSaving
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.add),
+                    label: Text(actionLabel),
+                    style: buttonStyle,
+                  ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: isEditing
+                ? MainAxisAlignment.spaceBetween
+                : MainAxisAlignment.center,
+            children: [
+              if (isEditing)
+                TextButton(
+                  onPressed: _isSaving ? null : _confirmDeleteCourse,
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppColors.error,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  child: Text(deleteLabel),
+                )
+              else
+                const SizedBox.shrink(),
+              TextButton(
+                onPressed: _isSaving ? null : () => Navigator.of(context).pop(),
+                style: TextButton.styleFrom(
+                  foregroundColor: primaryColor,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                ),
+                child: Text(cancelLabel),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDayChip({
     required int dayNumber,
+    required String dayLabel,
     required String dayName,
     required Color primaryColor,
+    required Color panelBorder,
   }) {
     final isSelected = _selectedDays.contains(dayNumber);
 
-    return InkWell(
-      onTap: () {
-        setState(() {
-          if (isSelected) {
-            _selectedDays.remove(dayNumber);
-          } else {
-            _selectedDays.add(dayNumber);
-            _selectedDays.sort();
-          }
-        });
-      },
-      borderRadius: BorderRadius.circular(8),
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: dayName,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Checkbox(
-              value: isSelected,
-              activeColor: primaryColor,
-              visualDensity: VisualDensity.compact,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              onChanged: (val) {
-                setState(() {
-                  if (val == true) {
-                    if (!_selectedDays.contains(dayNumber)) {
-                      _selectedDays.add(dayNumber);
-                      _selectedDays.sort();
-                    }
-                  } else {
-                    _selectedDays.remove(dayNumber);
-                  }
-                });
-              },
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              if (isSelected) {
+                _selectedDays.remove(dayNumber);
+                _daySchedules.remove(dayNumber);
+              } else {
+                _selectedDays.add(dayNumber);
+                _selectedDays.sort();
+                _daySchedules[dayNumber] = _CourseDayScheduleDraft(
+                  startTime: _startTime,
+                  endTime: _endTime,
+                );
+              }
+            });
+          },
+          borderRadius: BorderRadius.circular(12),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            height: 44,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: isSelected ? primaryColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isSelected ? primaryColor : panelBorder,
+              ),
             ),
-            const SizedBox(width: 4),
+            child: Text(
+              dayLabel,
+              style: TextStyle(
+                color:
+                    isSelected ? Colors.white : AppColors.textPrimary(context),
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeInput({
+    required IconData icon,
+    required String label,
+    required TimeOfDay value,
+    required VoidCallback onTap,
+    required Color panelColor,
+    required Color panelBorder,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: panelColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: panelBorder),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 14, color: AppColors.iconDefault),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: appFormLabel(
+                    context,
+                    label,
+                    style: _inputLabelStyle,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
             Text(
-              dayName,
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                color: isSelected
-                    ? primaryColor
-                    : (Theme.of(context).brightness == Brightness.dark
-                        ? const Color(0xFFE2E8F0)
-                        : AppColors.onSurface),
+              _formatTime12(value),
+              style: AppTextStyles.titleSmall.copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary(context),
               ),
             ),
           ],
@@ -950,7 +1058,123 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     );
   }
 
-  TextStyle get _inputLabelStyle => appInputLabelStyle(context);
+  Widget _buildDayScheduleRow({
+    required int day,
+    required String dayName,
+    required Color panelColor,
+    required Color panelBorder,
+  }) {
+    final schedule = _daySchedules[day]!;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 48,
+            child: Text(
+              _weekdayAbbreviation(day),
+              textAlign: TextAlign.center,
+              style: AppTextStyles.titleSmall.copyWith(
+                color: AppColors.textPrimary(context),
+                fontWeight: FontWeight.w700,
+              ),
+              semanticsLabel: dayName,
+            ),
+          ),
+          Expanded(
+            child: _buildCompactTimeButton(
+              icon: Icons.schedule,
+              value: schedule.startTime,
+              label: dayName,
+              panelColor: panelColor,
+              panelBorder: panelBorder,
+              onTap: () => _pickStartTime(weekday: day),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: _buildCompactTimeButton(
+              icon: Icons.schedule,
+              value: schedule.endTime,
+              label: dayName,
+              panelColor: panelColor,
+              panelBorder: panelBorder,
+              onTap: () => _pickEndTime(weekday: day),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactTimeButton({
+    required IconData icon,
+    required TimeOfDay value,
+    required String label,
+    required Color panelColor,
+    required Color panelBorder,
+    required VoidCallback onTap,
+  }) {
+    return Tooltip(
+      message: '$label · ${_formatTime12(value)}',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          height: 44,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            color: panelColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: panelBorder),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, size: 15, color: AppColors.iconDefault),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  _formatTime12(value),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textPrimary(context),
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextStyle get _inputLabelStyle {
+    final style = appInputLabelStyle(context);
+    if (Theme.of(context).brightness != Brightness.dark) return style;
+    return style.copyWith(color: AppColors.textPrimary(context));
+  }
+
+  Widget _sectionTitle(
+      String title, IconData icon, Color color, Color foreground) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Row(
+        children: [
+          Icon(icon, size: 19, color: color),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: AppTextStyles.titleSmall.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   String _formatCost(num amount) {
     return _ThousandsSeparatorInputFormatter.formatDigits(
@@ -969,6 +1193,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
     String? Function(String?)? validator,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = AppColors.textPrimary(context);
+    final textSecondary = AppColors.textSecondary(context);
+    final fillColor =
+        isDark ? const Color(0xFF30343B) : const Color(0xFFF1F3F5);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -986,37 +1214,143 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
               textCapitalization ?? appDefaultTextCapitalization(keyboardType),
           inputFormatters: inputFormatters,
           validator: validator,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D),
-          ),
+          style: AppTextStyles.bodyMedium.copyWith(color: textPrimary),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: AppTextStyles.bodyMedium.copyWith(
-              color: isDark ? const Color(0xFF64748B) : AppColors.outline,
-            ),
+            hintStyle: AppTextStyles.bodyMedium.copyWith(color: textSecondary),
             filled: true,
-            fillColor: isDark
-                ? const Color(0xFF0F172A)
-                : AppColors.surfaceContainerLow,
+            fillColor: fillColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color:
-                    isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-              ),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                color:
-                    isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
-              ),
+              borderSide: BorderSide.none,
             ),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CourseDayScheduleDraft {
+  TimeOfDay startTime;
+  TimeOfDay endTime;
+
+  _CourseDayScheduleDraft({
+    required this.startTime,
+    required this.endTime,
+  });
+}
+
+class _CourseTypeSelector extends StatelessWidget {
+  final CourseType value;
+  final ValueChanged<CourseType> onChanged;
+
+  const _CourseTypeSelector({
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isGroupSelected = value == CourseType.group;
+
+    return Container(
+      height: 54,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE5E7EB),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+      ),
+      child: Stack(
+        children: [
+          AnimatedAlign(
+            alignment:
+                isGroupSelected ? Alignment.centerLeft : Alignment.centerRight,
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeInOutCubic,
+            child: FractionallySizedBox(
+              widthFactor: 0.5,
+              heightFactor: 1,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x14000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              _option(
+                type: CourseType.group,
+                label: 'Curso grupal',
+                icon: Icons.groups_outlined,
+                selected: isGroupSelected,
+              ),
+              _option(
+                type: CourseType.individual,
+                label: 'Individual',
+                icon: Icons.person_outline,
+                selected: !isGroupSelected,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _option({
+    required CourseType type,
+    required String label,
+    required IconData icon,
+    required bool selected,
+  }) {
+    return Expanded(
+      child: Semantics(
+        button: true,
+        selected: selected,
+        child: InkWell(
+          onTap: () => onChanged(type),
+          borderRadius: BorderRadius.circular(12),
+          child: SizedBox.expand(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 18, color: Colors.black),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

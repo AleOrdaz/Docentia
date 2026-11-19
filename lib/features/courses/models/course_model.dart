@@ -35,6 +35,32 @@ extension PaymentScheduleExtension on PaymentSchedule {
 T _enumValue<T extends Enum>(List<T> values, Object? name, T fallback) =>
     values.firstWhere((value) => value.name == name, orElse: () => fallback);
 
+class CourseClassSchedule {
+  final int weekday;
+  final String startTime;
+  final String endTime;
+
+  const CourseClassSchedule({
+    required this.weekday,
+    required this.startTime,
+    required this.endTime,
+  });
+
+  Map<String, dynamic> toMap() => {
+        'weekday': weekday,
+        'startTime': startTime,
+        'endTime': endTime,
+      };
+
+  factory CourseClassSchedule.fromMap(Map<String, dynamic> map) {
+    return CourseClassSchedule(
+      weekday: (map['weekday'] as num?)?.toInt() ?? 1,
+      startTime: map['startTime'] as String? ?? '',
+      endTime: map['endTime'] as String? ?? '',
+    );
+  }
+}
+
 class Course {
   final String id;
   final String teacherId;
@@ -43,6 +69,7 @@ class Course {
   final List<int> classDays; // 1 = Lunes, 2 = Martes, ..., 7 = Domingo
   final String startTime; // ej. "17:00" o "5:00 PM"
   final String endTime; // ej. "18:30" o "6:30 PM"
+  final List<CourseClassSchedule> classSchedules;
   final String duration;
   final int currentSession;
   final int totalSessions;
@@ -63,6 +90,7 @@ class Course {
     required this.classDays,
     required this.startTime,
     required this.endTime,
+    this.classSchedules = const [],
     required this.duration,
     required this.currentSession,
     required this.totalSessions,
@@ -79,8 +107,53 @@ class Course {
   /// Determina si una fecha específica (o la fecha actual) es un día de clase para este curso
   bool isClassDay([DateTime? date]) {
     final d = date ?? DateTime.now();
-    if (classDays.isEmpty) return true;
-    return classDays.contains(d.weekday);
+    final days = effectiveClassDays;
+    if (days.isEmpty) return true;
+    return days.contains(d.weekday);
+  }
+
+  List<int> get effectiveClassDays {
+    final days = classSchedules.isEmpty
+        ? classDays.toSet().toList()
+        : effectiveClassSchedules.map((item) => item.weekday).toSet().toList();
+    return days..sort();
+  }
+
+  /// Horarios por día, con fallback para cursos creados antes de este modelo.
+  List<CourseClassSchedule> get effectiveClassSchedules {
+    if (classSchedules.isNotEmpty) {
+      final byWeekday = <int, CourseClassSchedule>{};
+      for (final item in classSchedules) {
+        if (item.weekday >= 1 && item.weekday <= 7) {
+          byWeekday[item.weekday] = item;
+        }
+      }
+      return byWeekday.values.toList()
+        ..sort((a, b) => a.weekday.compareTo(b.weekday));
+    }
+    return classDays
+        .map((weekday) => CourseClassSchedule(
+              weekday: weekday,
+              startTime: startTime,
+              endTime: endTime,
+            ))
+        .toList();
+  }
+
+  CourseClassSchedule? scheduleForDay(int weekday) {
+    for (final item in effectiveClassSchedules) {
+      if (item.weekday == weekday) return item;
+    }
+    return null;
+  }
+
+  bool get hasUniformScheduleEveryDay {
+    final days = effectiveClassDays;
+    final schedules = effectiveClassSchedules;
+    if (days.length != 7 || schedules.length != 7) return false;
+    final first = schedules.first;
+    return schedules.every((item) =>
+        item.startTime == first.startTime && item.endTime == first.endTime);
   }
 
   /// Próximo día de clase, incluyendo hoy si todavía aplica.
@@ -105,7 +178,7 @@ class Course {
       6: 'Sáb',
       7: 'Dom',
     };
-    final sorted = List<int>.from(classDays)..sort();
+    final sorted = effectiveClassDays;
     if (sorted.isEmpty) return 'Sin días asignados';
     if (sorted.length == 1) return shortNames[sorted.first] ?? 'Día';
     final prefix = sorted
@@ -128,10 +201,11 @@ class Course {
             6: 'Sáb',
             7: 'Dom'
           };
-    final sorted = List<int>.from(classDays)..sort();
+    final sorted = effectiveClassDays;
     if (sorted.isEmpty) return isEn ? 'No days assigned' : 'Sin días asignados';
-    if (sorted.length == 1)
+    if (sorted.length == 1) {
       return shortNames[sorted.first] ?? (isEn ? 'Day' : 'Día');
+    }
     final prefix = sorted
         .sublist(0, sorted.length - 1)
         .map((d) => shortNames[d] ?? '')
@@ -142,26 +216,105 @@ class Course {
 
   /// Horario formateado estructurado: Días + Horas
   String get formattedSchedule {
-    final timeStr = startTime.isNotEmpty && endTime.isNotEmpty
-        ? '$startTime - $endTime'
-        : (startTime.isNotEmpty ? startTime : schedule);
-    return '$formattedDays $timeStr'.trim();
+    return _formatScheduleGroups(isEnglish: false);
   }
 
   String getLocalizedSchedule(BuildContext context) {
-    final timeStr = startTime.isNotEmpty && endTime.isNotEmpty
-        ? '$startTime - $endTime'
-        : (startTime.isNotEmpty ? startTime : schedule);
-    return '${getLocalizedFormattedDays(context)} $timeStr'.trim();
+    return _formatScheduleGroups(
+      isEnglish: Localizations.localeOf(context).languageCode == 'en',
+    );
   }
 
   String getLocalizedHeaderSchedule(BuildContext context) {
-    final days = getLocalizedFormattedDays(context);
-    final timeStr = startTime.isNotEmpty && endTime.isNotEmpty
-        ? '$startTime - $endTime'
-        : (startTime.isNotEmpty ? startTime : schedule);
-    if (timeStr.isEmpty) return days;
-    return '$days · $timeStr';
+    final isEnglish = Localizations.localeOf(context).languageCode == 'en';
+    if (hasUniformScheduleEveryDay) {
+      final range = _scheduleRange(effectiveClassSchedules.first);
+      final everyDay = isEnglish ? 'Every day' : 'Todos los días';
+      return _keepMeridiemTogether('$everyDay · $range');
+    }
+
+    final groupedSchedules = <String, List<int>>{};
+    for (final item in effectiveClassSchedules) {
+      groupedSchedules
+          .putIfAbsent(_scheduleRange(item), () => [])
+          .add(item.weekday);
+    }
+    if (groupedSchedules.isEmpty) {
+      return isEnglish ? 'No days assigned' : 'Sin días asignados';
+    }
+
+    final lines = <String>[];
+    for (final entry in groupedSchedules.entries) {
+      final weekdays = entry.value.toSet().toList()..sort();
+      for (var index = 0; index < weekdays.length; index += 2) {
+        final pairEnd = (index + 2).clamp(0, weekdays.length).toInt();
+        final dayLabel = _formatWeekdays(
+          weekdays.sublist(index, pairEnd),
+          isEnglish,
+        );
+        final separator = lines.isEmpty ? '' : '· ';
+        lines.add('$separator$dayLabel · ${entry.key}');
+      }
+    }
+    return _keepMeridiemTogether(lines.join('\n'));
+  }
+
+  String _formatScheduleGroups({required bool isEnglish}) {
+    final groupedDays = <String, List<int>>{};
+    for (final item in effectiveClassSchedules) {
+      groupedDays.putIfAbsent(_scheduleRange(item), () => []).add(item.weekday);
+    }
+    if (groupedDays.isEmpty) {
+      return isEnglish ? 'No days assigned' : 'Sin días asignados';
+    }
+    final formatted = groupedDays.entries
+        .map((entry) =>
+            '${_formatWeekdays(entry.value, isEnglish)} ${entry.key}'.trim())
+        .join(' · ');
+    return _keepMeridiemTogether(formatted);
+  }
+
+  String _scheduleRange(CourseClassSchedule item) {
+    if (item.startTime.isNotEmpty && item.endTime.isNotEmpty) {
+      return '${item.startTime} - ${item.endTime}';
+    }
+    return item.startTime.isNotEmpty ? item.startTime : schedule;
+  }
+
+  String _keepMeridiemTogether(String value) {
+    return value.replaceAllMapped(
+      RegExp(r' (?=(?:AM|PM)\b)', caseSensitive: false),
+      (_) => '\u00A0',
+    );
+  }
+
+  String _formatWeekdays(List<int> weekdays, bool isEnglish) {
+    const spanish = {
+      1: 'Lun',
+      2: 'Mar',
+      3: 'Mié',
+      4: 'Jue',
+      5: 'Vie',
+      6: 'Sáb',
+      7: 'Dom',
+    };
+    const english = {
+      1: 'Mon',
+      2: 'Tue',
+      3: 'Wed',
+      4: 'Thu',
+      5: 'Fri',
+      6: 'Sat',
+      7: 'Sun',
+    };
+    final labels = weekdays.toSet().toList()..sort();
+    final names = labels.map((day) =>
+        (isEnglish ? english : spanish)[day] ?? (isEnglish ? 'Day' : 'Día'));
+    final joined = names.toList();
+    if (joined.isEmpty) return '';
+    if (joined.length == 1) return joined.first;
+    final conjunction = isEnglish ? '&' : 'y';
+    return '${joined.sublist(0, joined.length - 1).join(', ')} $conjunction ${joined.last}';
   }
 
   static String getDayName(int weekday) {
@@ -193,6 +346,7 @@ class Course {
     List<int>? classDays,
     String? startTime,
     String? endTime,
+    List<CourseClassSchedule>? classSchedules,
     String? duration,
     int? currentSession,
     int? totalSessions,
@@ -213,6 +367,7 @@ class Course {
       classDays: classDays ?? this.classDays,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      classSchedules: classSchedules ?? this.classSchedules,
       duration: duration ?? this.duration,
       currentSession: currentSession ?? this.currentSession,
       totalSessions: totalSessions ?? this.totalSessions,
@@ -233,9 +388,11 @@ class Course {
       'teacherId': teacherId,
       'name': name,
       'schedule': schedule,
-      'classDays': classDays,
+      'classDays': effectiveClassDays,
       'startTime': startTime,
       'endTime': endTime,
+      'classSchedules':
+          effectiveClassSchedules.map((item) => item.toMap()).toList(),
       'duration': duration,
       'currentSession': currentSession,
       'totalSessions': totalSessions,
@@ -283,13 +440,43 @@ class Course {
       }
     }
 
-    if (parsedDays.isEmpty) {
+    final startTime = (map['startTime'] as String?) ?? '17:00';
+    final endTime = (map['endTime'] as String?) ?? '18:30';
+    final parsedSchedules = <CourseClassSchedule>[];
+    final rawSchedules = map['classSchedules'];
+    if (rawSchedules is List) {
+      for (final item in rawSchedules) {
+        if (item is Map<String, dynamic>) {
+          final parsed = CourseClassSchedule.fromMap(item);
+          if (parsed.weekday >= 1 && parsed.weekday <= 7) {
+            parsedSchedules.add(parsed);
+          }
+        } else if (item is Map) {
+          final parsed = CourseClassSchedule.fromMap(
+            Map<String, dynamic>.from(item),
+          );
+          if (parsed.weekday >= 1 && parsed.weekday <= 7) {
+            parsedSchedules.add(parsed);
+          }
+        }
+      }
+    }
+    if (parsedSchedules.isNotEmpty) {
+      parsedDays
+        ..clear()
+        ..addAll(parsedSchedules.map((item) => item.weekday).toSet())
+        ..sort();
+    } else if (parsedDays.isEmpty) {
       // Default: Lunes y Miércoles
       parsedDays.addAll([1, 3]);
     }
-
-    final startTime = (map['startTime'] as String?) ?? '17:00';
-    final endTime = (map['endTime'] as String?) ?? '18:30';
+    if (parsedSchedules.isEmpty) {
+      parsedSchedules.addAll(parsedDays.map((weekday) => CourseClassSchedule(
+            weekday: weekday,
+            startTime: startTime,
+            endTime: endTime,
+          )));
+    }
 
     return Course(
       id: (map['id'] as String?) ?? '',
@@ -299,6 +486,7 @@ class Course {
       classDays: parsedDays,
       startTime: startTime,
       endTime: endTime,
+      classSchedules: parsedSchedules,
       duration: (map['duration'] as String?) ?? '32 sesiones',
       currentSession: (map['currentSession'] as num?)?.toInt() ?? 1,
       totalSessions: (map['totalSessions'] as num?)?.toInt() ?? 32,

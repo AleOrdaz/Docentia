@@ -28,11 +28,11 @@ class HomeScreen extends ConsumerWidget {
     final teacher = ref.watch(authProvider).teacher;
     final coursesAsync = ref.watch(coursesProvider);
     final allStudentsAsync = ref.watch(allActiveStudentsProvider);
-    final events = ref.watch(calendarEventsProvider).value ?? const <CalendarEvent>[];
+    final events =
+        ref.watch(calendarEventsProvider).value ?? const <CalendarEvent>[];
     final payments = ref.watch(allPaymentsProvider).value ?? const <Payment>[];
 
-    final teacherFirstName =
-        teacher?.name.trim().split(' ').first ?? 'Antonio';
+    final teacherFirstName = teacher?.name.trim().split(' ').first ?? 'Antonio';
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -75,7 +75,9 @@ class HomeScreen extends ConsumerWidget {
       body: coursesAsync.when(
         data: (courses) {
           final activeCourses = courses.where((c) => c.active).toList();
-          final activeCourseIds = {for (final course in activeCourses) course.id};
+          final activeCourseIds = {
+            for (final course in activeCourses) course.id
+          };
           final totalStudentsCount = allStudentsAsync.value
                   ?.where((s) => activeCourseIds.contains(s.courseId))
                   .length ??
@@ -149,7 +151,8 @@ class HomeScreen extends ConsumerWidget {
                   isDark: isDark,
                   navy: navy,
                   onOpenCourse: (course) {
-                    ref.read(selectedCourseIdProvider.notifier).state = course.id;
+                    ref.read(selectedCourseIdProvider.notifier).state =
+                        course.id;
                     context.push('/course-detail/${course.id}');
                   },
                   onOpenEvent: () => context.go('/calendar'),
@@ -193,8 +196,7 @@ class HomeScreen extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n?.createCourseFirst ??
-                'Crea un curso para agregar alumnos',
+            l10n?.createCourseFirst ?? 'Crea un curso para agregar alumnos',
           ),
         ),
       );
@@ -650,10 +652,11 @@ class _TodayActivityList extends StatelessWidget {
       for (final course in courses)
         _ActivityRow(
           icon: getCourseIcon(course.iconKey),
-          iconBackground: getCourseIconColors(course.iconKey).background(isDark),
+          iconBackground:
+              getCourseIconColors(course.iconKey).background(isDark),
           iconColor: getCourseIconColors(course.iconKey).icon(isDark),
           title: course.name,
-          subtitle: _formatTimeRange(context, course.startTime, course.endTime),
+          subtitle: course.getLocalizedSchedule(context),
           navy: navy,
           isDark: isDark,
           onTap: () => onOpenCourse(course),
@@ -974,8 +977,8 @@ List<_FeeActivity> _upcomingFees(
         payment: payment,
         courseName: coursesById[payment.courseId]?.name ?? '',
         dueLabel: DateFormat('d MMM y', locale).format(due),
-        isOverdue: payment.status == PaymentStatus.overdue ||
-            due.isBefore(today),
+        isOverdue:
+            payment.status == PaymentStatus.overdue || due.isBefore(today),
       ),
     );
     if (items.length == 2) break;

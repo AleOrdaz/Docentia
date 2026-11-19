@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../app/theme/app_text_styles.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../subscription/utils/subscription_gate.dart';
@@ -12,7 +13,8 @@ import 'create_course_dialog.dart';
 class CoursesListScreen extends ConsumerWidget {
   const CoursesListScreen({super.key});
 
-  Future<void> _openCreateCourseDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> _openCreateCourseDialog(
+      BuildContext context, WidgetRef ref) async {
     final allowed = await ensureCanCreateCourse(context, ref);
     if (!allowed || !context.mounted) return;
     await showModalBottomSheet<Course>(
@@ -35,7 +37,7 @@ class CoursesListScreen extends ConsumerWidget {
     return Scaffold(
       extendBody: true,
       backgroundColor:
-      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
+          isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -56,13 +58,15 @@ class CoursesListScreen extends ConsumerWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: primaryColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 shape: const StadiumBorder(),
               ),
               icon: const Icon(Icons.add, size: 16),
               label: Text(
                 l10n.newCourseBtn,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                style:
+                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -82,7 +86,8 @@ class CoursesListScreen extends ConsumerWidget {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
+                        color:
+                            primaryColor.withValues(alpha: isDark ? 0.2 : 0.12),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(Icons.school_outlined,
@@ -128,13 +133,19 @@ class CoursesListScreen extends ConsumerWidget {
           }
 
           return ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.fromLTRB(
+              16,
+              12,
+              16,
+              AppBottomNavBar.reservedHeight(context),
+            ),
             itemCount: activeCourses.length,
             separatorBuilder: (_, __) => const SizedBox(height: 14),
             itemBuilder: (ctx, index) {
               final course = activeCourses[index];
               return CourseSummaryCard(
                 course: course,
+                showStatus: false,
                 onTap: () {
                   ref.read(selectedCourseIdProvider.notifier).state = course.id;
                   context.push('/course-detail/${course.id}');

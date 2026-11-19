@@ -364,7 +364,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maxCapacityLabel => 'Max Capacity *';
 
   @override
-  String get classDaysLabel => 'Class Days (at least 1) *';
+  String get classDaysLabel => 'Class Days *';
+
+  @override
+  String get sameScheduleEveryDay => 'Same schedule every day';
 
   @override
   String get startTimeLabel => 'Start Time *';

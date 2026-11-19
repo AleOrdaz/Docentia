@@ -50,10 +50,10 @@ class _EditTeacherProfileModalState
     setState(() => _isSubmitting = true);
     try {
       await ref.read(authProvider.notifier).updateProfile(
-        name: _nameCtrl.text.trim(),
-        phone: _phoneCtrl.text.trim(),
-        bio: _bioCtrl.text.trim(),
-      );
+            name: _nameCtrl.text.trim(),
+            phone: _phoneCtrl.text.trim(),
+            bio: _bioCtrl.text.trim(),
+          );
       if (!mounted) return;
       Navigator.of(context).pop();
     } finally {
@@ -66,7 +66,6 @@ class _EditTeacherProfileModalState
     final l10n = AppLocalizations.of(context)!;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final textPrimary = AppColors.textPrimary(context);
-    final textSecondary = AppColors.textSecondary(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -99,17 +98,19 @@ class _EditTeacherProfileModalState
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Icon(Icons.edit_outlined, color: primaryColor, size: 24),
+                  const Icon(Icons.edit_outlined,
+                      color: AppColors.iconDefault, size: 24),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       l10n.editProfileData,
-                      style: AppTextStyles.titleLarge
-                          .copyWith(color: textPrimary),
+                      style:
+                          AppTextStyles.titleLarge.copyWith(color: textPrimary),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: textSecondary),
+                    icon:
+                        Icon(Icons.close, color: AppColors.iconMuted(context)),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -124,8 +125,8 @@ class _EditTeacherProfileModalState
                 label: l10n.whatsappPhone,
                 controller: _phoneCtrl,
                 keyboardType: TextInputType.phone,
-                prefixIcon:
-                const Icon(Icons.call, color: AppColors.secondary, size: 20),
+                prefixIcon: const Icon(Icons.call,
+                    color: AppColors.iconDefault, size: 20),
               ),
               const SizedBox(height: 12),
               _buildTextField(
@@ -142,7 +143,9 @@ class _EditTeacherProfileModalState
                     onPressed: () => Navigator.of(context).pop(),
                     style: TextButton.styleFrom(
                       foregroundColor: textPrimary,
-                      backgroundColor: AppColors.surfaceMid(context),
+                      side: BorderSide(
+                        color: AppColors.outlineVariantAdaptive(context),
+                      ),
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 12),
@@ -162,11 +165,11 @@ class _EditTeacherProfileModalState
                     ),
                     icon: _isSubmitting
                         ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
-                    )
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: Colors.white),
+                          )
                         : const Icon(Icons.check, size: 18),
                     label: Text(l10n.save,
                         style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -213,7 +216,7 @@ class _EditTeacherProfileModalState
               borderSide: BorderSide.none,
             ),
             contentPadding:
-            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
       ],

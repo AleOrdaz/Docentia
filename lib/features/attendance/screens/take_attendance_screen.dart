@@ -68,6 +68,9 @@ class _TakeAttendanceScreenState extends ConsumerState<TakeAttendanceScreen> {
 
   Future<void> _saveSession() async {
     final course = ref.read(selectedCourseProvider);
+    final classDate = DateTime.now();
+    final daySchedule = course?.scheduleForDay(classDate.weekday) ??
+        course?.effectiveClassSchedules.firstOrNull;
     final students =
         ref.read(studentsForCourseProvider(widget.courseId)).value ?? [];
     final attendanceList =
@@ -88,8 +91,8 @@ class _TakeAttendanceScreenState extends ConsumerState<TakeAttendanceScreen> {
       id: 'session-${widget.courseId}-$_todayDateStr',
       courseId: widget.courseId,
       date: _todayDateStr,
-      startTime: course?.startTime ?? '17:00',
-      endTime: course?.endTime ?? '18:30',
+      startTime: daySchedule?.startTime ?? course?.startTime ?? '17:00',
+      endTime: daySchedule?.endTime ?? course?.endTime ?? '18:30',
       students: studentItems,
       createdAt: DateTime.now(),
     );
@@ -172,7 +175,8 @@ class _TakeAttendanceScreenState extends ConsumerState<TakeAttendanceScreen> {
               children: [
                 Text(
                   course?.name ?? l10n.courseFallback,
-                  style: AppTextStyles.bodyMedium.copyWith(color: textSecondary),
+                  style:
+                      AppTextStyles.bodyMedium.copyWith(color: textSecondary),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -189,7 +193,8 @@ class _TakeAttendanceScreenState extends ConsumerState<TakeAttendanceScreen> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
                   child: LinearProgressIndicator(
-                    value: (students.length - unmarked.length) / students.length,
+                    value:
+                        (students.length - unmarked.length) / students.length,
                     minHeight: 6,
                     backgroundColor: isDark
                         ? const Color(0xFF1E293B)
@@ -273,8 +278,9 @@ class _DailySummary extends StatelessWidget {
     final presentCount = records
         .where((record) => record.status == AttendanceStatus.present)
         .length;
-    final lateCount =
-        records.where((record) => record.status == AttendanceStatus.late).length;
+    final lateCount = records
+        .where((record) => record.status == AttendanceStatus.late)
+        .length;
     final absentCount = records
         .where((record) =>
             record.status == AttendanceStatus.absent ||
@@ -459,7 +465,8 @@ class _SummaryStudentCard extends StatelessWidget {
                   label: l10n.lateStatus,
                   selected: status == AttendanceStatus.late,
                   color: const Color(0xFFB45309),
-                  onTap: enabled ? () => onChanged(AttendanceStatus.late) : null,
+                  onTap:
+                      enabled ? () => onChanged(AttendanceStatus.late) : null,
                 ),
               ),
               const SizedBox(width: 6),
@@ -469,9 +476,8 @@ class _SummaryStudentCard extends StatelessWidget {
                   selected: status == AttendanceStatus.absent ||
                       status == AttendanceStatus.excused,
                   color: const Color(0xFFBA1A1A),
-                  onTap: enabled
-                      ? () => onChanged(AttendanceStatus.absent)
-                      : null,
+                  onTap:
+                      enabled ? () => onChanged(AttendanceStatus.absent) : null,
                 ),
               ),
             ],

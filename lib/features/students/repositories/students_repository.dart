@@ -4,6 +4,7 @@ import '../models/student_model.dart';
 abstract class StudentsRepository {
   Future<List<Student>> getAllStudents();
   Future<List<Student>> getStudentsByCourse(String courseId);
+  Future<List<Student>> getStudentsByCourseIncludingInactive(String courseId);
   Future<Student?> getStudentById(String id);
   Future<void> addStudent(Student student);
   Future<void> updateStudent(Student student);
@@ -30,6 +31,13 @@ class LocalStudentsRepository implements StudentsRepository {
   Future<List<Student>> getStudentsByCourse(String courseId) async {
     final list = await _all();
     return list.where((s) => s.courseId == courseId && s.active).toList();
+  }
+
+  @override
+  Future<List<Student>> getStudentsByCourseIncludingInactive(
+      String courseId) async {
+    final list = await _all();
+    return list.where((s) => s.courseId == courseId).toList();
   }
 
   @override

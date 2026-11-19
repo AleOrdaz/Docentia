@@ -100,7 +100,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
         decoration: _sheetInputDecoration(context),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, size: 18, color: AppColors.iconDefault),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -138,14 +138,14 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
     });
 
     await ref.read(calendarEventsProvider.notifier).addEvent(
-      title: title,
-      type: eventType,
-      description: desc,
-      date: _toDateStr(_eventDate),
-      startTime: _formatSheetTime(_startTime),
-      endTime: _formatSheetTime(_endTime),
-      courseId: _selectedCourseId.isEmpty ? null : _selectedCourseId,
-    );
+          title: title,
+          type: eventType,
+          description: desc,
+          date: _toDateStr(_eventDate),
+          startTime: _formatSheetTime(_startTime),
+          endTime: _formatSheetTime(_endTime),
+          courseId: _selectedCourseId.isEmpty ? null : _selectedCourseId,
+        );
 
     if (!mounted) return;
     final messenger = ScaffoldMessenger.of(context);
@@ -163,7 +163,6 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
     final l10n = AppLocalizations.of(context)!;
     final courses = ref.watch(coursesProvider).value ?? [];
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final sheetColor = isDark ? const Color(0xFF151D2E) : Colors.white;
     final textPrimary = AppColors.textPrimary(context);
 
@@ -202,16 +201,19 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
               // Cabecera
               Row(
                 children: [
-                  Icon(Icons.event_outlined, color: primaryColor, size: 24),
+                  const Icon(Icons.event_outlined,
+                      color: AppColors.iconDefault, size: 24),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       l10n.newSchoolEvent,
-                      style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                      style:
+                          AppTextStyles.titleLarge.copyWith(color: textPrimary),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: textPrimary),
+                    icon:
+                        Icon(Icons.close, color: AppColors.iconMuted(context)),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -237,36 +239,36 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                 borderRadius: BorderRadius.circular(12),
                 items: [
                   (
-                  id: 'exam',
-                  label: l10n.eventTypeExam,
-                  icon: Icons.assignment_outlined,
+                    id: 'exam',
+                    label: l10n.eventTypeExam,
+                    icon: Icons.assignment_outlined,
                   ),
                   (
-                  id: 'project',
-                  label: l10n.eventTypeProject,
-                  icon: Icons.palette_outlined,
+                    id: 'project',
+                    label: l10n.eventTypeProject,
+                    icon: Icons.palette_outlined,
                   ),
                   (
-                  id: 'meeting',
-                  label: l10n.eventTypeMeeting,
-                  icon: Icons.groups_outlined,
+                    id: 'meeting',
+                    label: l10n.eventTypeMeeting,
+                    icon: Icons.groups_outlined,
                   ),
                   (
-                  id: 'holiday',
-                  label: l10n.eventTypeHoliday,
-                  icon: Icons.beach_access_outlined,
+                    id: 'holiday',
+                    label: l10n.eventTypeHoliday,
+                    icon: Icons.beach_access_outlined,
                   ),
                   (
-                  id: 'special',
-                  label: l10n.eventTypeSpecial,
-                  icon: Icons.star_outline,
+                    id: 'special',
+                    label: l10n.eventTypeSpecial,
+                    icon: Icons.star_outline,
                   ),
                 ].map((item) {
                   return DropdownMenuItem(
                     value: item.id,
                     child: Row(
                       children: [
-                        Icon(item.icon, size: 18, color: primaryColor),
+                        Icon(item.icon, size: 18, color: AppColors.iconDefault),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -306,7 +308,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                       ),
                     ),
                     ...courses.map(
-                          (c) => DropdownMenuItem(
+                      (c) => DropdownMenuItem(
                         value: c.id,
                         child: Text(c.name, overflow: TextOverflow.ellipsis),
                       ),
@@ -357,7 +359,8 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                         setState(() {
                           _startTime = picked;
                           final startMinutes = picked.hour * 60 + picked.minute;
-                          final endMinutes = _endTime.hour * 60 + _endTime.minute;
+                          final endMinutes =
+                              _endTime.hour * 60 + _endTime.minute;
                           if (endMinutes <= startMinutes) {
                             final next = startMinutes + 60;
                             _endTime = TimeOfDay(
@@ -409,7 +412,8 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
               if (_formError != null) ...[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
                     color: const Color(0xFFD32F2F).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
@@ -417,7 +421,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                   child: Row(
                     children: [
                       const Icon(Icons.error_outline,
-                          color: Color(0xFFD32F2F), size: 16),
+                          color: AppColors.iconError, size: 16),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(

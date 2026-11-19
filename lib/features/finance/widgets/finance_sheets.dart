@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/theme/app_colors.dart';
 import '../../../app/widgets/app_snackbars.dart';
 import '../../../core/services/whatsapp_service.dart';
 import '../../../l10n/app_localizations.dart';
@@ -36,14 +37,14 @@ Future<void> showFinancePeriodPicker(
                 trailing: !current.isRange &&
                         current.year == month.year &&
                         current.month == month.month
-                    ? Icon(Icons.check,
-                        color: Theme.of(ctx).colorScheme.primary)
+                    ? const Icon(Icons.check, color: AppColors.iconDefault)
                     : null,
                 onTap: () => Navigator.of(ctx)
                     .pop(FinanceWindow.month(month.year, month.month)),
               ),
             ListTile(
-              leading: const Icon(Icons.date_range_outlined),
+              leading: const Icon(Icons.date_range_outlined,
+                  color: AppColors.iconDefault),
               title: Text(l10n.financeDateRange),
               onTap: () => Navigator.of(ctx).pop('range'),
             ),
@@ -161,7 +162,7 @@ class _FilterSheetState extends State<_FilterSheet> {
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
+                  icon: Icon(Icons.close, color: AppColors.iconMuted(context)),
                 ),
               ],
             ),
@@ -500,7 +501,8 @@ Future<void> showManualChargeDialog({
               title: const Text('Fecha del cobro'),
               subtitle: Text(
                   '${chargeDate.day.toString().padLeft(2, '0')}/${chargeDate.month.toString().padLeft(2, '0')}/${chargeDate.year}'),
-              trailing: const Icon(Icons.calendar_today_outlined),
+              trailing: const Icon(Icons.calendar_today_outlined,
+                  color: AppColors.iconDefault),
               onTap: () async {
                 final picked = await showDatePicker(
                     context: ctx,
@@ -583,8 +585,10 @@ Future<void> notifyTutor(BuildContext context, FeeEntry entry) async {
   final course =
       entry.courseName.isEmpty ? l10n.courseFallback : entry.courseName;
   final due = DateTime.tryParse(entry.payment.dueDate);
-  final dueLabel = due == null ? entry.payment.dueDate : financeDay(context, due);
-  final tutor = entry.tutorName.isEmpty ? l10n.studentFallback : entry.tutorName;
+  final dueLabel =
+      due == null ? entry.payment.dueDate : financeDay(context, due);
+  final tutor =
+      entry.tutorName.isEmpty ? l10n.studentFallback : entry.tutorName;
   final amount = financeMoney(entry.payment.amount);
   final message = entry.payment.status == PaymentStatus.overdue
       ? l10n.financeReminderOverdueMessage(

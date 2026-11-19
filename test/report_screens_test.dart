@@ -179,6 +179,10 @@ Payment _paid(DateTime now) {
 }
 
 class _StudentsRepo implements StudentsRepository {
+  @override
+  Future<List<Student>> getStudentsByCourseIncludingInactive(String courseId) async =>
+      students.where((student) => student.courseId == courseId).toList();
+
   final List<Student> students;
   _StudentsRepo(this.students);
   @override

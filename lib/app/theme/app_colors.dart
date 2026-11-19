@@ -61,6 +61,18 @@ class AppColors {
   // Canales y WhatsApp
   static const Color whatsapp = Color(0xFF25D366);
 
+  // Información y contacto; coincide con el tema Cobalto Marino guardado.
+  static const Color info = Color(0xFF0284C7);
+
+  // Roles de color para iconos de la interfaz. Mantener colores por semántica.
+  static const Color iconDefault = info;
+  static const Color iconSuccess = secondary;
+  static const Color iconWarning = warning;
+  static const Color iconError = error;
+  static const Color iconOnPrimary = onPrimary;
+
+  static Color iconMuted(BuildContext context) => textSecondary(context);
+
   /// Aclara primarios muy oscuros para que sean legibles sobre fondos dark.
   static Color primaryForTheme(Color primary, Brightness brightness) {
     if (brightness != Brightness.dark) return primary;
