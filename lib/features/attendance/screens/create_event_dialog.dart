@@ -351,9 +351,10 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                       icon: Icons.access_time,
                       value: _formatSheetTime(_startTime),
                       onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
+                        final picked = await showAppWheelTimePicker(
+                          context,
                           initialTime: _startTime,
+                          helpText: l10n.selectStartTime,
                         );
                         if (picked == null) return;
                         setState(() {
@@ -388,9 +389,10 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                       icon: Icons.access_time,
                       value: _formatSheetTime(_endTime),
                       onTap: () async {
-                        final picked = await showTimePicker(
-                          context: context,
+                        final picked = await showAppWheelTimePicker(
+                          context,
                           initialTime: _endTime,
+                          helpText: l10n.selectEndTime,
                         );
                         if (picked != null) setState(() => _endTime = picked);
                       },

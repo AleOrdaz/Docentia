@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -264,75 +263,10 @@ class _CreateCourseDialogState extends ConsumerState<CreateCourseDialog> {
   Future<TimeOfDay?> _pickTime({
     required TimeOfDay initialTime,
     required String helpText,
-  }) async {
-    final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final snappedMinute = (initialTime.minute / 5).round() * 5 % 60;
-    var selected = TimeOfDay(hour: initialTime.hour, minute: snappedMinute);
+  }) =>
+      showAppWheelTimePicker(context,
+          initialTime: initialTime, helpText: helpText);
 
-    return showDialog<TimeOfDay>(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            helpText,
-            style: AppTextStyles.titleMedium.copyWith(
-              color: AppColors.textPrimary(ctx),
-            ),
-          ),
-          content: SizedBox(
-            height: 180,
-            width: 280,
-            child: CupertinoTheme(
-              data: CupertinoThemeData(
-                brightness: isDark ? Brightness.dark : Brightness.light,
-                textTheme: CupertinoTextThemeData(
-                  dateTimePickerTextStyle: TextStyle(
-                    fontSize: 20,
-                    color: AppColors.textPrimary(ctx),
-                  ),
-                ),
-              ),
-              child: CupertinoDatePicker(
-                mode: CupertinoDatePickerMode.time,
-                use24hFormat: false,
-                initialDateTime: DateTime(
-                  2020,
-                  1,
-                  1,
-                  selected.hour,
-                  selected.minute,
-                ),
-                minuteInterval: 5,
-                onDateTimeChanged: (dateTime) {
-                  selected = TimeOfDay(
-                    hour: dateTime.hour,
-                    minute: dateTime.minute,
-                  );
-                },
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.cancel),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(selected),
-              child: Text(
-                l10n.accept,
-                style: TextStyle(color: Theme.of(ctx).colorScheme.primary),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Future<void> _pickStartTime({int? weekday}) async {
     final time = weekday == null || _sameScheduleForAll
