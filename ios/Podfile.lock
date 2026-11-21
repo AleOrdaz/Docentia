@@ -128,7 +128,7 @@ SPEC CHECKSUMS:
   FirebaseCore: ab948de5d99e69aeed3cd6f5ace263ce795b2559
   FirebaseCoreExtension: 201c78d7491a273d61d8afbf491214276a951e6d
   FirebaseCoreInternal: 656b1c2fd5a1c5976183dc54b73deda78fb26ee3
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_local_notifications: 643a3eda1ce1c0599413ca31672536d423dee214
   flutter_native_contact_picker: 22508d3ab5a583068d4a588cb37c0e0b8764722d
   GoogleUtilities: 7dc09b3fa9ecb5c2298b952313d14628b61b9da3

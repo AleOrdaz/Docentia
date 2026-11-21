@@ -37,8 +37,8 @@ class SubscriptionConfig {
 
   /// Product IDs — deben coincidir exactamente con App Store Connect y Play Console.
   /// Ver `docs/IAP_SETUP.md`.
-  static const String monthlyProductId = 'docentia_pro_monthly';
-  static const String yearlyProductId = 'docentia_pro_yearly';
+  static const String monthlyProductId = 'pro_monthly';
+  static const String yearlyProductId = 'pro_year';
 
   static const Set<String> productIds = {
     monthlyProductId,
