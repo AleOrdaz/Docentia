@@ -874,5 +874,15 @@
   "deleteAccountBody": "Your Docentia account and local data (courses, students, payments, etc.) will be deleted. This cannot be undone. If you have an active subscription, cancel it in the store to avoid future charges.",
   "deleteAccountConfirm": "Delete permanently",
   "deleteAccountSuccess": "Account deleted",
-  "deleteAccountWebLink": "You can also request deletion on the web"
+  "deleteAccountWebLink": "You can also request deletion on the web",
+  "promoCodeTitle": "Have a promo code?",
+  "promoCodeHint": "Enter your code",
+  "promoCodeRedeem": "Redeem",
+  "promoCodeActivated": "Code applied. You have Pro free for 3 months.",
+  "promoCodeEmpty": "Enter a promo code.",
+  "promoCodeInvalid": "This code is invalid.",
+  "promoCodeUnavailable": "This code has expired or reached its redemption limit.",
+  "promoCodeAlreadyUsed": "You have already redeemed a promo code.",
+  "promoCodeSignInRequired": "Sign in to redeem a code.",
+  "promoCodeError": "Could not validate the code. Try again."
 }

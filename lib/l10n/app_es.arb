@@ -874,5 +874,15 @@
   "deleteAccountBody": "Se borrará tu cuenta de Docentia y los datos locales (cursos, alumnos, pagos, etc.). Esta acción no se puede deshacer. Si tienes una suscripción activa, cancélala en la tienda para evitar cobros futuros.",
   "deleteAccountConfirm": "Eliminar definitivamente",
   "deleteAccountSuccess": "Cuenta eliminada",
-  "deleteAccountWebLink": "También puedes solicitar el borrado en la web"
+  "deleteAccountWebLink": "También puedes solicitar el borrado en la web",
+  "promoCodeTitle": "¿Tienes un código promocional?",
+  "promoCodeHint": "Ingresa tu código",
+  "promoCodeRedeem": "Canjear",
+  "promoCodeActivated": "Código aplicado. Tienes Pro gratis por 3 meses.",
+  "promoCodeEmpty": "Ingresa un código promocional.",
+  "promoCodeInvalid": "El código no es válido.",
+  "promoCodeUnavailable": "El código venció o ya alcanzó su límite de usos.",
+  "promoCodeAlreadyUsed": "Ya canjeaste un código promocional.",
+  "promoCodeSignInRequired": "Inicia sesión para canjear un código.",
+  "promoCodeError": "No se pudo validar el código. Intenta de nuevo."
 }

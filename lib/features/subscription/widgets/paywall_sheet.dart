@@ -37,6 +37,13 @@ class PaywallSheet extends ConsumerStatefulWidget {
 class _PaywallSheetState extends ConsumerState<PaywallSheet> {
   BillingPeriod _period = BillingPeriod.yearly;
   bool _busy = false;
+  final TextEditingController _promoController = TextEditingController();
+
+  @override
+  void dispose() {
+    _promoController.dispose();
+    super.dispose();
+  }
 
   String _headline(AppLocalizations l10n) {
     switch (widget.feature) {
@@ -166,6 +173,35 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
           message: l10n.paywallRestoreEmpty,
           kind: AppSnackKind.info,
         );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _redeemPromo() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      final result = await ref.read(subscriptionProvider.notifier)
+          .redeemPromoCode(_promoController.text);
+      if (!mounted) return;
+      if (result.isSuccess) {
+        Navigator.of(context).pop();
+        showAppSnackBar(context, message: l10n.promoCodeActivated,
+            kind: AppSnackKind.success);
+      } else {
+        final message = switch (result.message) {
+          'empty_code' => l10n.promoCodeEmpty,
+          'invalid-argument' => l10n.promoCodeInvalid,
+          'not-found' => l10n.promoCodeInvalid,
+          'failed-precondition' => l10n.promoCodeUnavailable,
+          'already-exists' => l10n.promoCodeAlreadyUsed,
+          'unauthenticated' => l10n.promoCodeSignInRequired,
+          _ => l10n.promoCodeError,
+        };
+        showAppSnackBar(context, message: message, kind: AppSnackKind.error);
       }
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -311,6 +347,30 @@ class _PaywallSheetState extends ConsumerState<PaywallSheet> {
                         ),
                   onPressed: _busy ? null : _activate,
                 ),
+                const SizedBox(height: 18),
+                Text(l10n.promoCodeTitle,
+                    style: AppTextStyles.titleSmall.copyWith(color: textPrimary)),
+                const SizedBox(height: 8),
+                Row(children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _promoController,
+                      textCapitalization: TextCapitalization.characters,
+                      autocorrect: false,
+                      enabled: !_busy,
+                      decoration: InputDecoration(
+                        hintText: l10n.promoCodeHint,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: _busy ? null : _redeemPromo,
+                    child: Text(l10n.promoCodeRedeem),
+                  ),
+                ]),
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: _busy ? null : _startTrial,
