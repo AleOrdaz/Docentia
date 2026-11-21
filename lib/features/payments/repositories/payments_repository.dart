@@ -4,7 +4,9 @@ import '../services/fee_generation_service.dart';
 
 class DuplicateFeeException implements Exception {
   final String message;
-  const DuplicateFeeException([this.message = 'La cuota de este mes ya está registrada para este alumno y curso.']);
+  const DuplicateFeeException(
+      [this.message =
+          'La cuota de este mes ya está registrada para este alumno y curso.']);
   @override
   String toString() => message;
 }
@@ -25,7 +27,8 @@ abstract class PaymentsRepository {
     required int year,
     required int month,
   });
-  Future<void> confirmPayment(String paymentId, {double? paidAmount, DateTime? paidDate});
+  Future<void> confirmPayment(String paymentId,
+      {double? paidAmount, DateTime? paidDate});
   Future<void> addPayment(Payment payment);
   Future<void> updatePaymentDueDate(String paymentId, DueDateOption option);
   /// Recalcula pending/upcoming/overdue de cuotas no pagadas. Devuelve cuántas cambió.
@@ -54,7 +57,8 @@ class LocalPaymentsRepository implements PaymentsRepository {
   }
 
   @override
-  Future<List<Payment>> getPaymentsByStudent(String studentId, String courseId) async {
+  Future<List<Payment>> getPaymentsByStudent(
+      String studentId, String courseId) async {
     final list = await _all();
     return list
         .where((p) => p.studentId == studentId && p.courseId == courseId)
@@ -70,7 +74,7 @@ class LocalPaymentsRepository implements PaymentsRepository {
   }) async {
     final list = await _all();
     return list.any((p) =>
-    !p.isProrated &&
+        !p.isProrated &&
         p.studentId == studentId &&
         p.courseId == courseId &&
         p.periodYear == year &&
@@ -86,7 +90,7 @@ class LocalPaymentsRepository implements PaymentsRepository {
   }) async {
     final list = await _all();
     return list.any((p) =>
-    p.isProrated &&
+        p.isProrated &&
         p.studentId == studentId &&
         p.courseId == courseId &&
         p.periodYear == year &&
@@ -94,7 +98,8 @@ class LocalPaymentsRepository implements PaymentsRepository {
   }
 
   @override
-  Future<void> confirmPayment(String paymentId, {double? paidAmount, DateTime? paidDate}) async {
+  Future<void> confirmPayment(String paymentId,
+      {double? paidAmount, DateTime? paidDate}) async {
     final list = (await _all()).toList();
     final index = list.indexWhere((p) => p.id == paymentId);
     if (index != -1) {
@@ -113,12 +118,13 @@ class LocalPaymentsRepository implements PaymentsRepository {
   Future<void> addPayment(Payment payment) async {
     final list = (await _all()).toList();
 
-    final alreadyExists = list.any((p) =>
-    p.isProrated == payment.isProrated &&
-        p.studentId == payment.studentId &&
-        p.courseId == payment.courseId &&
-        p.periodYear == payment.periodYear &&
-        p.periodMonth == payment.periodMonth);
+    final alreadyExists = !payment.isManual &&
+        list.any((p) =>
+            p.isProrated == payment.isProrated &&
+            p.studentId == payment.studentId &&
+            p.courseId == payment.courseId &&
+            p.periodYear == payment.periodYear &&
+            p.periodMonth == payment.periodMonth);
 
     if (alreadyExists) {
       throw const DuplicateFeeException();
@@ -130,7 +136,8 @@ class LocalPaymentsRepository implements PaymentsRepository {
   }
 
   @override
-  Future<void> updatePaymentDueDate(String paymentId, DueDateOption option) async {
+  Future<void> updatePaymentDueDate(
+      String paymentId, DueDateOption option) async {
     final list = (await _all()).toList();
     final index = list.indexWhere((p) => p.id == paymentId);
     if (index != -1) {

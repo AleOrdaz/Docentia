@@ -1,3 +1,5 @@
+import '../../l10n/app_localizations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -130,9 +132,8 @@ Widget appFormLabel(
   final base = style ?? appInputLabelStyle(context);
   final trimmed = text.trimRight();
   final hasStar = trimmed.endsWith('*');
-  final clean = hasStar
-      ? trimmed.substring(0, trimmed.length - 1).trimRight()
-      : trimmed;
+  final clean =
+      hasStar ? trimmed.substring(0, trimmed.length - 1).trimRight() : trimmed;
   final showRequired = required || hasStar;
 
   return Text.rich(
@@ -237,13 +238,16 @@ class AppTextField extends StatelessWidget {
             prefixIcon: prefixIcon,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppColors.outlineVariantAdaptive(context)),
+              borderSide:
+                  BorderSide(color: AppColors.outlineVariantAdaptive(context)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: AppColors.outlineVariantAdaptive(context)),
+              borderSide:
+                  BorderSide(color: AppColors.outlineVariantAdaptive(context)),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
       ],
@@ -273,7 +277,8 @@ class AppPrimaryButton extends StatelessWidget {
         ? const SizedBox(
             width: 18,
             height: 18,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+            child:
+                CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
           )
         : Text(label, style: const TextStyle(fontWeight: FontWeight.w600));
 
@@ -285,7 +290,8 @@ class AppPrimaryButton extends StatelessWidget {
     );
 
     if (icon == null || loading) {
-      return FilledButton(onPressed: loading ? null : onPressed, style: style, child: child);
+      return FilledButton(
+          onPressed: loading ? null : onPressed, style: style, child: child);
     }
 
     return FilledButton.icon(
@@ -343,7 +349,8 @@ class AppFormPage extends StatelessWidget {
                   if (subtitle != null) ...[
                     Text(
                       subtitle!,
-                      style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
+                      style: AppTextStyles.bodySmall
+                          .copyWith(color: textSecondary),
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -364,4 +371,78 @@ class AppFormPage extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Selector de hora tipo rueda (Cupertino) usado en cursos y eventos.
+Future<TimeOfDay?> showAppWheelTimePicker(
+  BuildContext context, {
+  required TimeOfDay initialTime,
+  required String helpText,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final snappedMinute = (initialTime.minute / 5).round() * 5 % 60;
+  var selected = TimeOfDay(hour: initialTime.hour, minute: snappedMinute);
+
+  return showDialog<TimeOfDay>(
+    context: context,
+    builder: (ctx) {
+      return AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          helpText,
+          style: AppTextStyles.titleMedium.copyWith(
+            color: AppColors.textPrimary(ctx),
+          ),
+        ),
+        content: SizedBox(
+          height: 180,
+          width: 280,
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              brightness: isDark ? Brightness.dark : Brightness.light,
+              textTheme: CupertinoTextThemeData(
+                dateTimePickerTextStyle: TextStyle(
+                  fontSize: 20,
+                  color: AppColors.textPrimary(ctx),
+                ),
+              ),
+            ),
+            child: CupertinoDatePicker(
+              mode: CupertinoDatePickerMode.time,
+              use24hFormat: false,
+              initialDateTime: DateTime(
+                2020,
+                1,
+                1,
+                selected.hour,
+                selected.minute,
+              ),
+              minuteInterval: 5,
+              onDateTimeChanged: (dateTime) {
+                selected = TimeOfDay(
+                  hour: dateTime.hour,
+                  minute: dateTime.minute,
+                );
+              },
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(selected),
+            child: Text(
+              l10n.accept,
+              style: TextStyle(color: Theme.of(ctx).colorScheme.primary),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

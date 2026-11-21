@@ -365,7 +365,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get maxCapacityLabel => 'Capacidad máxima *';
 
   @override
-  String get classDaysLabel => 'Días de clase (al menos 1) *';
+  String get classDaysLabel => 'Días de clase *';
+
+  @override
+  String get sameScheduleEveryDay => 'Mismo horario todos los días';
 
   @override
   String get startTimeLabel => 'Hora de inicio *';

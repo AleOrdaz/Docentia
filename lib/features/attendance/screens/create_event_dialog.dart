@@ -10,9 +10,9 @@ import '../../courses/providers/courses_provider.dart';
 import '../providers/calendar_events_provider.dart';
 
 Future<void> showCreateEventSheet(
-  BuildContext context, {
-  DateTime? initialDate,
-}) {
+    BuildContext context, {
+      DateTime? initialDate,
+    }) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -67,6 +67,12 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
     return '$y-$m-$d';
   }
 
+  String _formatSheetTime(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
   InputDecoration _sheetInputDecoration(BuildContext context) {
     final border = OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
@@ -94,7 +100,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
         decoration: _sheetInputDecoration(context),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, size: 18, color: AppColors.iconDefault),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -136,8 +142,8 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
       type: eventType,
       description: desc,
       date: _toDateStr(_eventDate),
-      startTime: formatTimeOfDay24(_startTime),
-      endTime: formatTimeOfDay24(_endTime),
+      startTime: _formatSheetTime(_startTime),
+      endTime: _formatSheetTime(_endTime),
       courseId: _selectedCourseId.isEmpty ? null : _selectedCourseId,
     );
 
@@ -157,7 +163,6 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
     final l10n = AppLocalizations.of(context)!;
     final courses = ref.watch(coursesProvider).value ?? [];
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryColor = Theme.of(context).colorScheme.primary;
     final sheetColor = isDark ? const Color(0xFF151D2E) : Colors.white;
     final textPrimary = AppColors.textPrimary(context);
 
@@ -196,16 +201,19 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
               // Cabecera
               Row(
                 children: [
-                  Icon(Icons.event_outlined, color: primaryColor, size: 24),
+                  const Icon(Icons.event_outlined,
+                      color: AppColors.iconDefault, size: 24),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       l10n.newSchoolEvent,
-                      style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                      style:
+                      AppTextStyles.titleLarge.copyWith(color: textPrimary),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.close, color: textPrimary),
+                    icon:
+                    Icon(Icons.close, color: AppColors.iconMuted(context)),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
@@ -260,7 +268,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                     value: item.id,
                     child: Row(
                       children: [
-                        Icon(item.icon, size: 18, color: primaryColor),
+                        Icon(item.icon, size: 18, color: AppColors.iconDefault),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -334,15 +342,16 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
               const SizedBox(height: 14),
 
               AppFieldLabel(l10n.timeLabel),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
               Row(
                 children: [
                   Expanded(
-                    child: AppTimePickerField(
-                      label: l10n.startTimeLabel.replaceAll('*', '').trim(),
-                      time: _startTime,
+                    child: _sheetTapField(
+                      context: context,
+                      icon: Icons.access_time,
+                      value: _formatSheetTime(_startTime),
                       onTap: () async {
-                        final picked = await pickAppTime(
+                        final picked = await showAppWheelTimePicker(
                           context,
                           initialTime: _startTime,
                           helpText: l10n.selectStartTime,
@@ -350,8 +359,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                         if (picked == null) return;
                         setState(() {
                           _startTime = picked;
-                          final startMinutes =
-                              picked.hour * 60 + picked.minute;
+                          final startMinutes = picked.hour * 60 + picked.minute;
                           final endMinutes =
                               _endTime.hour * 60 + _endTime.minute;
                           if (endMinutes <= startMinutes) {
@@ -365,20 +373,28 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                       },
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      '–',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.textSecondary(context),
+                      ),
+                    ),
+                  ),
                   Expanded(
-                    child: AppTimePickerField(
-                      label: l10n.endTimeLabel.replaceAll('*', '').trim(),
-                      time: _endTime,
+                    child: _sheetTapField(
+                      context: context,
+                      icon: Icons.access_time,
+                      value: _formatSheetTime(_endTime),
                       onTap: () async {
-                        final picked = await pickAppTime(
+                        final picked = await showAppWheelTimePicker(
                           context,
                           initialTime: _endTime,
                           helpText: l10n.selectEndTime,
                         );
-                        if (picked != null) {
-                          setState(() => _endTime = picked);
-                        }
+                        if (picked != null) setState(() => _endTime = picked);
                       },
                     ),
                   ),
@@ -398,7 +414,8 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
               if (_formError != null) ...[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   decoration: BoxDecoration(
                     color: const Color(0xFFD32F2F).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(10),
@@ -406,7 +423,7 @@ class _CreateEventDialogState extends ConsumerState<CreateEventDialog> {
                   child: Row(
                     children: [
                       const Icon(Icons.error_outline,
-                          color: Color(0xFFD32F2F), size: 16),
+                          color: AppColors.iconError, size: 16),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(

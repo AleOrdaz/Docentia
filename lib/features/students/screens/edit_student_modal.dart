@@ -77,7 +77,6 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
     final l10n = AppLocalizations.of(context)!;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final textPrimary = AppColors.textPrimary(context);
-    final textSecondary = AppColors.textSecondary(context);
 
     return Container(
       decoration: BoxDecoration(
@@ -112,16 +111,19 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    Icon(Icons.edit_outlined, color: primaryColor, size: 24),
+                    const Icon(Icons.edit_outlined,
+                        color: AppColors.iconDefault, size: 24),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         l10n.editStudentTitle,
-                        style: AppTextStyles.titleLarge.copyWith(color: textPrimary),
+                        style: AppTextStyles.titleLarge
+                            .copyWith(color: textPrimary),
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.close, color: textSecondary),
+                      icon: Icon(Icons.close,
+                          color: AppColors.iconMuted(context)),
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                   ],
@@ -135,7 +137,9 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
                         controller: _nameController,
                         hint: l10n.firstNameHint,
                         validator: (value) =>
-                        (value == null || value.trim().isEmpty) ? l10n.required : null,
+                            (value == null || value.trim().isEmpty)
+                                ? l10n.required
+                                : null,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -145,7 +149,9 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
                         controller: _lastNameController,
                         hint: l10n.lastNameHint,
                         validator: (value) =>
-                        (value == null || value.trim().isEmpty) ? l10n.required : null,
+                            (value == null || value.trim().isEmpty)
+                                ? l10n.required
+                                : null,
                       ),
                     ),
                   ],
@@ -171,11 +177,15 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
                       onPressed: () => Navigator.of(context).pop(),
                       style: TextButton.styleFrom(
                         foregroundColor: textPrimary,
-                        backgroundColor: AppColors.surfaceMid(context),
+                        side: BorderSide(
+                          color: AppColors.outlineVariantAdaptive(context),
+                        ),
                         shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
                       ),
-                      child: Text(l10n.cancel, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      child: Text(l10n.cancel,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
                     ),
                     const SizedBox(width: 8),
                     ElevatedButton.icon(
@@ -184,16 +194,19 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
                         backgroundColor: primaryColor,
                         foregroundColor: AppColors.onPrimary,
                         shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
                       ),
                       icon: _isSubmitting
                           ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            )
                           : const Icon(Icons.check, size: 18),
-                      label: Text(l10n.save, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      label: Text(l10n.save,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
                     ),
                   ],
                 ),
@@ -243,7 +256,8 @@ class _EditStudentModalState extends ConsumerState<EditStudentModal> {
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           ),
         ),
       ],

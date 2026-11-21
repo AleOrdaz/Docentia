@@ -70,8 +70,8 @@ class StudentsNotifier extends StateNotifier<AsyncValue<List<Student>>> {
 
     // Notificar reactivamente a los contadores globales y de Home
     if (_ref != null) {
-      _ref!.read(studentsRevisionProvider.notifier).state++;
-      _ref!.invalidate(allActiveStudentsProvider);
+      _ref.read(studentsRevisionProvider.notifier).state++;
+      _ref.invalidate(allActiveStudentsProvider);
     }
     return student;
   }
@@ -82,8 +82,8 @@ class StudentsNotifier extends StateNotifier<AsyncValue<List<Student>>> {
     state = AsyncValue.data(updated);
 
     if (_ref != null) {
-      _ref!.read(studentsRevisionProvider.notifier).state++;
-      _ref!.invalidate(allActiveStudentsProvider);
+      _ref.read(studentsRevisionProvider.notifier).state++;
+      _ref.invalidate(allActiveStudentsProvider);
     }
   }
 
@@ -93,18 +93,39 @@ class StudentsNotifier extends StateNotifier<AsyncValue<List<Student>>> {
     state = AsyncValue.data(updated);
 
     if (_ref != null) {
-      _ref!.read(studentsRevisionProvider.notifier).state++;
-      _ref!.invalidate(allActiveStudentsProvider);
+      _ref.read(studentsRevisionProvider.notifier).state++;
+      _ref.invalidate(allActiveStudentsProvider);
+    }
+  }
+
+  Future<void> activateStudent(String studentId) async {
+    final student = await _repository.getStudentById(studentId);
+    if (student == null || student.active) return;
+    await _repository.updateStudent(student.copyWith(active: true));
+    final updated = await _repository.getStudentsByCourse(_courseId);
+    state = AsyncValue.data(updated);
+
+    if (_ref != null) {
+      _ref.read(studentsRevisionProvider.notifier).state++;
+      _ref.invalidate(allActiveStudentsProvider);
     }
   }
 }
 
-final studentsForCourseProvider = StateNotifierProvider.family<
-    StudentsNotifier, AsyncValue<List<Student>>, String>((ref, courseId) {
+final studentsForCourseProvider = StateNotifierProvider.family<StudentsNotifier,
+    AsyncValue<List<Student>>, String>((ref, courseId) {
   final repo = ref.watch(studentsRepositoryProvider);
   // Escuchar revisiones para recargar cuando cambie cualquier alumno
   ref.watch(studentsRevisionProvider);
   return StudentsNotifier(repo, courseId, ref);
+});
+
+final studentsIncludingInactiveForCourseProvider =
+    FutureProvider.family<List<Student>, String>((ref, courseId) async {
+  ref.watch(studentsRevisionProvider);
+  return ref
+      .watch(studentsRepositoryProvider)
+      .getStudentsByCourseIncludingInactive(courseId);
 });
 
 final selectedStudentIdProvider = StateProvider<String?>((ref) => null);
@@ -133,4 +154,3 @@ final allActiveStudentsProvider = FutureProvider<List<Student>>((ref) async {
       .where((student) => activeCourseIds.contains(student.courseId))
       .toList();
 });
-

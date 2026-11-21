@@ -773,8 +773,14 @@ abstract class AppLocalizations {
   /// No description provided for @classDaysLabel.
   ///
   /// In es, this message translates to:
-  /// **'Días de clase (al menos 1) *'**
+  /// **'Días de clase *'**
   String get classDaysLabel;
+
+  /// No description provided for @sameScheduleEveryDay.
+  ///
+  /// In es, this message translates to:
+  /// **'Mismo horario todos los días'**
+  String get sameScheduleEveryDay;
 
   /// No description provided for @startTimeLabel.
   ///

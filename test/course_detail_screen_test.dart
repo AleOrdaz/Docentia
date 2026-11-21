@@ -25,14 +25,14 @@ void main() {
 
     expect(find.text('Arte'), findsOneWidget);
     expect(find.text('Agregar alumno'), findsWidgets);
-    expect(find.text('Asistencia'), findsOneWidget);
+    expect(find.text('Registrar asistencia'), findsOneWidget);
     expect(find.text('Certificados'), findsOneWidget);
     expect(find.text('Reporte'), findsOneWidget);
-    expect(find.text('Lista de alumnos'), findsOneWidget);
+    expect(find.text('Alumnos'), findsWidgets);
     expect(find.text('Rosa Jaramillo'), findsOneWidget);
-    expect(find.text('Próxima clase'), findsOneWidget);
-    expect(find.text('Cantidad de alumnos'), findsOneWidget);
-    expect(find.text('1 alumno'), findsOneWidget);
+    expect(find.text('Mar y Jue · 17:00 - 18:30'), findsOneWidget);
+    expect(find.text('Curso grupal'), findsOneWidget);
+    expect(find.text('Todos (1)'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -153,6 +153,10 @@ class _Courses implements CoursesRepository {
 }
 
 class _StudentsRepo implements StudentsRepository {
+  @override
+  Future<List<Student>> getStudentsByCourseIncludingInactive(String courseId) async =>
+      students.where((student) => student.courseId == courseId).toList();
+
   final List<Student> students;
   _StudentsRepo(this.students);
   @override
