@@ -8,6 +8,15 @@ enum CertificateStyle {
   classic,
   modern,
   elegant,
+  academic,
+  minimal,
+  botanical,
+  imperial,
+  midnight,
+  deco,
+  ribbon,
+  parchment,
+  horizon,
 }
 
 class IssuedCertificate {

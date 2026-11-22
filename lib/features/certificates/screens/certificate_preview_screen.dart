@@ -87,11 +87,17 @@ class CertificatePreviewScreen extends StatelessWidget {
                         child: Center(
                           child: AspectRatio(
                             aspectRatio: 1.414,
-                            child: CertificateDiploma(
-                              certificate: certificate,
-                              copy: copy,
-                              teacherName: teacherName,
-                              accent: accent,
+                            child: FittedBox(
+                              child: SizedBox(
+                                width: 480,
+                                height: 480 / 1.414,
+                                child: CertificateDiploma(
+                                  certificate: certificate,
+                                  copy: copy,
+                                  teacherName: teacherName,
+                                  accent: accent,
+                                ),
+                              ),
                             ),
                           ),
                         ),

@@ -3219,6 +3219,60 @@ abstract class AppLocalizations {
   /// **'Elegante'**
   String get certificateStyleElegant;
 
+  /// No description provided for @certificateStyleAcademic.
+  ///
+  /// In es, this message translates to:
+  /// **'Académico'**
+  String get certificateStyleAcademic;
+
+  /// No description provided for @certificateStyleMinimal.
+  ///
+  /// In es, this message translates to:
+  /// **'Minimalista'**
+  String get certificateStyleMinimal;
+
+  /// No description provided for @certificateStyleBotanical.
+  ///
+  /// In es, this message translates to:
+  /// **'Botánico'**
+  String get certificateStyleBotanical;
+
+  /// No description provided for @certificateStyleImperial.
+  ///
+  /// In es, this message translates to:
+  /// **'Imperial'**
+  String get certificateStyleImperial;
+
+  /// No description provided for @certificateStyleMidnight.
+  ///
+  /// In es, this message translates to:
+  /// **'Nocturno'**
+  String get certificateStyleMidnight;
+
+  /// No description provided for @certificateStyleDeco.
+  ///
+  /// In es, this message translates to:
+  /// **'Déco'**
+  String get certificateStyleDeco;
+
+  /// No description provided for @certificateStyleRibbon.
+  ///
+  /// In es, this message translates to:
+  /// **'Cinta'**
+  String get certificateStyleRibbon;
+
+  /// No description provided for @certificateStyleParchment.
+  ///
+  /// In es, this message translates to:
+  /// **'Pergamino'**
+  String get certificateStyleParchment;
+
+  /// No description provided for @certificateStyleHorizon.
+  ///
+  /// In es, this message translates to:
+  /// **'Horizonte'**
+  String get certificateStyleHorizon;
+
   /// No description provided for @certificateTypeLabel.
   ///
   /// In es, this message translates to:
@@ -3464,6 +3518,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Exportar PDF'**
   String get financeExportPdf;
+
+  /// No description provided for @reportExportExcel.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar Excel'**
+  String get reportExportExcel;
+
+  /// No description provided for @reportSavedInDocuments.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo abrir para compartir. {filename} quedó en Archivos, dentro de la carpeta de Docentia.'**
+  String reportSavedInDocuments(String filename);
+
+  /// No description provided for @reportExcelAttendances.
+  ///
+  /// In es, this message translates to:
+  /// **'Asistencias del mes'**
+  String get reportExcelAttendances;
+
+  /// No description provided for @reportExcelBillingType.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de cobro'**
+  String get reportExcelBillingType;
+
+  /// No description provided for @reportExcelDailyRate.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobro por día'**
+  String get reportExcelDailyRate;
+
+  /// No description provided for @reportExcelTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Total'**
+  String get reportExcelTotal;
+
+  /// No description provided for @reportExcelHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas trabajadas'**
+  String get reportExcelHours;
+
+  /// No description provided for @reportBillingPerClass.
+  ///
+  /// In es, this message translates to:
+  /// **'Por clase / día'**
+  String get reportBillingPerClass;
+
+  /// No description provided for @reportBillingWeekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Semanal'**
+  String get reportBillingWeekly;
+
+  /// No description provided for @reportBillingBiweekly.
+  ///
+  /// In es, this message translates to:
+  /// **'Quincenal'**
+  String get reportBillingBiweekly;
+
+  /// No description provided for @reportBillingMonthly.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensual'**
+  String get reportBillingMonthly;
 
   /// No description provided for @reportAttendance.
   ///

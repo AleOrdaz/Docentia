@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:archive/archive.dart';
 import 'package:docentia/features/attendance/models/attendance_model.dart';
+import 'package:docentia/features/reports/services/report_excel_service.dart';
+import 'package:docentia/l10n/app_localizations.dart';
+import 'package:flutter/widgets.dart';
 import 'package:docentia/features/courses/models/course_model.dart';
 import 'package:docentia/features/finance/logic/finance_fees.dart';
 import 'package:docentia/features/finance/models/expense_model.dart';
@@ -249,6 +255,115 @@ void main() {
     expect(data.byCourse.single.collected, 8500);
     expect(data.unpaid.single.studentName, 'Luis Pérez');
     expect(data.unpaid.single.amount, 4000);
+  });
+
+  ClassAttendanceSession workedSession(String date, AttendanceStatus status) {
+    return session(
+      date: date,
+      students: [
+        StudentAttendanceItem(
+          studentId: 'a',
+          studentName: 'Ana López',
+          status: status,
+        ),
+      ],
+    );
+  }
+
+  test('el excel mensual cobra por clase, semana, quincena o mes', () {
+    final ana = student('a', 'Ana', 'López');
+    final window = FinanceWindow.month(2026, 10);
+    final attended = [
+      workedSession('2026-10-05', AttendanceStatus.present),
+      workedSession('2026-10-08', AttendanceStatus.late),
+      workedSession('2026-10-22', AttendanceStatus.absent),
+    ];
+
+    final perClass = buildStudentMonthExport(
+      course: course.copyWith(
+        billingFrequency: BillingFrequency.perClass,
+        cost: 150,
+        classDays: const [1, 4],
+      ),
+      students: [ana],
+      sessions: attended,
+      window: window,
+    ).single;
+    expect(perClass.attendances, 2);
+    expect(perClass.dailyRate, 150);
+    expect(perClass.total, 300);
+    expect(perClass.hours, 3);
+
+    final weekly = buildStudentMonthExport(
+      course: course.copyWith(
+        billingFrequency: BillingFrequency.weekly,
+        cost: 400,
+        classDays: const [1, 4],
+      ),
+      students: [ana],
+      sessions: attended,
+      window: window,
+    ).single;
+    expect(weekly.dailyRate, 200);
+    expect(weekly.total, 400);
+    expect(weekly.hours, 3);
+
+    final biweekly = buildStudentMonthExport(
+      course: course.copyWith(
+        billingFrequency: BillingFrequency.biweekly,
+        cost: 800,
+        classDays: const [1, 4],
+      ),
+      students: [ana],
+      sessions: [
+        workedSession('2026-10-05', AttendanceStatus.present),
+        workedSession('2026-10-22', AttendanceStatus.present),
+      ],
+      window: window,
+    ).single;
+    expect(biweekly.attendances, 2);
+    expect(biweekly.dailyRate, 200);
+    expect(biweekly.total, 1600);
+
+    final monthly = buildStudentMonthExport(
+      course: course.copyWith(cost: 8000),
+      students: [ana],
+      sessions: [workedSession('2026-10-05', AttendanceStatus.present)],
+      window: window,
+    ).single;
+    expect(monthly.attendances, 1);
+    expect(monthly.dailyRate, 2000);
+    expect(monthly.total, 8000);
+    expect(monthly.hours, 1.5);
+  });
+
+  test('el excel del mes se puede abrir y trae las métricas del alumno', () async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('es'));
+    final bytes = ReportExcelService().buildStudentMonthWorkbook(
+      courseName: 'Robótica',
+      periodLabel: 'octubre 2026',
+      billingFrequency: BillingFrequency.perClass,
+      rows: const [
+        StudentMonthExportRow(
+          name: 'Ana López',
+          attendances: 2,
+          dailyRate: 150,
+          total: 300,
+          hours: 3,
+        ),
+      ],
+      l10n: l10n,
+    );
+
+    expect(bytes.sublist(0, 2), [0x50, 0x4B]);
+    final archive = ZipDecoder().decodeBytes(bytes);
+    final sheet = archive.findFile('xl/worksheets/sheet1.xml');
+    final xml = utf8.decode(sheet!.content as List<int>);
+    expect(xml, contains('Ana López'));
+    expect(xml, contains('Asistencias del mes'));
+    expect(xml, contains('>2</v>'));
+    expect(xml, contains('>300.0</v>'));
+    expect(xml, contains('>3.0</v>'));
   });
 
   test('el nombre del archivo no lleva espacios ni acentos', () {

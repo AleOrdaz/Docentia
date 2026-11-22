@@ -39,6 +39,20 @@ class CertificateDiploma extends StatelessWidget {
           copy: copy,
           teacherName: teacherName,
         ),
+      CertificateStyle.academic ||
+      CertificateStyle.minimal ||
+      CertificateStyle.botanical ||
+      CertificateStyle.imperial ||
+      CertificateStyle.midnight ||
+      CertificateStyle.deco ||
+      CertificateStyle.ribbon ||
+      CertificateStyle.parchment ||
+      CertificateStyle.horizon =>
+        _VarietyDiploma(
+          certificate: certificate,
+          copy: copy,
+          teacherName: teacherName,
+        ),
     };
   }
 }
@@ -458,6 +472,666 @@ class _ElegantDiploma extends StatelessWidget {
   }
 }
 
+class _VarietyDiploma extends StatelessWidget {
+  final IssuedCertificate certificate;
+  final CertificateCopy copy;
+  final String teacherName;
+
+  const _VarietyDiploma({
+    required this.certificate,
+    required this.copy,
+    required this.teacherName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (certificate.style) {
+      CertificateStyle.academic => _academic(),
+      CertificateStyle.minimal => _minimal(),
+      CertificateStyle.botanical => _botanical(),
+      CertificateStyle.imperial => _imperial(),
+      CertificateStyle.midnight => _midnight(),
+      CertificateStyle.deco => _deco(),
+      CertificateStyle.ribbon => _ribbon(),
+      CertificateStyle.parchment => _parchment(),
+      CertificateStyle.horizon => _horizon(),
+      CertificateStyle.classic ||
+      CertificateStyle.modern ||
+      CertificateStyle.elegant =>
+        _academic(),
+    };
+  }
+
+  Widget _academic() {
+    const navy = Color(0xFF1B3A4B);
+    const crimson = Color(0xFF8C2F39);
+    const gold = Color(0xFFC4A35A);
+    const paper = Color(0xFFF4F1EA);
+    return _shell(
+      paper: paper,
+      painter: const _LineFramePainter(color: navy, outer: 0.9, inner: 0.35),
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            color: navy,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    copy.brand.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.cinzel(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2.4,
+                    ),
+                  ),
+                ),
+                Text(
+                  '${certificate.issuedAt.year}',
+                  style: GoogleFonts.cinzel(
+                    color: gold,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+              child: Column(
+                children: [
+                  Text(
+                    copy.title.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.cinzel(
+                      color: crimson,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  const _Ornament(color: gold, width: 72),
+                  const SizedBox(height: 8),
+                  _copyBlock(ink: navy, course: crimson),
+                  const Spacer(),
+                  _footer(ink: navy),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _minimal() {
+    const ink = Color(0xFF1F2933);
+    return _shell(
+      paper: Colors.white,
+      painter: const _LineFramePainter(
+        color: Color(0xFFD6D3D1),
+        outer: 0.7,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(22, 16, 22, 12),
+        child: Column(
+          children: [
+            Text(
+              copy.brand.toUpperCase(),
+              style: GoogleFonts.cinzel(
+                color: const Color(0xFF9CA3AF),
+                fontSize: 9,
+                letterSpacing: 3.2,
+              ),
+            ),
+            const Spacer(),
+            Text(
+              copy.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cormorantGaramond(
+                color: ink,
+                fontSize: 13,
+                letterSpacing: 0.4,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              certificate.studentName,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.cinzel(
+                color: ink,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              width: 36,
+              height: 1,
+              color: ink,
+            ),
+            Text(
+              certificate.courseName,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.cormorantGaramond(
+                color: ink,
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              copy.body,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.cormorantGaramond(
+                color: const Color(0xFF6B7280),
+                fontSize: 11,
+              ),
+            ),
+            const Spacer(),
+            _footer(ink: ink, seal: false),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _botanical() {
+    const leaf = Color(0xFF2F5D50);
+    const sage = Color(0xFF7D9B76);
+    return _shell(
+      paper: const Color(0xFFF3F6F1),
+      painter: const _BotanicalFramePainter(color: leaf),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 12),
+        child: Column(
+          children: [
+            Text(
+              copy.brand.toUpperCase(),
+              style: GoogleFonts.cinzel(
+                color: sage,
+                fontSize: 9,
+                letterSpacing: 2.6,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              copy.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cormorantGaramond(
+                color: leaf,
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const SizedBox(height: 6),
+            _copyBlock(ink: leaf, course: leaf, script: true),
+            const Spacer(),
+            _footer(ink: leaf, sealColor: sage),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _imperial() {
+    const purple = Color(0xFF3C1361);
+    const gold = Color(0xFFC6A15B);
+    return _shell(
+      paper: const Color(0xFFFBF7EF),
+      painter: const _ImperialFramePainter(purple: purple, gold: gold),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+        child: Column(
+          children: [
+            Text(
+              copy.brand.toUpperCase(),
+              style: GoogleFonts.cinzel(
+                color: gold,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 3,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              copy.title.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cinzel(
+                color: purple,
+                fontSize: 11,
+                letterSpacing: 1.6,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const _Ornament(color: gold, width: 80),
+            const SizedBox(height: 4),
+            _copyBlock(ink: purple, course: purple, script: true),
+            const Spacer(),
+            _footer(ink: purple, sealColor: gold),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _midnight() {
+    const gold = Color(0xFFD4BE86);
+    const cream = Color(0xFFF6EFE2);
+    const ink = Color(0xFF07111F);
+    return _shell(
+      paper: ink,
+      painter: const _LineFramePainter(color: gold, outer: 0.8, inner: 0.35),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+        child: Column(
+          children: [
+            Text(
+              copy.brand.toUpperCase(),
+              style: GoogleFonts.cinzel(
+                color: gold,
+                fontSize: 10,
+                letterSpacing: 3.2,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              copy.title.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cinzel(
+                color: cream,
+                fontSize: 12,
+                letterSpacing: 1.8,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _copyBlock(ink: cream, course: gold, muted: gold),
+            const Spacer(),
+            _footer(ink: gold, muted: const Color(0xFFB7A88A)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _deco() {
+    const ink = Color(0xFF1A1A1A);
+    const gold = Color(0xFFC6A15B);
+    return _shell(
+      paper: const Color(0xFFF7F3EA),
+      painter: const _DecoFramePainter(color: gold),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(26, 18, 26, 12),
+        child: Column(
+          children: [
+            Text(
+              copy.brand.toUpperCase(),
+              style: GoogleFonts.cinzel(
+                color: gold,
+                fontSize: 9,
+                letterSpacing: 3.6,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              copy.title.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cinzel(
+                color: ink,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              width: 72,
+              height: 2,
+              color: gold,
+            ),
+            const SizedBox(height: 6),
+            _copyBlock(ink: ink, course: ink),
+            const Spacer(),
+            _footer(ink: ink, sealColor: gold),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _ribbon() {
+    const teal = Color(0xFF0F6E6E);
+    return _shell(
+      paper: Colors.white,
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            color: teal,
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            child: Column(
+              children: [
+                Text(
+                  copy.brand.toUpperCase(),
+                  style: GoogleFonts.cinzel(
+                    color: const Color(0xFFD7EFEF),
+                    fontSize: 8,
+                    letterSpacing: 2.4,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  copy.title,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.cinzel(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+              child: Column(
+                children: [
+                  _copyBlock(ink: const Color(0xFF123C3C), course: teal),
+                  const Spacer(),
+                  _footer(ink: teal, seal: false),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _parchment() {
+    const brown = Color(0xFF5C3A21);
+    const wax = Color(0xFF9C2F2F);
+    return _shell(
+      paper: const Color(0xFFF3E6C8),
+      painter: const _LineFramePainter(
+        color: brown,
+        outer: 0.9,
+        inner: 0.35,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 10),
+        child: Column(
+          children: [
+            Text(
+              copy.brand.toUpperCase(),
+              style: GoogleFonts.cinzel(
+                color: brown,
+                fontSize: 10,
+                letterSpacing: 2.6,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              copy.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cormorantGaramond(
+                color: brown,
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+            const SizedBox(height: 4),
+            _copyBlock(ink: brown, course: brown, script: true),
+            const Spacer(),
+            _footer(ink: brown, sealColor: wax, filledSeal: true),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _horizon() {
+    const panel = Color(0xFF1F4E79);
+    const ink = Color(0xFF16324F);
+    return _shell(
+      paper: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            width: 36,
+            color: panel,
+            alignment: Alignment.center,
+            child: RotatedBox(
+              quarterTurns: 3,
+              child: Text(
+                copy.brand.toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.cinzel(
+                  color: Colors.white,
+                  fontSize: 9,
+                  letterSpacing: 2.4,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    copy.title.toUpperCase(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.cinzel(
+                      color: panel,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    certificate.studentName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.cinzel(
+                      color: ink,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    width: 42,
+                    height: 2,
+                    color: panel,
+                  ),
+                  Text(
+                    copy.body,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.cormorantGaramond(
+                      color: const Color(0xFF4B5563),
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    certificate.courseName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.cormorantGaramond(
+                      color: panel,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Spacer(),
+                  _footer(ink: panel, seal: false, alignStart: true),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _copyBlock({
+    required Color ink,
+    required Color course,
+    Color? muted,
+    bool script = false,
+  }) {
+    final quiet = muted ?? const Color(0xFF6B7280);
+    return Column(
+      children: [
+        Text(
+          copy.confers,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.cormorantGaramond(
+            color: quiet,
+            fontSize: 11,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        Text(
+          certificate.studentName,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: script
+              ? GoogleFonts.greatVibes(
+                  color: ink,
+                  fontSize: 26,
+                  height: 1.05,
+                )
+              : GoogleFonts.cinzel(
+                  color: ink,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  height: 1.2,
+                ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          copy.body,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.cormorantGaramond(
+            color: muted ?? const Color(0xFF374151),
+            fontSize: 11,
+          ),
+        ),
+        Text(
+          certificate.courseName,
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.cormorantGaramond(
+            color: course,
+            fontSize: 12,
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _footer({
+    required Color ink,
+    Color? muted,
+    Color? sealColor,
+    bool seal = true,
+    bool filledSeal = false,
+    bool alignStart = false,
+  }) {
+    final sign = _Sign(
+      title: copy.issuedOn,
+      subtitle: '${copy.folioLabel} ${certificate.folio}',
+      color: ink,
+      muted: muted,
+    );
+    final teacher = _Sign(
+      title: teacherName,
+      subtitle: copy.teacherLabel,
+      color: ink,
+      muted: muted,
+      end: !alignStart,
+    );
+    if (!seal) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(child: sign),
+          Expanded(child: teacher),
+        ],
+      );
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(child: sign),
+        _Seal(
+          color: sealColor ?? ink,
+          year: certificate.issuedAt.year,
+          filled: filledSeal,
+        ),
+        Expanded(child: teacher),
+      ],
+    );
+  }
+
+  Widget _shell({
+    required Color paper,
+    CustomPainter? painter,
+    required Widget child,
+  }) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.16),
+            blurRadius: 22,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ColoredBox(
+        color: paper,
+        child: painter == null
+            ? child
+            : CustomPaint(painter: painter, child: child),
+      ),
+    );
+  }
+}
+
 class _Watermark extends StatelessWidget {
   final String text;
   final Color color;
@@ -513,13 +1187,19 @@ class _Ornament extends StatelessWidget {
 class _Seal extends StatelessWidget {
   final Color color;
   final int year;
+  final bool filled;
 
-  const _Seal({required this.color, required this.year});
+  const _Seal({
+    required this.color,
+    required this.year,
+    this.filled = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final ink = filled ? const Color(0xFFFFF6E8) : color;
     return CustomPaint(
-      painter: _SealPainter(color: color),
+      painter: _SealPainter(color: color, filled: filled),
       child: SizedBox(
         width: 58,
         height: 58,
@@ -531,7 +1211,7 @@ class _Seal extends StatelessWidget {
               style: GoogleFonts.cinzel(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
-                color: color,
+                color: ink,
                 letterSpacing: 1.4,
               ),
             ),
@@ -539,7 +1219,7 @@ class _Seal extends StatelessWidget {
               '$year',
               style: GoogleFonts.cormorantGaramond(
                 fontSize: 9,
-                color: color,
+                color: ink,
               ),
             ),
           ],
@@ -553,19 +1233,22 @@ class _Sign extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color color;
+  final Color? muted;
   final bool end;
 
   const _Sign({
     required this.title,
     required this.subtitle,
     required this.color,
+    this.muted,
     this.end = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: end ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          end ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Container(width: 96, height: 1, color: color),
         const SizedBox(height: 1),
@@ -588,7 +1271,7 @@ class _Sign extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: GoogleFonts.cormorantGaramond(
             fontSize: 9,
-            color: Colors.grey.shade600,
+            color: muted ?? Colors.grey.shade600,
           ),
         ),
       ],
@@ -721,15 +1404,173 @@ class _ElegantFramePainter extends CustomPainter {
   }
 }
 
-class _SealPainter extends CustomPainter {
+class _LineFramePainter extends CustomPainter {
+  final Color color;
+  final double outer;
+  final double? inner;
+
+  const _LineFramePainter({
+    required this.color,
+    required this.outer,
+    this.inner,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _strokeRect(canvas, size, 7, outer, color);
+    final innerWidth = inner;
+    if (innerWidth != null) {
+      _strokeRect(
+        canvas,
+        size,
+        11,
+        innerWidth,
+        color.withValues(alpha: 0.55),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _LineFramePainter oldDelegate) {
+    return oldDelegate.color != color ||
+        oldDelegate.outer != outer ||
+        oldDelegate.inner != inner;
+  }
+}
+
+class _BotanicalFramePainter extends CustomPainter {
   final Color color;
 
-  const _SealPainter({required this.color});
+  const _BotanicalFramePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    _strokeRect(canvas, size, 7, 1, color);
+    _strokeRect(canvas, size, 11, 0.4, color.withValues(alpha: 0.4));
+    final stem = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round;
+    void sprig(Offset origin, double sx, double sy) {
+      final path = Path()
+        ..moveTo(origin.dx, origin.dy)
+        ..quadraticBezierTo(
+          origin.dx + 10 * sx,
+          origin.dy + 1 * sy,
+          origin.dx + 12 * sx,
+          origin.dy + 8 * sy,
+        )
+        ..quadraticBezierTo(
+          origin.dx + 4 * sx,
+          origin.dy + 6 * sy,
+          origin.dx,
+          origin.dy,
+        );
+      canvas.drawPath(path, stem);
+      canvas.drawLine(
+        origin,
+        origin + Offset(11 * sx, 7 * sy),
+        stem,
+      );
+    }
+
+    sprig(const Offset(12, 12), 1, 1);
+    sprig(Offset(size.width - 12, 12), -1, 1);
+    sprig(Offset(12, size.height - 12), 1, -1);
+    sprig(Offset(size.width - 12, size.height - 12), -1, -1);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BotanicalFramePainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}
+
+class _ImperialFramePainter extends CustomPainter {
+  final Color purple;
+  final Color gold;
+
+  const _ImperialFramePainter({required this.purple, required this.gold});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(
+      Rect.fromLTWH(2, 2, size.width - 4, size.height - 4),
+      Paint()
+        ..color = gold
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 4,
+    );
+    _strokeRect(canvas, size, 8, 1.1, purple);
+    _strokeRect(canvas, size, 12, 0.45, gold);
+    _rosette(canvas, Offset(size.width / 2, 8), gold);
+    _rosette(canvas, Offset(size.width / 2, size.height - 8), gold);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ImperialFramePainter oldDelegate) {
+    return oldDelegate.purple != purple || oldDelegate.gold != gold;
+  }
+}
+
+class _DecoFramePainter extends CustomPainter {
+  final Color color;
+
+  const _DecoFramePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.15
+      ..strokeJoin = StrokeJoin.miter;
+    void steps(Offset origin, double sx, double sy) {
+      for (var i = 0; i < 3; i++) {
+        final length = 6.0 + i * 4;
+        final path = Path()
+          ..moveTo(origin.dx + sx * length, origin.dy)
+          ..lineTo(origin.dx, origin.dy)
+          ..lineTo(origin.dx, origin.dy + sy * length);
+        canvas.drawPath(path, paint);
+      }
+    }
+
+    steps(const Offset(10, 10), 1, 1);
+    steps(Offset(size.width - 10, 10), -1, 1);
+    steps(Offset(10, size.height - 10), 1, -1);
+    steps(Offset(size.width - 10, size.height - 10), -1, -1);
+  }
+
+  @override
+  bool shouldRepaint(covariant _DecoFramePainter oldDelegate) {
+    return oldDelegate.color != color;
+  }
+}
+
+class _SealPainter extends CustomPainter {
+  final Color color;
+  final bool filled;
+
+  const _SealPainter({required this.color, this.filled = false});
 
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final r = size.width / 2 - 2.5;
+    if (filled) {
+      canvas.drawCircle(center, r, Paint()..color = color);
+      canvas.drawCircle(
+        center,
+        r - 3.4,
+        Paint()
+          ..color = const Color(0xFFFFF6E8).withValues(alpha: 0.9)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.7,
+      );
+      return;
+    }
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -753,7 +1594,7 @@ class _SealPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _SealPainter oldDelegate) {
-    return oldDelegate.color != color;
+    return oldDelegate.color != color || oldDelegate.filled != filled;
   }
 }
 
@@ -822,6 +1663,63 @@ class CertificateStyleThumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return switch (style) {
+      CertificateStyle.ribbon => const _RibbonThumb(),
+      CertificateStyle.horizon => const _HorizonThumb(),
+      CertificateStyle.midnight => const _AbstractThumb(
+          paper: Color(0xFF07111F),
+          bar: Color(0xFFD4BE86),
+          title: Color(0xFFF6EFE2),
+          painter: _LineFramePainter(color: Color(0xFFD4BE86), outer: 0.8),
+        ),
+      CertificateStyle.academic => const _AbstractThumb(
+          paper: Color(0xFFF4F1EA),
+          bar: Color(0xFF8C2F39),
+          title: Color(0xFF1B3A4B),
+          painter: _LineFramePainter(color: Color(0xFF1B3A4B), outer: 0.9),
+          header: Color(0xFF1B3A4B),
+        ),
+      CertificateStyle.minimal => const _AbstractThumb(
+          paper: Colors.white,
+          bar: Color(0xFF1F2933),
+          title: Color(0xFF1F2933),
+          painter: _LineFramePainter(color: Color(0xFFD6D3D1), outer: 0.7),
+        ),
+      CertificateStyle.botanical => const _AbstractThumb(
+          paper: Color(0xFFF3F6F1),
+          bar: Color(0xFF7D9B76),
+          title: Color(0xFF2F5D50),
+          painter: _BotanicalFramePainter(color: Color(0xFF2F5D50)),
+        ),
+      CertificateStyle.imperial => const _AbstractThumb(
+          paper: Color(0xFFFBF7EF),
+          bar: Color(0xFFC6A15B),
+          title: Color(0xFF3C1361),
+          painter: _ImperialFramePainter(
+            purple: Color(0xFF3C1361),
+            gold: Color(0xFFC6A15B),
+          ),
+        ),
+      CertificateStyle.deco => const _AbstractThumb(
+          paper: Color(0xFFF7F3EA),
+          bar: Color(0xFFC6A15B),
+          title: Color(0xFF1A1A1A),
+          painter: _DecoFramePainter(color: Color(0xFFC6A15B)),
+        ),
+      CertificateStyle.parchment => const _AbstractThumb(
+          paper: Color(0xFFF3E6C8),
+          bar: Color(0xFF9C2F2F),
+          title: Color(0xFF5C3A21),
+          painter: _LineFramePainter(color: Color(0xFF5C3A21), outer: 0.9),
+        ),
+      CertificateStyle.classic ||
+      CertificateStyle.modern ||
+      CertificateStyle.elegant =>
+        _legacyThumb(),
+    };
+  }
+
+  Widget _legacyThumb() {
     final (Color paper, CustomPainter painter, Color bar, Color title) =
         switch (style) {
       CertificateStyle.classic => (
@@ -841,6 +1739,12 @@ class CertificateStyleThumb extends StatelessWidget {
           const _ElegantFramePainter(color: Color(0xFF6B2D5B)),
           const Color(0xFF6B2D5B),
           const Color(0xFF6B2D5B),
+        ),
+      _ => (
+          Colors.white,
+          const _LineFramePainter(color: Color(0xFFD6D3D1), outer: 0.7),
+          accent,
+          accent,
         ),
     };
 
@@ -869,6 +1773,114 @@ class CertificateStyleThumb extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _AbstractThumb extends StatelessWidget {
+  final Color paper;
+  final Color bar;
+  final Color title;
+  final CustomPainter painter;
+  final Color? header;
+
+  const _AbstractThumb({
+    required this.paper,
+    required this.bar,
+    required this.title,
+    required this.painter,
+    this.header,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: paper,
+      child: CustomPaint(
+        painter: painter,
+        child: Column(
+          children: [
+            if (header != null) Container(height: 14, color: header),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(width: 28, height: 2, color: bar),
+                  const SizedBox(height: 7),
+                  Container(
+                    width: 46,
+                    height: 5,
+                    color: title.withValues(alpha: 0.28),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    width: 34,
+                    height: 3,
+                    color: bar.withValues(alpha: 0.55),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RibbonThumb extends StatelessWidget {
+  const _RibbonThumb();
+
+  @override
+  Widget build(BuildContext context) {
+    return const ColoredBox(
+      color: Colors.white,
+      child: Column(
+        children: [
+          ColoredBox(
+            color: Color(0xFF0F6E6E),
+            child: SizedBox(height: 22, width: double.infinity),
+          ),
+          Expanded(
+            child: Center(
+              child: SizedBox(
+                width: 40,
+                height: 2,
+                child: ColoredBox(color: Color(0xFF0F6E6E)),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HorizonThumb extends StatelessWidget {
+  const _HorizonThumb();
+
+  @override
+  Widget build(BuildContext context) {
+    return const ColoredBox(
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ColoredBox(
+            color: Color(0xFF1F4E79),
+            child: SizedBox(width: 16),
+          ),
+          Expanded(
+            child: Center(
+              child: SizedBox(
+                width: 36,
+                height: 2,
+                child: ColoredBox(color: Color(0xFF1F4E79)),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

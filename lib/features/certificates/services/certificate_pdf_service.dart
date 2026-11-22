@@ -96,6 +96,24 @@ class CertificatePdfService {
         return _modern(certificate, copy, teacherName, logo, primary, fonts);
       case CertificateStyle.elegant:
         return _elegant(certificate, copy, teacherName, logo, fonts);
+      case CertificateStyle.academic:
+        return _academic(certificate, copy, teacherName, fonts);
+      case CertificateStyle.minimal:
+        return _minimal(certificate, copy, teacherName, fonts);
+      case CertificateStyle.botanical:
+        return _botanical(certificate, copy, teacherName, fonts);
+      case CertificateStyle.imperial:
+        return _imperial(certificate, copy, teacherName, fonts);
+      case CertificateStyle.midnight:
+        return _midnight(certificate, copy, teacherName, fonts);
+      case CertificateStyle.deco:
+        return _deco(certificate, copy, teacherName, fonts);
+      case CertificateStyle.ribbon:
+        return _ribbon(certificate, copy, teacherName, fonts);
+      case CertificateStyle.parchment:
+        return _parchment(certificate, copy, teacherName, fonts);
+      case CertificateStyle.horizon:
+        return _horizon(certificate, copy, teacherName, fonts);
     }
   }
 
@@ -112,7 +130,8 @@ class CertificatePdfService {
     return pw.Container(
       color: ivory,
       child: pw.CustomPaint(
-        painter: (canvas, size) => _paintClassicFrame(canvas, size, gold, primary),
+        painter: (canvas, size) =>
+            _paintClassicFrame(canvas, size, gold, primary),
         child: pw.Stack(
           children: [
             _watermark(copy.brand, primary, fonts),
@@ -224,7 +243,8 @@ class CertificatePdfService {
     return pw.Container(
       color: PdfColors.white,
       child: pw.CustomPaint(
-        painter: (canvas, size) => _paintModernFrame(canvas, size, primary, gold),
+        painter: (canvas, size) =>
+            _paintModernFrame(canvas, size, primary, gold),
         child: pw.Padding(
           padding: const pw.EdgeInsets.fromLTRB(44, 26, 32, 22),
           child: pw.Column(
@@ -438,7 +458,8 @@ class CertificatePdfService {
                           alignEnd: false,
                         ),
                       ),
-                      _seal(burgundy, burgundy, fonts, certificate.issuedAt.year),
+                      _seal(
+                          burgundy, burgundy, fonts, certificate.issuedAt.year),
                       pw.Expanded(
                         child: _signatureBlock(
                           teacherName,
@@ -455,6 +476,748 @@ class CertificatePdfService {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  pw.Widget _academic(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const navy = PdfColor.fromInt(0xFF1B3A4B);
+    const crimson = PdfColor.fromInt(0xFF8C2F39);
+    const gold = PdfColor.fromInt(0xFFC4A35A);
+    const paper = PdfColor.fromInt(0xFFF4F1EA);
+    return _doubleFrame(
+      paper: paper,
+      line: navy,
+      child: pw.Column(
+        children: [
+          pw.Container(
+            color: navy,
+            padding:
+                const pw.EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text(
+                  copy.brand.toUpperCase(),
+                  style: pw.TextStyle(
+                    font: fonts.displayBold,
+                    fontSize: 13,
+                    color: PdfColors.white,
+                    letterSpacing: 2.6,
+                  ),
+                ),
+                pw.Text(
+                  '${certificate.issuedAt.year}',
+                  style: pw.TextStyle(
+                    font: fonts.displayBold,
+                    fontSize: 13,
+                    color: gold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          pw.Expanded(
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.fromLTRB(36, 22, 36, 18),
+              child: pw.Column(
+                children: [
+                  pw.Text(
+                    copy.title.toUpperCase(),
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(
+                      font: fonts.displayBold,
+                      fontSize: 18,
+                      color: crimson,
+                      letterSpacing: 1.6,
+                    ),
+                  ),
+                  pw.SizedBox(height: 10),
+                  _ornament(gold, width: 160),
+                  pw.Spacer(),
+                  _facts(certificate, copy, fonts, ink: navy, course: crimson),
+                  pw.Spacer(),
+                  _signs(certificate, copy, teacherName, fonts, ink: navy),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _minimal(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const ink = PdfColor.fromInt(0xFF1F2933);
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        color: PdfColors.white,
+        border:
+            pw.Border.all(color: const PdfColor.fromInt(0xFFD6D3D1), width: 1),
+      ),
+      padding: const pw.EdgeInsets.fromLTRB(48, 28, 48, 22),
+      child: pw.Column(
+        children: [
+          pw.Text(
+            copy.brand.toUpperCase(),
+            style: pw.TextStyle(
+              font: fonts.display,
+              fontSize: 12,
+              color: PdfColors.grey500,
+              letterSpacing: 4,
+            ),
+          ),
+          pw.Spacer(flex: 2),
+          pw.Text(
+            copy.title,
+            textAlign: pw.TextAlign.center,
+            style:
+                pw.TextStyle(font: fonts.bodyItalic, fontSize: 18, color: ink),
+          ),
+          pw.SizedBox(height: 8),
+          pw.Text(
+            certificate.studentName,
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              font: fonts.displayBold,
+              fontSize: 34,
+              color: ink,
+            ),
+          ),
+          pw.Container(
+            margin: const pw.EdgeInsets.symmetric(vertical: 12),
+            width: 48,
+            height: 1,
+            color: ink,
+          ),
+          pw.Text(
+            certificate.courseName,
+            textAlign: pw.TextAlign.center,
+            style:
+                pw.TextStyle(font: fonts.bodyItalic, fontSize: 18, color: ink),
+          ),
+          pw.SizedBox(height: 6),
+          pw.Text(
+            copy.body,
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+                font: fonts.body, fontSize: 14, color: PdfColors.grey600),
+          ),
+          pw.Spacer(flex: 3),
+          _signs(certificate, copy, teacherName, fonts,
+              ink: ink, showSeal: false),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _botanical(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const leaf = PdfColor.fromInt(0xFF2F5D50);
+    const sage = PdfColor.fromInt(0xFF7D9B76);
+    const paper = PdfColor.fromInt(0xFFF3F6F1);
+    return pw.Container(
+      color: paper,
+      child: pw.CustomPaint(
+        painter: (canvas, size) => _paintBotanical(canvas, size, leaf),
+        child: pw.Padding(
+          padding: const pw.EdgeInsets.fromLTRB(56, 36, 56, 28),
+          child: pw.Column(
+            children: [
+              pw.Text(
+                copy.brand.toUpperCase(),
+                style: pw.TextStyle(
+                  font: fonts.display,
+                  fontSize: 12,
+                  color: sage,
+                  letterSpacing: 3,
+                ),
+              ),
+              pw.SizedBox(height: 10),
+              pw.Text(
+                copy.title,
+                textAlign: pw.TextAlign.center,
+                style: pw.TextStyle(
+                  font: fonts.bodyItalic,
+                  fontSize: 22,
+                  color: leaf,
+                ),
+              ),
+              pw.Spacer(),
+              _facts(
+                certificate,
+                copy,
+                fonts,
+                ink: leaf,
+                course: leaf,
+                script: true,
+              ),
+              pw.Spacer(),
+              _signs(
+                certificate,
+                copy,
+                teacherName,
+                fonts,
+                ink: leaf,
+                sealColor: sage,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  pw.Widget _imperial(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const purple = PdfColor.fromInt(0xFF3C1361);
+    const gold = PdfColor.fromInt(0xFFC6A15B);
+    const paper = PdfColor.fromInt(0xFFFBF7EF);
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        color: paper,
+        border: pw.Border.all(color: gold, width: 8),
+      ),
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Container(
+        padding: const pw.EdgeInsets.fromLTRB(36, 24, 36, 18),
+        decoration: pw.BoxDecoration(
+          border: pw.Border.all(color: purple, width: 1.1),
+        ),
+        child: pw.Column(
+          children: [
+            pw.Text(
+              copy.brand.toUpperCase(),
+              style: pw.TextStyle(
+                font: fonts.displayBold,
+                fontSize: 13,
+                color: gold,
+                letterSpacing: 3.4,
+              ),
+            ),
+            pw.SizedBox(height: 8),
+            pw.Text(
+              copy.title.toUpperCase(),
+              textAlign: pw.TextAlign.center,
+              style: pw.TextStyle(
+                font: fonts.display,
+                fontSize: 18,
+                color: purple,
+                letterSpacing: 2,
+              ),
+            ),
+            pw.SizedBox(height: 8),
+            _ornament(gold, width: 150),
+            pw.Spacer(),
+            _facts(
+              certificate,
+              copy,
+              fonts,
+              ink: purple,
+              course: purple,
+              script: true,
+              nameSize: 46,
+            ),
+            pw.Spacer(),
+            _signs(
+              certificate,
+              copy,
+              teacherName,
+              fonts,
+              ink: purple,
+              sealColor: gold,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  pw.Widget _midnight(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const gold = PdfColor.fromInt(0xFFD4BE86);
+    const cream = PdfColor.fromInt(0xFFF6EFE2);
+    const ink = PdfColor.fromInt(0xFF07111F);
+    const muted = PdfColor.fromInt(0xFFB7A88A);
+    return _doubleFrame(
+      paper: ink,
+      line: gold,
+      padding: const pw.EdgeInsets.fromLTRB(40, 28, 40, 20),
+      child: pw.Column(
+        children: [
+          pw.Text(
+            copy.brand.toUpperCase(),
+            style: pw.TextStyle(
+              font: fonts.display,
+              fontSize: 13,
+              color: gold,
+              letterSpacing: 3.6,
+            ),
+          ),
+          pw.SizedBox(height: 14),
+          pw.Text(
+            copy.title.toUpperCase(),
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              font: fonts.display,
+              fontSize: 20,
+              color: cream,
+              letterSpacing: 2.2,
+            ),
+          ),
+          pw.Spacer(),
+          _facts(
+            certificate,
+            copy,
+            fonts,
+            ink: cream,
+            course: gold,
+            muted: gold,
+          ),
+          pw.Spacer(),
+          _signs(
+            certificate,
+            copy,
+            teacherName,
+            fonts,
+            ink: gold,
+            muted: muted,
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _deco(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const ink = PdfColor.fromInt(0xFF1A1A1A);
+    const gold = PdfColor.fromInt(0xFFC6A15B);
+    const paper = PdfColor.fromInt(0xFFF7F3EA);
+    return pw.Container(
+      color: paper,
+      child: pw.CustomPaint(
+        painter: (canvas, size) => _paintDeco(canvas, size, gold),
+        child: pw.Padding(
+          padding: const pw.EdgeInsets.fromLTRB(56, 40, 56, 36),
+          child: pw.Column(
+            children: [
+              pw.Text(
+                copy.brand.toUpperCase(),
+                style: pw.TextStyle(
+                  font: fonts.display,
+                  fontSize: 12,
+                  color: gold,
+                  letterSpacing: 4,
+                ),
+              ),
+              pw.SizedBox(height: 12),
+              pw.Text(
+                copy.title.toUpperCase(),
+                textAlign: pw.TextAlign.center,
+                style: pw.TextStyle(
+                  font: fonts.displayBold,
+                  fontSize: 20,
+                  color: ink,
+                  letterSpacing: 2.4,
+                ),
+              ),
+              pw.Container(
+                margin: const pw.EdgeInsets.only(top: 12),
+                width: 120,
+                height: 2.4,
+                color: gold,
+              ),
+              pw.Spacer(),
+              _facts(certificate, copy, fonts, ink: ink, course: ink),
+              pw.Spacer(),
+              _signs(
+                certificate,
+                copy,
+                teacherName,
+                fonts,
+                ink: ink,
+                sealColor: gold,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  pw.Widget _ribbon(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const teal = PdfColor.fromInt(0xFF0F6E6E);
+    const ink = PdfColor.fromInt(0xFF123C3C);
+    return pw.Container(
+      color: PdfColors.white,
+      child: pw.Column(
+        children: [
+          pw.Container(
+            width: double.infinity,
+            color: teal,
+            padding:
+                const pw.EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+            child: pw.Column(
+              children: [
+                pw.Text(
+                  copy.brand.toUpperCase(),
+                  style: pw.TextStyle(
+                    font: fonts.display,
+                    fontSize: 11,
+                    color: const PdfColor.fromInt(0xFFD7EFEF),
+                    letterSpacing: 2.8,
+                  ),
+                ),
+                pw.SizedBox(height: 4),
+                pw.Text(
+                  copy.title,
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(
+                    font: fonts.displayBold,
+                    fontSize: 22,
+                    color: PdfColors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          pw.Expanded(
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.fromLTRB(44, 24, 44, 20),
+              child: pw.Column(
+                children: [
+                  _facts(certificate, copy, fonts, ink: ink, course: teal),
+                  pw.Spacer(),
+                  _signs(certificate, copy, teacherName, fonts,
+                      ink: teal, showSeal: false),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _parchment(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const brown = PdfColor.fromInt(0xFF5C3A21);
+    const wax = PdfColor.fromInt(0xFF9C2F2F);
+    const paper = PdfColor.fromInt(0xFFF3E6C8);
+    return _doubleFrame(
+      paper: paper,
+      line: brown,
+      padding: const pw.EdgeInsets.fromLTRB(40, 28, 40, 20),
+      child: pw.Column(
+        children: [
+          pw.Text(
+            copy.brand.toUpperCase(),
+            style: pw.TextStyle(
+              font: fonts.display,
+              fontSize: 13,
+              color: brown,
+              letterSpacing: 3,
+            ),
+          ),
+          pw.SizedBox(height: 10),
+          pw.Text(
+            copy.title,
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(
+              font: fonts.bodyItalic,
+              fontSize: 22,
+              color: brown,
+            ),
+          ),
+          pw.Spacer(),
+          _facts(
+            certificate,
+            copy,
+            fonts,
+            ink: brown,
+            course: brown,
+            script: true,
+          ),
+          pw.Spacer(),
+          _signs(
+            certificate,
+            copy,
+            teacherName,
+            fonts,
+            ink: brown,
+            seal: _wax(wax, fonts, certificate.issuedAt.year),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _horizon(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts,
+  ) {
+    const panel = PdfColor.fromInt(0xFF1F4E79);
+    const ink = PdfColor.fromInt(0xFF16324F);
+    return pw.Container(
+      color: PdfColors.white,
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+        children: [
+          pw.Container(
+            width: 108,
+            color: panel,
+            alignment: pw.Alignment.center,
+            child: pw.Transform.rotateBox(
+              angle: -math.pi / 2,
+              child: pw.Text(
+                copy.brand.toUpperCase(),
+                style: pw.TextStyle(
+                  font: fonts.displayBold,
+                  fontSize: 14,
+                  color: PdfColors.white,
+                  letterSpacing: 3,
+                ),
+              ),
+            ),
+          ),
+          pw.Expanded(
+            child: pw.Padding(
+              padding: const pw.EdgeInsets.fromLTRB(36, 32, 36, 22),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Text(
+                    copy.title.toUpperCase(),
+                    style: pw.TextStyle(
+                      font: fonts.displayBold,
+                      fontSize: 16,
+                      color: panel,
+                      letterSpacing: 1.6,
+                    ),
+                  ),
+                  pw.Spacer(),
+                  pw.Text(
+                    certificate.studentName,
+                    style: pw.TextStyle(
+                      font: fonts.displayBold,
+                      fontSize: 32,
+                      color: ink,
+                    ),
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Align(
+                    alignment: pw.Alignment.centerLeft,
+                    child: pw.Container(width: 64, height: 3, color: panel),
+                  ),
+                  pw.SizedBox(height: 10),
+                  pw.Text(
+                    copy.body,
+                    style: pw.TextStyle(
+                      font: fonts.body,
+                      fontSize: 15,
+                      color: PdfColors.grey700,
+                    ),
+                  ),
+                  pw.SizedBox(height: 6),
+                  pw.Text(
+                    certificate.courseName,
+                    style: pw.TextStyle(
+                      font: fonts.bodyBold,
+                      fontSize: 18,
+                      color: panel,
+                    ),
+                  ),
+                  pw.Spacer(),
+                  _signs(certificate, copy, teacherName, fonts,
+                      ink: panel, showSeal: false),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _facts(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    _Fonts fonts, {
+    required PdfColor ink,
+    required PdfColor course,
+    PdfColor? muted,
+    bool script = false,
+    double nameSize = 36,
+  }) {
+    final quiet = muted ?? PdfColors.grey700;
+    final body = muted ?? PdfColors.grey800;
+    return pw.Column(
+      children: [
+        pw.Text(
+          copy.confers,
+          textAlign: pw.TextAlign.center,
+          style:
+              pw.TextStyle(font: fonts.bodyItalic, fontSize: 15, color: quiet),
+        ),
+        pw.SizedBox(height: 4),
+        pw.Text(
+          certificate.studentName,
+          textAlign: pw.TextAlign.center,
+          style: pw.TextStyle(
+            font: script ? fonts.script : fonts.displayBold,
+            fontSize: script ? nameSize + 10 : nameSize,
+            color: ink,
+          ),
+        ),
+        pw.SizedBox(height: 8),
+        pw.Text(
+          copy.body,
+          textAlign: pw.TextAlign.center,
+          style: pw.TextStyle(font: fonts.body, fontSize: 15, color: body),
+        ),
+        pw.SizedBox(height: 4),
+        pw.Text(
+          certificate.courseName,
+          textAlign: pw.TextAlign.center,
+          style:
+              pw.TextStyle(font: fonts.bodyItalic, fontSize: 18, color: course),
+        ),
+      ],
+    );
+  }
+
+  pw.Widget _signs(
+    IssuedCertificate certificate,
+    CertificateCopy copy,
+    String teacherName,
+    _Fonts fonts, {
+    required PdfColor ink,
+    PdfColor? muted,
+    PdfColor? sealColor,
+    pw.Widget? seal,
+    bool showSeal = true,
+  }) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.end,
+      children: [
+        pw.Expanded(
+          child: _signatureBlock(
+            copy.issuedOn,
+            '${copy.folioLabel} ${certificate.folio}',
+            ink,
+            fonts,
+            alignEnd: false,
+            muted: muted,
+          ),
+        ),
+        if (seal != null)
+          seal
+        else if (showSeal)
+          _seal(sealColor ?? ink, sealColor ?? ink, fonts,
+              certificate.issuedAt.year),
+        pw.Expanded(
+          child: _signatureBlock(
+            teacherName,
+            copy.teacherLabel,
+            ink,
+            fonts,
+            alignEnd: true,
+            muted: muted,
+          ),
+        ),
+      ],
+    );
+  }
+
+  pw.Widget _wax(PdfColor color, _Fonts fonts, int year) {
+    const cream = PdfColor.fromInt(0xFFFFF6E8);
+    return pw.Container(
+      width: 78,
+      height: 78,
+      decoration: pw.BoxDecoration(
+        color: color,
+        shape: pw.BoxShape.circle,
+      ),
+      alignment: pw.Alignment.center,
+      child: pw.Column(
+        mainAxisAlignment: pw.MainAxisAlignment.center,
+        children: [
+          pw.Text(
+            'DOC',
+            style: pw.TextStyle(
+              font: fonts.displayBold,
+              fontSize: 12,
+              color: cream,
+              letterSpacing: 1.4,
+            ),
+          ),
+          pw.Text(
+            '$year',
+            style: pw.TextStyle(font: fonts.body, fontSize: 10, color: cream),
+          ),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _doubleFrame({
+    required PdfColor paper,
+    required PdfColor line,
+    required pw.Widget child,
+    pw.EdgeInsets padding = const pw.EdgeInsets.all(0),
+  }) {
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        color: paper,
+        border: pw.Border.all(color: line, width: 1.4),
+      ),
+      padding: const pw.EdgeInsets.all(6),
+      child: pw.Container(
+        padding: padding,
+        decoration: pw.BoxDecoration(
+          border: pw.Border.all(
+            color: PdfColor(line.red, line.green, line.blue, 0.45),
+            width: 0.5,
+          ),
+        ),
+        child: child,
       ),
     );
   }
@@ -571,6 +1334,7 @@ class CertificatePdfService {
     PdfColor color,
     _Fonts fonts, {
     required bool alignEnd,
+    PdfColor? muted,
   }) {
     return pw.Column(
       crossAxisAlignment:
@@ -603,7 +1367,7 @@ class CertificatePdfService {
           style: pw.TextStyle(
             font: fonts.body,
             fontSize: 11,
-            color: PdfColors.grey600,
+            color: muted ?? PdfColors.grey600,
             wordSpacing: 1.4,
           ),
         ),
@@ -686,7 +1450,8 @@ class CertificatePdfService {
   void _paintElegantFrame(PdfGraphics canvas, PdfPoint size, PdfColor color) {
     _strokeRect(canvas, size, 8, 0.95, color);
     _strokeRect(canvas, size, 13.5, 0.45, color);
-    _strokeRect(canvas, size, 17, 0.3, PdfColor(color.red, color.green, color.blue, 0.45));
+    _strokeRect(canvas, size, 17, 0.3,
+        PdfColor(color.red, color.green, color.blue, 0.45));
 
     const inset = 24.0;
     const len = 26.0;
@@ -699,6 +1464,54 @@ class CertificatePdfService {
     _flourish(canvas, size.x - inset - 8, size.y - inset - 8, -1, -1, color);
     _flourish(canvas, inset + 8, inset + 8, 1, 1, color);
     _flourish(canvas, size.x - inset - 8, inset + 8, -1, 1, color);
+  }
+
+  void _paintBotanical(PdfGraphics canvas, PdfPoint size, PdfColor color) {
+    _strokeRect(canvas, size, 12, 1.15, color);
+    _strokeRect(
+      canvas,
+      size,
+      17,
+      0.4,
+      PdfColor(color.red, color.green, color.blue, 0.4),
+    );
+    canvas
+      ..setStrokeColor(color)
+      ..setLineWidth(1.15);
+    void sprig(double x, double y, double sx, double sy) {
+      canvas
+        ..moveTo(x, y)
+        ..curveTo(x + 14 * sx, y + 3 * sy, x + 16 * sx, y + 12 * sy, x, y)
+        ..moveTo(x, y)
+        ..lineTo(x + 14 * sx, y + 10 * sy);
+    }
+
+    sprig(16, size.y - 16, 1, -1);
+    sprig(size.x - 16, size.y - 16, -1, -1);
+    sprig(16, 16, 1, 1);
+    sprig(size.x - 16, 16, -1, 1);
+    canvas.strokePath();
+  }
+
+  void _paintDeco(PdfGraphics canvas, PdfPoint size, PdfColor color) {
+    canvas
+      ..setStrokeColor(color)
+      ..setLineWidth(1.35);
+    void steps(double x, double y, double sx, double sy) {
+      for (var i = 0; i < 3; i++) {
+        final length = 12.0 + i * 8;
+        canvas
+          ..moveTo(x + sx * length, y)
+          ..lineTo(x, y)
+          ..lineTo(x, y + sy * length);
+      }
+    }
+
+    steps(18, size.y - 18, 1, -1);
+    steps(size.x - 18, size.y - 18, -1, -1);
+    steps(18, 18, 1, 1);
+    steps(size.x - 18, 18, -1, 1);
+    canvas.strokePath();
   }
 
   void _paintSeal(PdfGraphics canvas, PdfPoint size, PdfColor ring) {

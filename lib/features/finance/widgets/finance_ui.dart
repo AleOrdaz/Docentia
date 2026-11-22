@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
+import '../../../core/widgets/profile_avatar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../payments/models/payment_model.dart';
 import '../logic/finance_fees.dart';
 import '../providers/finance_catalog_provider.dart';
 
 class FinancePalette {
-  static Color page(bool isDark) => isDark ? const Color(0xFF0B132B) : const Color(0xFFF4F7FB);
-  static Color card(bool isDark) => isDark ? const Color(0xFF151D2E) : Colors.white;
-  static Color border(bool isDark) => isDark ? const Color(0xFF22304A) : const Color(0xFFE7EEF6);
-  static Color ink(bool isDark) => isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1B2A4A);
-  static Color muted(bool isDark) => isDark ? const Color(0xFF94A3B8) : const Color(0xFF7C8AA0);
+  static Color page(bool isDark) =>
+      isDark ? const Color(0xFF0B132B) : const Color(0xFFF8F9FE);
+  static Color card(bool isDark) =>
+      isDark ? const Color(0xFF151D2E) : AppColors.surfaceContainerLowest;
+  static Color border(bool isDark) =>
+      isDark ? const Color(0xFF22304A) : const Color(0xFFEEF2F9);
+  static Color ink(bool isDark) =>
+      isDark ? const Color(0xFFF8FAFC) : AppColors.onSurface;
+  static Color muted(bool isDark) =>
+      isDark ? const Color(0xFF94A3B8) : AppColors.onSurfaceVariant;
 
-  static const collected = Color(0xFF16A34A);
-  static const toCollect = Color(0xFFE08A00);
-  static const overdue = Color(0xFFE11D48);
-  static const upcoming = Color(0xFF2563EB);
+  static const collected = AppColors.secondary;
+  static const toCollect = AppColors.warning;
+  static const overdue = AppColors.error;
+  static const upcoming = AppColors.info;
 
-  static Color collectedBg(bool isDark) => isDark ? const Color(0xFF123524) : const Color(0xFFE8F8EF);
-  static Color toCollectBg(bool isDark) => isDark ? const Color(0xFF3A2C12) : const Color(0xFFFFF4E0);
-  static Color overdueBg(bool isDark) => isDark ? const Color(0xFF3F1D24) : const Color(0xFFFFE8EE);
-  static Color upcomingBg(bool isDark) => isDark ? const Color(0xFF162848) : const Color(0xFFE8F0FF);
+  static Color collectedBg(bool isDark) =>
+      isDark ? const Color(0xFF123528) : AppColors.secondaryContainer;
+  static Color toCollectBg(bool isDark) =>
+      isDark ? const Color(0xFF3A2C12) : AppColors.warningContainer;
+  static Color overdueBg(bool isDark) =>
+      isDark ? const Color(0xFF3F1D24) : AppColors.errorContainer;
+  static Color upcomingBg(bool isDark) =>
+      isDark ? const Color(0xFF162848) : AppColors.surfaceContainerHigh;
 }
 
 String financeMoney(double amount) => formatCurrency(amount);
@@ -192,7 +203,16 @@ class FinancePaymentTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             children: [
-              FinanceAvatar(initials: entry.initials, seed: entry.payment.studentId),
+              ProfileAvatar(
+                seed: entry.student?.id.isNotEmpty == true
+                    ? entry.student!.id
+                    : (entry.studentName.isNotEmpty
+                        ? entry.studentName
+                        : entry.payment.studentId),
+                imageUrl: entry.student?.avatarUrl,
+                size: 40,
+                semanticLabel: entry.studentName,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
