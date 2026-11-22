@@ -24,6 +24,7 @@ import '../../students/providers/students_provider.dart';
 import '../../subscription/models/subscription_config.dart';
 import '../../subscription/utils/subscription_gate.dart';
 import '../logic/report_builders.dart';
+import '../services/report_excel_service.dart';
 import '../services/report_pdf_service.dart';
 
 class CourseReportScreen extends ConsumerStatefulWidget {
@@ -37,9 +38,10 @@ class CourseReportScreen extends ConsumerStatefulWidget {
 
 class _CourseReportScreenState extends ConsumerState<CourseReportScreen> {
   bool _exporting = false;
+  bool _exportingExcel = false;
 
   Future<void> _export(CourseReportData data) async {
-    if (_exporting) return;
+    if (_exporting || _exportingExcel) return;
     final allowed = await ensureProFeature(
       context,
       ref,
@@ -77,6 +79,65 @@ class _CourseReportScreenState extends ConsumerState<CourseReportScreen> {
       );
     } finally {
       if (mounted) setState(() => _exporting = false);
+    }
+  }
+
+  Future<void> _exportExcel() async {
+    if (_exporting || _exportingExcel) return;
+    final course = ref.read(selectedCourseProvider);
+    final students =
+        ref.read(studentsForCourseProvider(widget.courseId)).valueOrNull;
+    final sessions =
+        ref.read(courseSessionsProvider(widget.courseId)).valueOrNull;
+    if (course == null || students == null || sessions == null) return;
+
+    final allowed = await ensureProFeature(
+      context,
+      ref,
+      feature: ProFeature.courseReportPdf,
+    );
+    if (!allowed || !mounted) return;
+
+    setState(() => _exportingExcel = true);
+    final l10n = AppLocalizations.of(context)!;
+    final window = ref.read(financeWindowProvider);
+    try {
+      final rows = buildStudentMonthExport(
+        course: course,
+        students: students,
+        sessions: sessions,
+        window: window,
+      );
+      final bytes = ReportExcelService().buildStudentMonthWorkbook(
+        courseName: course.name,
+        periodLabel: financeWindowLabel(context, window, thisMonth: true),
+        billingFrequency: course.billingFrequency,
+        rows: rows,
+        l10n: l10n,
+      );
+      if (!mounted) return;
+      await ReportExcelService().share(
+        bytes: bytes,
+        filename: reportFilename(
+          course.name,
+          window,
+          fileExtension: 'xlsx',
+        ),
+        l10n: l10n,
+        onMessage: (message) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message)),
+          );
+        },
+      );
+    } catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.errorWithDetail('$error'))),
+      );
+    } finally {
+      if (mounted) setState(() => _exportingExcel = false);
     }
   }
 
@@ -336,11 +397,49 @@ class _CourseReportScreenState extends ConsumerState<CourseReportScreen> {
                     top: false,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                      child: AppPrimaryButton(
-                        label: l10n.financeExportPdf,
-                        icon: Icons.picture_as_pdf_outlined,
-                        loading: _exporting,
-                        onPressed: () => _export(data),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AppPrimaryButton(
+                            label: l10n.financeExportPdf,
+                            icon: Icons.picture_as_pdf_outlined,
+                            loading: _exporting,
+                            onPressed: (_exporting || _exportingExcel)
+                                ? null
+                                : () => _export(data),
+                          ),
+                          const SizedBox(height: 8),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: OutlinedButton.icon(
+                              onPressed: (_exporting || _exportingExcel)
+                                  ? null
+                                  : _exportExcel,
+                              icon: _exportingExcel
+                                  ? SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: primary,
+                                      ),
+                                    )
+                                  : const Icon(Icons.table_chart_outlined),
+                              label: Text(
+                                l10n.reportExportExcel,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: primary,
+                                side: BorderSide(color: primary),
+                                shape: const StadiumBorder(),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

@@ -68,6 +68,7 @@ void main() {
     expect(find.textContaining('Asistencias 1'), findsOneWidget);
     expect(find.textContaining('Retardo 0'), findsOneWidget);
     expect(find.text('Exportar PDF'), findsOneWidget);
+    expect(find.text('Exportar Excel'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

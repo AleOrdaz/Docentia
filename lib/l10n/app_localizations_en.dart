@@ -1706,6 +1706,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get certificateStyleElegant => 'Elegant';
 
   @override
+  String get certificateStyleAcademic => 'Academic';
+
+  @override
+  String get certificateStyleMinimal => 'Minimal';
+
+  @override
+  String get certificateStyleBotanical => 'Botanical';
+
+  @override
+  String get certificateStyleImperial => 'Imperial';
+
+  @override
+  String get certificateStyleMidnight => 'Midnight';
+
+  @override
+  String get certificateStyleDeco => 'Deco';
+
+  @override
+  String get certificateStyleRibbon => 'Ribbon';
+
+  @override
+  String get certificateStyleParchment => 'Parchment';
+
+  @override
+  String get certificateStyleHorizon => 'Horizon';
+
+  @override
   String get certificateTypeLabel => 'Certificate type';
 
   @override
@@ -1844,6 +1871,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get financeExportPdf => 'Export PDF';
+
+  @override
+  String get reportExportExcel => 'Export Excel';
+
+  @override
+  String reportSavedInDocuments(String filename) {
+    return 'Couldn\'t open the share sheet. $filename was saved in the Docentia folder in Files.';
+  }
+
+  @override
+  String get reportExcelAttendances => 'Attendances this month';
+
+  @override
+  String get reportExcelBillingType => 'Billing type';
+
+  @override
+  String get reportExcelDailyRate => 'Charge per day';
+
+  @override
+  String get reportExcelTotal => 'Total';
+
+  @override
+  String get reportExcelHours => 'Hours worked';
+
+  @override
+  String get reportBillingPerClass => 'Per class / day';
+
+  @override
+  String get reportBillingWeekly => 'Weekly';
+
+  @override
+  String get reportBillingBiweekly => 'Biweekly';
+
+  @override
+  String get reportBillingMonthly => 'Monthly';
 
   @override
   String get reportAttendance => 'Attendance';

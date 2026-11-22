@@ -285,9 +285,9 @@ class HomeScreen extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      elevation: 0,
       builder: (ctx) => AddStudentModal(
         courseId: selectedCourse.id,
-        courseName: selectedCourse.name,
       ),
     );
     ref.invalidate(allActiveStudentsProvider);

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/theme/app_colors.dart';
+import '../../../app/theme/app_text_styles.dart';
 import '../../../app/widgets/app_form_styles.dart';
 import '../../../app/widgets/app_snackbars.dart';
 import '../../../l10n/app_localizations.dart';
@@ -13,6 +15,19 @@ import '../models/expense_model.dart';
 import '../providers/finance_catalog_provider.dart';
 import '../providers/finance_provider.dart';
 import '../widgets/finance_ui.dart';
+
+Future<void> showCourseExpenseSheet(
+  BuildContext context, {
+  required String courseId,
+}) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    builder: (ctx) => _CourseExpenseSheet(courseId: courseId),
+  );
+}
 
 class FinanceExpensesScreen extends ConsumerStatefulWidget {
   const FinanceExpensesScreen({super.key});
@@ -47,7 +62,8 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = Theme.of(context).colorScheme.primary;
+    final titleColor =
+        isDark ? const Color(0xFFF8FAFC) : const Color(0xFF00174D);
     final window = ref.watch(financeWindowProvider);
     final catalog = ref.watch(financeCatalogProvider);
     final expenses = ref.watch(expensesProvider);
@@ -64,10 +80,15 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        foregroundColor: primary,
+        foregroundColor: titleColor,
         title: Text(
           l10n.financeExpenses,
-          style: TextStyle(fontWeight: FontWeight.w800, color: primary),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.4,
+            color: titleColor,
+          ),
         ),
       ),
       body: ListView(
@@ -106,8 +127,8 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
           if (courses.isEmpty)
             FinanceStateMessage(
               icon: Icons.school_outlined,
-              iconColor: primary,
-              iconBackground: primary.withValues(alpha: 0.12),
+              iconColor: AppColors.iconDefault,
+              iconBackground: AppColors.surfaceLow(context),
               title: l10n.financeExpenses,
               description: l10n.financeNoCoursesForExpense,
             )
@@ -126,7 +147,13 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                         child: DropdownButtonFormField<String>(
                           initialValue: _courseId,
                           isExpanded: true,
-                          decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                          style: AppTextStyles.bodyMedium
+                              .copyWith(color: AppColors.textPrimary(context)),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppColors.iconMuted(context),
+                          ),
+                          decoration: _dropdownDecoration(),
                           items: [
                             for (final course in courses)
                               DropdownMenuItem(value: course.id, child: Text(course.name)),
@@ -162,7 +189,13 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                         child: DropdownButtonFormField<String>(
                           initialValue: _category,
                           isExpanded: true,
-                          decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                          style: AppTextStyles.bodyMedium
+                              .copyWith(color: AppColors.textPrimary(context)),
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: AppColors.iconMuted(context),
+                          ),
+                          decoration: _dropdownDecoration(),
                           items: [
                             DropdownMenuItem(value: 'Materiales', child: Text(l10n.categoryMaterials)),
                             DropdownMenuItem(value: 'Software', child: Text(l10n.categorySoftware)),
@@ -193,7 +226,8 @@ class _FinanceExpensesScreenState extends ConsumerState<FinanceExpensesScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 12),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_today_outlined, size: 18, color: FinancePalette.muted(isDark)),
+                                const Icon(Icons.calendar_today_outlined,
+                                    size: 18, color: AppColors.iconDefault),
                                 const SizedBox(width: 8),
                                 Text(
                                   financeDay(context, selectedDate),
@@ -279,6 +313,16 @@ DateTime _defaultDate(FinanceWindow window) {
   return DateTime(window.year!, window.month!, 1);
 }
 
+InputDecoration _dropdownDecoration() {
+  return const InputDecoration(
+    border: InputBorder.none,
+    enabledBorder: InputBorder.none,
+    focusedBorder: InputBorder.none,
+    isDense: true,
+    contentPadding: EdgeInsets.symmetric(vertical: 12),
+  );
+}
+
 class _DropdownBox extends StatelessWidget {
   final Widget child;
 
@@ -286,13 +330,12 @@ class _DropdownBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E2A42) : const Color(0xFFEFF4FF),
+        color: AppColors.surfaceLow(context),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: FinancePalette.border(isDark)),
+        border: Border.all(color: AppColors.outlineVariantAdaptive(context)),
       ),
       child: child,
     );
@@ -363,6 +406,212 @@ class _ExpenseRow extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.w800, color: FinancePalette.overdue),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _CourseExpenseSheet extends ConsumerStatefulWidget {
+  final String courseId;
+
+  const _CourseExpenseSheet({required this.courseId});
+
+  @override
+  ConsumerState<_CourseExpenseSheet> createState() =>
+      _CourseExpenseSheetState();
+}
+
+class _CourseExpenseSheetState extends ConsumerState<_CourseExpenseSheet> {
+  final _formKey = GlobalKey<FormState>();
+  final _descriptionController = TextEditingController();
+  final _amountController = TextEditingController();
+  String _category = 'Materiales';
+  late DateTime _date;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _date = DateTime(now.year, now.month, now.day);
+  }
+
+  @override
+  void dispose() {
+    _descriptionController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate() || _saving) return;
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _saving = true);
+    await ref.read(expensesProvider.notifier).addExpense(
+          description: _descriptionController.text.trim(),
+          amount: double.parse(_amountController.text.trim()),
+          category: _category,
+          courseId: widget.courseId,
+          date: _date,
+        );
+    if (!mounted) return;
+    showAppSnackBar(
+      context,
+      message: l10n.financeExpenseSaved,
+      kind: AppSnackKind.success,
+    );
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final titleColor = AppColors.textPrimary(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceLowest(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: SafeArea(
+        top: false,
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.cardBorder(context),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 48,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Text(
+                        l10n.financeExpenses,
+                        style: AppTextStyles.titleLarge.copyWith(
+                          color: titleColor,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(Icons.close_outlined,
+                              color: AppColors.iconMuted(context)),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                AppTextField(
+                  label: l10n.expenseDescriptionLabel,
+                  controller: _descriptionController,
+                  required: true,
+                  validator: (value) =>
+                      value == null || value.trim().isEmpty ? l10n.required : null,
+                ),
+                const SizedBox(height: 12),
+                AppTextField(
+                  label: l10n.amountDollarLabel,
+                  controller: _amountController,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))
+                  ],
+                  required: true,
+                  validator: (value) {
+                    final amount = double.tryParse(value?.trim() ?? '');
+                    if (amount == null || amount <= 0) return l10n.required;
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                AppFieldLabel(l10n.financeExpenseCategory, required: true),
+                const SizedBox(height: 4),
+                _DropdownBox(
+                  child: DropdownButtonFormField<String>(
+                    initialValue: _category,
+                    isExpanded: true,
+                    style: AppTextStyles.bodyMedium
+                        .copyWith(color: AppColors.textPrimary(context)),
+                    icon: Icon(Icons.keyboard_arrow_down,
+                        color: AppColors.iconMuted(context)),
+                    decoration: _dropdownDecoration(),
+                    items: [
+                      DropdownMenuItem(
+                          value: 'Materiales', child: Text(l10n.categoryMaterials)),
+                      DropdownMenuItem(
+                          value: 'Software', child: Text(l10n.categorySoftware)),
+                      DropdownMenuItem(
+                          value: 'Insumos', child: Text(l10n.categorySupplies)),
+                      DropdownMenuItem(
+                          value: 'Transporte',
+                          child: Text(l10n.categoryTransport)),
+                      DropdownMenuItem(
+                          value: 'Varios', child: Text(l10n.categoryMisc)),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) setState(() => _category = value);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+                AppFieldLabel(l10n.dateLabel),
+                const SizedBox(height: 4),
+                _DropdownBox(
+                  child: InkWell(
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: _date,
+                        firstDate: DateTime(DateTime.now().year - 3),
+                        lastDate: DateTime(DateTime.now().year + 1, 12, 31),
+                      );
+                      if (picked != null) setState(() => _date = picked);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_today_outlined,
+                              size: 18, color: AppColors.iconDefault),
+                          const SizedBox(width: 8),
+                          Text(
+                            financeDay(context, _date),
+                            style: TextStyle(
+                                color: AppColors.textPrimary(context)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                AppPrimaryButton(
+                  label: l10n.addExpenseBtn,
+                  icon: Icons.add,
+                  loading: _saving,
+                  onPressed: _saving ? null : _save,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

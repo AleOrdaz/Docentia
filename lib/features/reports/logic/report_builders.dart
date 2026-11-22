@@ -366,7 +366,187 @@ FinanceReportData buildFinanceReport({
   );
 }
 
-String reportFilename(String title, FinanceWindow window) {
+class StudentMonthExportRow {
+  final String name;
+  final int attendances;
+  final double dailyRate;
+  final double total;
+  final double hours;
+
+  const StudentMonthExportRow({
+    required this.name,
+    required this.attendances,
+    required this.dailyRate,
+    required this.total,
+    required this.hours,
+  });
+}
+
+DateTime reportWindowStart(FinanceWindow window) {
+  if (window.isRange) {
+    final start = window.rangeStart!;
+    return DateTime(start.year, start.month, start.day);
+  }
+  return DateTime(window.year!, window.month!);
+}
+
+DateTime reportWindowEnd(FinanceWindow window) {
+  if (window.isRange) {
+    final end = window.rangeEnd!;
+    return DateTime(end.year, end.month, end.day);
+  }
+  return DateTime(window.year!, window.month! + 1, 0);
+}
+
+int scheduledClassDaysInWindow(Course course, FinanceWindow window) {
+  final end = reportWindowEnd(window);
+  var count = 0;
+  for (var day = reportWindowStart(window);
+      !day.isAfter(end);
+      day = day.add(const Duration(days: 1))) {
+    if (course.isClassDay(day)) count++;
+  }
+  return count;
+}
+
+/// Precio de un día de clase según la frecuencia de cobro del curso.
+double courseDailyRate(Course course, FinanceWindow window) {
+  final daysPerWeek = course.effectiveClassDays.isEmpty
+      ? 1
+      : course.effectiveClassDays.length;
+  switch (course.billingFrequency) {
+    case BillingFrequency.perClass:
+      return course.cost;
+    case BillingFrequency.weekly:
+      return course.cost / daysPerWeek;
+    case BillingFrequency.biweekly:
+      return course.cost / (daysPerWeek * 2);
+    case BillingFrequency.monthly:
+      final scheduled = scheduledClassDaysInWindow(course, window);
+      if (scheduled <= 0) return 0;
+      return course.cost / scheduled;
+  }
+}
+
+double sessionDurationHours(ClassAttendanceSession session, Course course) {
+  var start = _parseCourseTime(session.startTime);
+  var end = _parseCourseTime(session.endTime);
+  if (start == null || end == null) {
+    final date = DateTime.tryParse(session.date);
+    final schedule = date == null ? null : course.scheduleForDay(date.weekday);
+    start ??= schedule == null ? null : _parseCourseTime(schedule.startTime);
+    end ??= schedule == null ? null : _parseCourseTime(schedule.endTime);
+  }
+  if (start == null || end == null) return 0;
+  var minutes = end.totalMinutes - start.totalMinutes;
+  if (minutes <= 0) minutes += 24 * 60;
+  return minutes / 60;
+}
+
+/// Métricas del periodo por alumno para la exportación a Excel.
+///
+/// Las asistencias y las horas cuentan presentes y retardos. El total sigue
+/// la frecuencia del curso: por clase, semana o quincena se cobra lo
+/// trabajado; el cobro mensual conserva el costo del mes.
+List<StudentMonthExportRow> buildStudentMonthExport({
+  required Course course,
+  required List<Student> students,
+  required List<ClassAttendanceSession> sessions,
+  required FinanceWindow window,
+}) {
+  final periodSessions =
+      sessions.where((session) => window.includesDate(session.date)).toList();
+  final dailyRate = courseDailyRate(course, window);
+  final rows = [
+    for (final student in students)
+      _studentMonthRow(
+        course: course,
+        student: student,
+        sessions: periodSessions,
+        dailyRate: dailyRate,
+      ),
+  ]..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  return rows;
+}
+
+StudentMonthExportRow _studentMonthRow({
+  required Course course,
+  required Student student,
+  required List<ClassAttendanceSession> sessions,
+  required double dailyRate,
+}) {
+  final attendedDates = <DateTime>{};
+  var attendances = 0;
+  var hours = 0.0;
+  for (final session in sessions) {
+    final attended = session.students.any(
+      (item) =>
+          item.studentId == student.id &&
+          (item.status == AttendanceStatus.present ||
+              item.status == AttendanceStatus.late),
+    );
+    if (!attended) continue;
+    attendances++;
+    final date = DateTime.tryParse(session.date);
+    if (date != null) {
+      attendedDates.add(DateTime(date.year, date.month, date.day));
+    }
+    hours += sessionDurationHours(session, course);
+  }
+
+  return StudentMonthExportRow(
+    name: student.fullName,
+    attendances: attendances,
+    dailyRate: dailyRate,
+    total: _studentPeriodTotal(
+      course: course,
+      attendances: attendedDates.length,
+      attendedDates: attendedDates,
+    ),
+    hours: hours,
+  );
+}
+
+double _studentPeriodTotal({
+  required Course course,
+  required int attendances,
+  required Set<DateTime> attendedDates,
+}) {
+  switch (course.billingFrequency) {
+    case BillingFrequency.perClass:
+      return course.cost * attendances;
+    case BillingFrequency.weekly:
+      return course.cost * _distinctWeeks(attendedDates);
+    case BillingFrequency.biweekly:
+      return course.cost * _distinctBiweeks(attendedDates);
+    case BillingFrequency.monthly:
+      return course.cost;
+  }
+}
+
+int _distinctWeeks(Set<DateTime> dates) {
+  final weeks = <DateTime>{};
+  for (final date in dates) {
+    final monday = date.subtract(Duration(days: date.weekday - 1));
+    weeks.add(DateTime(monday.year, monday.month, monday.day));
+  }
+  return weeks.length;
+}
+
+int _distinctBiweeks(Set<DateTime> dates) {
+  final halves = <String>{};
+  for (final date in dates) {
+    final half = date.day <= 15 ? 1 : 2;
+    halves.add('${date.year}-${date.month}-$half');
+  }
+  return halves.length;
+}
+
+String reportFilename(
+  String title,
+  FinanceWindow window, {
+  String fileExtension = 'pdf',
+}) {
   const from = 'áéíóúüñÁÉÍÓÚÜÑ';
   const to = 'aeiouunAEIOUUN';
   var normalized = title;
@@ -381,7 +561,7 @@ String reportFilename(String title, FinanceWindow window) {
       ? '${_fileDate(window.rangeStart!)}-${_fileDate(window.rangeEnd!)}'
       : '${window.year}-${window.month.toString().padLeft(2, '0')}';
   final safe = slug.isEmpty ? 'docentia' : slug;
-  return 'reporte-$safe-$period.pdf';
+  return 'reporte-$safe-$period.$fileExtension';
 }
 
 String _fileDate(DateTime date) {

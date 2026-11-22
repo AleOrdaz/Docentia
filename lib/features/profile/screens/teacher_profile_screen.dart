@@ -750,19 +750,22 @@ class _LegalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      dense: true,
-      title: Text(
-        label,
-        style: TextStyle(
-          color: textPrimary,
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        dense: true,
+        title: Text(
+          label,
+          style: TextStyle(
+            color: textPrimary,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
         ),
+        trailing: Icon(Icons.open_in_new, size: 16, color: textPrimary.withValues(alpha: 0.5)),
+        onTap: onTap,
       ),
-      trailing: Icon(Icons.open_in_new, size: 16, color: textPrimary.withValues(alpha: 0.5)),
-      onTap: onTap,
     );
   }
 }

@@ -14,6 +14,7 @@ import '../../courses/models/course_model.dart';
 import '../../courses/providers/courses_provider.dart';
 import '../../courses/screens/create_course_dialog.dart';
 import '../../finance/providers/finance_catalog_provider.dart';
+import '../../finance/screens/finance_expenses_screen.dart';
 import '../../finance/widgets/finance_sheets.dart';
 import '../../payments/models/payment_model.dart';
 import '../../payments/providers/payments_provider.dart';
@@ -53,16 +54,16 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
     super.dispose();
   }
 
-  Future<void> _openAddStudentModal(String courseName) async {
+  Future<void> _openAddStudentModal() async {
     final allowed = await ensureCanAddStudent(context, ref);
     if (!allowed || !mounted) return;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      elevation: 0,
       builder: (ctx) => AddStudentModal(
         courseId: widget.courseId,
-        courseName: courseName,
       ),
     );
   }
@@ -366,9 +367,22 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
             tooltip: l10n.courseOptions,
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
                 _openEditCourseDialog(course);
+              } else if (value == 'certificates') {
+                final ok = await ensureProFeature(
+                  context,
+                  ref,
+                  feature: ProFeature.certificates,
+                );
+                if (!ok || !mounted) return;
+                ref.read(selectedCourseIdProvider.notifier).state =
+                    widget.courseId;
+                if (!context.mounted) return;
+                context.push(
+                  '/course-detail/${widget.courseId}/certificates',
+                );
               } else if (value == 'delete' && course != null) {
                 showDeleteCourseConfirmation(
                   context: context,
@@ -379,6 +393,17 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
               }
             },
             itemBuilder: (ctx) => [
+              PopupMenuItem(
+                value: 'certificates',
+                child: Row(
+                  children: [
+                    Icon(Icons.workspace_premium_outlined,
+                        size: 20, color: _courseDetailNeutralColor(context)),
+                    const SizedBox(width: 10),
+                    Text(l10n.certificatesBtn),
+                  ],
+                ),
+              ),
               PopupMenuItem(
                 value: 'edit',
                 child: Row(
@@ -548,25 +573,23 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                 children: [
                   Expanded(
                     child: _QuickAction(
-                      icon: Icons.workspace_premium_outlined,
-                      label: l10n.certificatesBtn,
+                      icon: Icons.receipt_long_outlined,
+                      label: l10n.financeExpenses,
                       subtitle:
                           Localizations.localeOf(context).languageCode == 'en'
-                              ? 'Issue course certificates'
-                              : 'Genera constancias',
+                              ? 'Add an expense for this course'
+                              : 'Añade un gasto de este curso',
                       iconColor: courseAccent,
                       onTap: () async {
                         final ok = await ensureProFeature(
                           context,
                           ref,
-                          feature: ProFeature.certificates,
+                          feature: ProFeature.expenses,
                         );
-                        if (!ok || !mounted) return;
-                        ref.read(selectedCourseIdProvider.notifier).state =
-                            widget.courseId;
-                        if (!context.mounted) return;
-                        context.push(
-                          '/course-detail/${widget.courseId}/certificates',
+                        if (!ok || !context.mounted) return;
+                        await showCourseExpenseSheet(
+                          context,
+                          courseId: widget.courseId,
                         );
                       },
                     ),
@@ -606,7 +629,7 @@ class _CourseDetailScreenState extends ConsumerState<CourseDetailScreen> {
                     ),
                   ),
                   FilledButton.icon(
-                    onPressed: () => _openAddStudentModal(courseName),
+                    onPressed: _openAddStudentModal,
                     icon: const Icon(Icons.person_add_alt_1, size: 17),
                     label: Text(l10n.addStudentShort),
                     style: FilledButton.styleFrom(

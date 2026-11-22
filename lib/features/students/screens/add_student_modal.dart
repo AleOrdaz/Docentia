@@ -9,12 +9,10 @@ import '../providers/students_provider.dart';
 
 class AddStudentModal extends ConsumerStatefulWidget {
   final String courseId;
-  final String courseName;
 
   const AddStudentModal({
     super.key,
     this.courseId = 'course-1',
-    this.courseName = 'Inglés Avanzado B2',
   });
 
   @override
@@ -35,6 +33,24 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
   TutorRelationship _relationship = TutorRelationship.mother;
   TutorRelationship _emergencyRelationship = TutorRelationship.mother;
   bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_refreshFormState);
+    _lastNameController.addListener(_refreshFormState);
+    _tutorPhoneController.addListener(_refreshFormState);
+  }
+
+  void _refreshFormState() {
+    if (mounted) setState(() {});
+  }
+
+  bool get _isFormReady {
+    return _nameController.text.trim().isNotEmpty &&
+        _lastNameController.text.trim().isNotEmpty &&
+        _tutorPhoneController.text.trim().isNotEmpty;
+  }
 
   @override
   void dispose() {
@@ -108,7 +124,6 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
     final l10n = AppLocalizations.of(context)!;
     final primaryColor = Theme.of(context).colorScheme.primary;
     final textPrimary = AppColors.textPrimary(context);
-    final textSecondary = AppColors.textSecondary(context);
     final isEnglish = Localizations.localeOf(context).languageCode == 'en';
 
     return Container(
@@ -117,202 +132,241 @@ class _AddStudentModalState extends ConsumerState<AddStudentModal> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 40,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
       ),
-      child: SingleChildScrollView(
+      child: SafeArea(
+        top: false,
         child: Form(
           key: _formKey,
-          child: SafeArea(
-            top: false,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(context).height * 0.9,
+            ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: AppColors.outlineVariantAdaptive(context),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(Icons.person_add_alt_1_outlined,
-                            color: AppColors.iconDefault, size: 24),
-                        const SizedBox(width: 8),
-                        Text(
-                          l10n.addStudentTitle,
-                          style: AppTextStyles.titleLarge
-                              .copyWith(color: textPrimary),
+                        Center(
+                          child: Container(
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.cardBorder(context),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          height: 48,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  l10n.addStudentTitle,
+                                  style: AppTextStyles.titleLarge
+                                      .copyWith(color: textPrimary),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  icon: Icon(Icons.close_outlined,
+                                      color: AppColors.iconMuted(context)),
+                                  onPressed: () => Navigator.of(context).pop(),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        _sectionTitle('Datos personales', Icons.badge_outlined,
+                            textPrimary),
+                        const SizedBox(height: 16),
+                        Column(
+                          children: [
+                            _buildTextField(
+                              label: l10n.firstNamesLabel,
+                              controller: _nameController,
+                              hint: isEnglish
+                                  ? 'e.g. Ana Sofía'
+                                  : 'Ej. Ana Sofía',
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? l10n.required
+                                  : null,
+                            ),
+                            const SizedBox(height: 12),
+                            _buildTextField(
+                              label: l10n.lastNamesLabel,
+                              controller: _lastNameController,
+                              hint: isEnglish
+                                  ? 'e.g. García López'
+                                  : 'Ej. García López',
+                              validator: (v) => (v == null || v.trim().isEmpty)
+                                  ? l10n.required
+                                  : null,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 32),
+                        _sectionTitle('Datos del tutor', Icons.people_outline,
+                            textPrimary),
+                        const SizedBox(height: 16),
+                        _buildRelationshipField(
+                          l10n,
+                          value: _relationship,
+                          onChanged: (value) =>
+                              setState(() => _relationship = value),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTextField(
+                          label: l10n.tutorNameLabel,
+                          controller: _tutorNameController,
+                          hint: isEnglish
+                              ? 'e.g. María García'
+                              : 'Ej. María García',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTextField(
+                          label: l10n.tutorPhoneRequiredLabel,
+                          controller: _tutorPhoneController,
+                          hint: '+52 55 1234 5678',
+                          keyboardType: TextInputType.phone,
+                          allowContactPicker: true,
+                          prefixIcon: const Icon(Icons.call_outlined,
+                              color: AppColors.iconDefault, size: 20),
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? l10n.phoneRequiredWhatsapp
+                              : null,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTextField(
+                          label: l10n.emailLabel,
+                          controller: _tutorEmailController,
+                          hint: isEnglish
+                              ? 'e.g. maria@example.com'
+                              : 'Ej. maria@correo.com',
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: 32),
+                        _sectionTitle(l10n.emergencyContactTitle,
+                            Icons.contact_emergency_outlined, textPrimary),
+                        const SizedBox(height: 16),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: _buildTextField(
+                                label: l10n.nameLabel,
+                                controller: _emergencyNameController,
+                                hint: isEnglish
+                                    ? 'e.g. Luis Hernández'
+                                    : 'Ej. Luis Hernández',
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _buildRelationshipField(
+                                l10n,
+                                value: _emergencyRelationship,
+                                onChanged: (value) => setState(
+                                    () => _emergencyRelationship = value),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildTextField(
+                          label: l10n.mobilePhone,
+                          controller: _emergencyPhoneController,
+                          hint: '+52 55 1234 5678',
+                          keyboardType: TextInputType.phone,
+                          allowContactPicker: true,
+                          prefixIcon: const Icon(Icons.call_outlined,
+                              color: AppColors.iconDefault, size: 20),
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.close_outlined,
-                          color: AppColors.iconMuted(context)),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ],
+                  ),
                 ),
-                Text(
-                  l10n.addStudentDesc(widget.courseName),
-                  style: AppTextStyles.bodySmall.copyWith(color: textSecondary),
-                ),
-                const SizedBox(height: 24),
-                _sectionTitle(
-                    'Datos personales', Icons.badge_outlined, textPrimary),
-                const SizedBox(height: 16),
-                Column(
-                  children: [
-                    _buildTextField(
-                      label: l10n.firstNamesLabel,
-                      controller: _nameController,
-                      hint: isEnglish ? 'e.g. Ana Sofía' : 'Ej. Ana Sofía',
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? l10n.required
-                          : null,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildTextField(
-                      label: l10n.lastNamesLabel,
-                      controller: _lastNameController,
-                      hint:
-                          isEnglish ? 'e.g. García López' : 'Ej. García López',
-                      validator: (v) => (v == null || v.trim().isEmpty)
-                          ? l10n.required
-                          : null,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 32),
-                _sectionTitle(
-                    'Datos del tutor', Icons.people_outline, textPrimary),
-                const SizedBox(height: 16),
-                _buildRelationshipField(
-                  l10n,
-                  value: _relationship,
-                  onChanged: (value) => setState(() => _relationship = value),
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  label: l10n.tutorNameLabel,
-                  controller: _tutorNameController,
-                  hint: isEnglish ? 'e.g. María García' : 'Ej. María García',
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  label: l10n.tutorPhoneRequiredLabel,
-                  controller: _tutorPhoneController,
-                  hint: '+52 55 1234 5678',
-                  keyboardType: TextInputType.phone,
-                  allowContactPicker: true,
-                  prefixIcon: const Icon(Icons.call_outlined,
-                      color: AppColors.iconDefault, size: 20),
-                  validator: (v) => (v == null || v.trim().isEmpty)
-                      ? l10n.phoneRequiredWhatsapp
-                      : null,
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  label: l10n.emailLabel,
-                  controller: _tutorEmailController,
-                  hint: isEnglish
-                      ? 'e.g. maria@example.com'
-                      : 'Ej. maria@correo.com',
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 32),
-                _sectionTitle(l10n.emergencyContactTitle,
-                    Icons.contact_emergency_outlined, textPrimary),
-                const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: _buildTextField(
-                        label: l10n.nameLabel,
-                        controller: _emergencyNameController,
-                        hint: isEnglish
-                            ? 'e.g. Luis Hernández'
-                            : 'Ej. Luis Hernández',
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _buildRelationshipField(
-                        l10n,
-                        value: _emergencyRelationship,
-                        onChanged: (value) =>
-                            setState(() => _emergencyRelationship = value),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildTextField(
-                  label: l10n.mobilePhone,
-                  controller: _emergencyPhoneController,
-                  hint: '+52 55 1234 5678',
-                  keyboardType: TextInputType.phone,
-                  allowContactPicker: true,
-                  prefixIcon: const Icon(Icons.call_outlined,
-                      color: AppColors.iconDefault, size: 20),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: TextButton.styleFrom(
-                        foregroundColor: textPrimary,
-                        side: BorderSide(
-                          color: AppColors.outlineVariantAdaptive(context),
-                        ),
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 12),
-                      ),
-                      child: Text(l10n.cancel,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton.icon(
-                      onPressed: _isSubmitting ? null : _submit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: AppColors.onPrimary,
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                      ),
-                      icon: _isSubmitting
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                  strokeWidth: 2, color: Colors.white),
-                            )
-                          : const Icon(Icons.check_outlined, size: 18),
-                      label: Text(l10n.register,
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                    ),
-                  ],
+                _buildStickyFooter(
+                  context: context,
+                  primaryColor: primaryColor,
+                  titleColor: textPrimary,
+                  cancelLabel: l10n.cancel,
+                  actionLabel: l10n.register,
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStickyFooter({
+    required BuildContext context,
+    required Color primaryColor,
+    required Color titleColor,
+    required String cancelLabel,
+    required String actionLabel,
+  }) {
+    final enabled = _isFormReady && !_isSubmitting;
+    final disabledColor = AppColors.outlineVariantAdaptive(context);
+    final buttonStyle = ElevatedButton.styleFrom(
+      backgroundColor: enabled ? primaryColor : disabledColor,
+      disabledBackgroundColor: disabledColor,
+      foregroundColor: enabled ? Colors.white : titleColor,
+      disabledForegroundColor: AppColors.textSecondary(context),
+      shape: const StadiumBorder(),
+    );
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: AppColors.cardBorder(context)),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: ElevatedButton.icon(
+              onPressed: enabled ? _submit : null,
+              icon: _isSubmitting
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.add),
+              label: Text(actionLabel),
+              style: buttonStyle,
+            ),
+          ),
+          const SizedBox(height: 4),
+          TextButton(
+            onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
+            style: TextButton.styleFrom(
+              foregroundColor: primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            ),
+            child: Text(cancelLabel),
+          ),
+        ],
       ),
     );
   }

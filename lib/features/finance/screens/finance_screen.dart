@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../app/theme/app_colors.dart';
 import '../../../app/widgets/app_bottom_nav_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../payments/models/payment_model.dart';
@@ -42,8 +43,8 @@ class FinanceScreen extends ConsumerWidget {
                 if (data.payments.isEmpty)
                   FinanceStateMessage(
                     icon: Icons.person_outline,
-                    iconColor: FinancePalette.muted(isDark),
-                    iconBackground: isDark ? const Color(0xFF1E293B) : const Color(0xFFEEF2F7),
+                    iconColor: AppColors.iconMuted(context),
+                    iconBackground: AppColors.surfaceLow(context),
                     title: AppLocalizations.of(context)!.financeNoPaymentsTitle,
                     description: AppLocalizations.of(context)!.financeNoPaymentsDesc,
                   )
@@ -273,7 +274,6 @@ class _FinanceHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primary = Theme.of(context).colorScheme.primary;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -284,10 +284,12 @@ class _FinanceHeader extends StatelessWidget {
               Text(
                 l10n.navFinance,
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 22,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.4,
-                  color: primary,
+                  color: isDark
+                      ? const Color(0xFFF8FAFC)
+                      : const Color(0xFF00174D),
                 ),
               ),
               const SizedBox(height: 2),
@@ -445,14 +447,13 @@ class _QuickAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: InkWell(
         onTap: onTap,
         child: Column(
           children: [
-            Icon(icon, color: primary, size: 26),
+            Icon(icon, color: AppColors.iconDefault, size: 26),
             const SizedBox(height: 6),
             Text(
               label,
@@ -460,7 +461,7 @@ class _QuickAction extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: isDark ? const Color(0xFFCBD5E1) : primary,
+                color: FinancePalette.ink(isDark),
               ),
             ),
           ],
@@ -484,9 +485,12 @@ class _FinanceError extends StatelessWidget {
         Text(
           l10n.navFinance,
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 22,
             fontWeight: FontWeight.w800,
-            color: Theme.of(context).colorScheme.primary,
+            letterSpacing: -0.4,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? const Color(0xFFF8FAFC)
+                : const Color(0xFF00174D),
           ),
         ),
         const SizedBox(height: 16),
@@ -510,7 +514,7 @@ class _FinanceSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bone = isDark ? const Color(0xFF22304A) : const Color(0xFFE6EDF5);
+    final bone = FinancePalette.border(isDark);
     Widget block({double height = 72}) => Container(
           height: height,
           decoration: BoxDecoration(

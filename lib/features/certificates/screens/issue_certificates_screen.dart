@@ -61,9 +61,8 @@ class _IssueCertificatesScreenState
     List<Student> students,
     String courseName,
   ) async {
-    final selected = students
-        .where((student) => _selectedIds.contains(student.id))
-        .toList();
+    final selected =
+        students.where((student) => _selectedIds.contains(student.id)).toList();
     if (selected.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.certificatePickStudents)),
@@ -88,7 +87,8 @@ class _IssueCertificatesScreenState
       final bytes = await CertificatePdfService().build(
         certificates: issued,
         copy: copy,
-        teacherName: (teacher == null || teacher.isEmpty) ? 'Docentia' : teacher,
+        teacherName:
+            (teacher == null || teacher.isEmpty) ? 'Docentia' : teacher,
         accent: accent,
       );
       if (!mounted) return;
@@ -180,24 +180,29 @@ class _IssueCertificatesScreenState
             children: [
               AppFieldLabel(l10n.certificateStyleLabel),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  for (final style in CertificateStyle.values) ...[
-                    if (style != CertificateStyle.classic) const SizedBox(width: 8),
-                    Expanded(
-                      child: _StyleCard(
-                        style: style,
-                        selected: _style == style,
-                        title: switch (style) {
-                          CertificateStyle.classic => l10n.certificateStyleClassic,
-                          CertificateStyle.modern => l10n.certificateStyleModern,
-                          CertificateStyle.elegant => l10n.certificateStyleElegant,
-                        },
-                        onTap: () => setState(() => _style = style),
-                      ),
-                    ),
-                  ],
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  const gap = 8.0;
+                  final columns = constraints.maxWidth >= 720 ? 4 : 3;
+                  final width =
+                      (constraints.maxWidth - gap * (columns - 1)) / columns;
+                  return Wrap(
+                    spacing: gap,
+                    runSpacing: 10,
+                    children: [
+                      for (final style in CertificateStyle.values)
+                        SizedBox(
+                          width: width,
+                          child: _StyleCard(
+                            style: style,
+                            selected: _style == style,
+                            title: _styleTitle(l10n, style),
+                            onTap: () => setState(() => _style = style),
+                          ),
+                        ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(height: 22),
               AppFieldLabel(l10n.certificateTypeLabel),
@@ -211,15 +216,15 @@ class _IssueCertificatesScreenState
                       selected: _type == type,
                       selectedColor: primary,
                       labelStyle: TextStyle(
-                        color: _type == type
-                            ? AppColors.onPrimary
-                            : textPrimary,
+                        color:
+                            _type == type ? AppColors.onPrimary : textPrimary,
                         fontWeight: FontWeight.w600,
                       ),
                       label: Text(switch (type) {
                         CertificateType.completion =>
                           l10n.certificateTypeCompletion,
-                        CertificateType.approval => l10n.certificateTypeApproval,
+                        CertificateType.approval =>
+                          l10n.certificateTypeApproval,
                         CertificateType.participation =>
                           l10n.certificateTypeParticipation,
                       }),
@@ -278,9 +283,7 @@ class _IssueCertificatesScreenState
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Material(
-                      color: isDark
-                          ? const Color(0xFF151D2E)
-                          : Colors.white,
+                      color: isDark ? const Color(0xFF151D2E) : Colors.white,
                       borderRadius: BorderRadius.circular(14),
                       child: CheckboxListTile(
                         value: selected,
@@ -318,6 +321,23 @@ class _IssueCertificatesScreenState
   }
 }
 
+String _styleTitle(AppLocalizations l10n, CertificateStyle style) {
+  return switch (style) {
+    CertificateStyle.classic => l10n.certificateStyleClassic,
+    CertificateStyle.modern => l10n.certificateStyleModern,
+    CertificateStyle.elegant => l10n.certificateStyleElegant,
+    CertificateStyle.academic => l10n.certificateStyleAcademic,
+    CertificateStyle.minimal => l10n.certificateStyleMinimal,
+    CertificateStyle.botanical => l10n.certificateStyleBotanical,
+    CertificateStyle.imperial => l10n.certificateStyleImperial,
+    CertificateStyle.midnight => l10n.certificateStyleMidnight,
+    CertificateStyle.deco => l10n.certificateStyleDeco,
+    CertificateStyle.ribbon => l10n.certificateStyleRibbon,
+    CertificateStyle.parchment => l10n.certificateStyleParchment,
+    CertificateStyle.horizon => l10n.certificateStyleHorizon,
+  };
+}
+
 class _StyleCard extends StatelessWidget {
   final CertificateStyle style;
   final bool selected;
@@ -338,6 +358,15 @@ class _StyleCard extends StatelessWidget {
       CertificateStyle.classic => const Color(0xFF00236F),
       CertificateStyle.modern => primary,
       CertificateStyle.elegant => const Color(0xFF6B2D5B),
+      CertificateStyle.academic => const Color(0xFF1B3A4B),
+      CertificateStyle.minimal => const Color(0xFF1F2933),
+      CertificateStyle.botanical => const Color(0xFF2F5D50),
+      CertificateStyle.imperial => const Color(0xFF3C1361),
+      CertificateStyle.midnight => const Color(0xFFD4BE86),
+      CertificateStyle.deco => const Color(0xFF1A1A1A),
+      CertificateStyle.ribbon => const Color(0xFF0F6E6E),
+      CertificateStyle.parchment => const Color(0xFF9C2F2F),
+      CertificateStyle.horizon => const Color(0xFF1F4E79),
     };
 
     return Material(
@@ -351,7 +380,9 @@ class _StyleCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: selected ? primary : AppColors.outlineVariantAdaptive(context),
+              color: selected
+                  ? primary
+                  : AppColors.outlineVariantAdaptive(context),
               width: selected ? 2 : 1,
             ),
           ),
@@ -371,9 +402,12 @@ class _StyleCard extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
+                  height: 1.15,
                   color: AppColors.textPrimary(context),
                 ),
               ),

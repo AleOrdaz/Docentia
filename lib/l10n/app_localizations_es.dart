@@ -1713,6 +1713,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get certificateStyleElegant => 'Elegante';
 
   @override
+  String get certificateStyleAcademic => 'Académico';
+
+  @override
+  String get certificateStyleMinimal => 'Minimalista';
+
+  @override
+  String get certificateStyleBotanical => 'Botánico';
+
+  @override
+  String get certificateStyleImperial => 'Imperial';
+
+  @override
+  String get certificateStyleMidnight => 'Nocturno';
+
+  @override
+  String get certificateStyleDeco => 'Déco';
+
+  @override
+  String get certificateStyleRibbon => 'Cinta';
+
+  @override
+  String get certificateStyleParchment => 'Pergamino';
+
+  @override
+  String get certificateStyleHorizon => 'Horizonte';
+
+  @override
   String get certificateTypeLabel => 'Tipo de certificado';
 
   @override
@@ -1852,6 +1879,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get financeExportPdf => 'Exportar PDF';
+
+  @override
+  String get reportExportExcel => 'Exportar Excel';
+
+  @override
+  String reportSavedInDocuments(String filename) {
+    return 'No se pudo abrir para compartir. $filename quedó en Archivos, dentro de la carpeta de Docentia.';
+  }
+
+  @override
+  String get reportExcelAttendances => 'Asistencias del mes';
+
+  @override
+  String get reportExcelBillingType => 'Tipo de cobro';
+
+  @override
+  String get reportExcelDailyRate => 'Cobro por día';
+
+  @override
+  String get reportExcelTotal => 'Total';
+
+  @override
+  String get reportExcelHours => 'Horas trabajadas';
+
+  @override
+  String get reportBillingPerClass => 'Por clase / día';
+
+  @override
+  String get reportBillingWeekly => 'Semanal';
+
+  @override
+  String get reportBillingBiweekly => 'Quincenal';
+
+  @override
+  String get reportBillingMonthly => 'Mensual';
 
   @override
   String get reportAttendance => 'Asistencia';
